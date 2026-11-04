@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  test:
+    cmds:
+      - pnpm exec vitest run {{.CLI_ARGS}}
+  build:weixin:
+    cmds:
+      - pnpm run build:mp-weixin
+  check:
+    cmds:
+      - node scripts/assemble-uni-id.mjs --check
+      - pnpm exec eslint . --max-warnings 0
+      - pnpm exec vue-tsc --noEmit -p tsconfig.json
+      - pnpm exec tsc --noEmit -p tsconfig.cloud.json
+      - pnpm exec vue-tsc --noEmit -p tsconfig.tests.json
+      - task: test
+      - task: build:weixin
+      - node scripts/check-boundaries.mjs --artifacts
+      - node scripts/check-secrets.mjs
+  doctor:
+    cmds:
+      - node scripts/doctor.mjs
+  deploy:preview:
+    cmds:
+      - node scripts/deploy-preview.mjs

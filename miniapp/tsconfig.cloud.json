@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "CommonJS", "moduleResolution": "Node", "lib": ["ES2022"],
+    "strict": true, "noEmit": true, "types": ["node"], "skipLibCheck": true,
+    "allowJs": true, "checkJs": true,
+    "baseUrl": ".", "paths": {
+      "home-contracts": ["uniCloud-alipay/cloudfunctions/common/home-contracts/index.ts"],
+      "home-kernel": ["uniCloud-alipay/cloudfunctions/common/home-kernel/index.ts"]
+    }
+  },
+  "include": ["uniCloud-alipay/cloudfunctions/account-co/**/*.ts", "uniCloud-alipay/cloudfunctions/common/home-*/**/*.ts", "cloud-policies/*.cjs"]
+}

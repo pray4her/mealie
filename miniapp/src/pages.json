@@ -1,0 +1,7 @@
+{
+  "pages": [
+    { "path": "pages/account/login", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/family/onboarding", "style": { "navigationStyle": "custom" } }
+  ],
+  "globalStyle": { "backgroundColor": "#f6f5ef" }
+}

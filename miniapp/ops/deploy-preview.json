@@ -1,0 +1,233 @@
+{
+  "previewOnly": true,
+  "uploadAuthorized": false,
+  "blocked": true,
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "region": "unknown",
+  "runtime": "unknown",
+  "existingResources": "partial",
+  "inventoryEvidence": "After associating the existing alipay space, read-only HBuilderX lists on 2026-11-04 returned 0 functions, 0 schemas, 0 clientDB actions, and 3 common modules: uni-config-center, uni-id-common, uni-open-bridge-common. Region and runtime were not returned.",
+  "blockers": [
+    "cloud-runtime-unknown",
+    "cloud-region-unknown",
+    "existing-resources-unknown",
+    "cloud-acceptance-missing",
+    "device-acceptance-missing",
+    "secret-configuration-unverified",
+    "deployment-not-authorized",
+    "hbuilderx-ts-compilation-unverified"
+  ],
+  "compiledCloudArtifactSha256": null,
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "uni-captcha",
+      "path": "src/uni_modules/uni-captcha/uniCloud/cloudfunctions/common/uni-captcha",
+      "sha256": "b6f5674adf153187b8e888f623d3f52ba10b3987706c101889e1ad7375844a69",
+      "hashKind": "source-tree-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "schema",
+      "name": "opendb-verify-codes.schema.json",
+      "path": "src/uni_modules/uni-captcha/uniCloud/database/opendb-verify-codes.schema.json",
+      "sha256": "8492a10498220984d55f985f3610674a3d3734f159eddb3d199001d3b4728782",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "common-module",
+      "name": "uni-cloud-s2s",
+      "path": "src/uni_modules/uni-cloud-s2s/uniCloud/cloudfunctions/common/uni-cloud-s2s",
+      "sha256": "36ee47b1e0b6fafa8f28a448e7af8967a1b717d0c7db1e8aebe43873d8304190",
+      "hashKind": "source-tree-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "uni-config-center",
+      "path": "src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+      "sha256": "4c9ac7a46af1188bef7038c095159a455868dd8a8653a68e407a7b77d6bf0b71",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "blocked-name-conflict",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "uni-id-common",
+      "path": "src/uni_modules/uni-id-common/uniCloud/cloudfunctions/common/uni-id-common",
+      "sha256": "2708237a5087ddfc7a7cb06d2e2e4fffc9043f262c39fa2bab9ae65bf1c91f79",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "blocked-name-conflict",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "index",
+      "name": "opendb-device.index.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/opendb-device.index.json",
+      "sha256": "d31b1a77da211c0b8421ce8395894b9b74da1340aa5b53e94d6975991fb51e8a",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "opendb-device.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/opendb-device.schema.json",
+      "sha256": "82706d90706820ae9c74ec6be7898a234bdcaf156ef635400e78a4e4297bb67f",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "opendb-frv-logs.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/opendb-frv-logs.schema.json",
+      "sha256": "d8917c7949708b807f5c43f1097af4a868903f8cf71b8c73426bbebd5b243684",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "opendb-tempdata.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/opendb-tempdata.schema.json",
+      "sha256": "28aa11ac118733992bcb19d04853074d8e4c33160131c537973a4acd44f05d0f",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "index",
+      "name": "uni-id-device.index.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/uni-id-device.index.json",
+      "sha256": "f6e0b5d83b07df860103471334ba8df03e30706f1e9a6f34f609533c5115301f",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "uni-id-device.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/uni-id-device.schema.json",
+      "sha256": "c422a4ad220ef49ba929253d2ea3c433a87da95d74af465a25ae1ece91add41c",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "uni-id-log.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/uni-id-log.schema.json",
+      "sha256": "ac6e9d466a938219d6f41f9b83d8a6704481a5effd4f5f53963a2841ffd63a35",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "uni-id-permissions.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/uni-id-permissions.schema.json",
+      "sha256": "36cb58f2364bb5ce294038e30b3cc147d47b9f52a712a444ad3d1e1bb5ce5499",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "uni-id-roles.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/uni-id-roles.schema.json",
+      "sha256": "310cfd8dafbc8210ea19fbb7a8307d36391f6f4263b76a290a3bbab5da81602c",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "schema",
+      "name": "uni-id-users.schema.json",
+      "path": "src/uni_modules/uni-id-pages/uniCloud/database/uni-id-users.schema.json",
+      "sha256": "3019573f3020999087219007e08dea41ae69e9fca9c0773610448018580b45dd",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "common-module",
+      "name": "uni-open-bridge-common",
+      "path": "src/uni_modules/uni-open-bridge-common/uniCloud/cloudfunctions/common/uni-open-bridge-common",
+      "sha256": "1e48150ebbf10a98c0c219e9cf0ddb7490ff1e5ffdce0d024fc0a422bf3f9133",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "blocked-name-conflict",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "schema",
+      "name": "opendb-open-data.schema.json",
+      "path": "src/uni_modules/uni-open-bridge-common/uniCloud/database/opendb-open-data.schema.json",
+      "sha256": "459a5e357aaf93a2fbde8f3ce1ed2b809b18c4cd6bb94405fee823c9c863b9b9",
+      "hashKind": "file-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload"
+    },
+    {
+      "kind": "cloud-object",
+      "name": "account-co",
+      "path": "uniCloud-alipay/cloudfunctions/account-co",
+      "sha256": "70249b4a6e56e117734c5993bb727bfc584bb8ec3a906611eb73f2734ec0f9eb",
+      "hashKind": "source-tree-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "28f3059dbe4d702ee0095ddea2b5025f7e3478d901ef5de45c6d466c1fac2bdd",
+      "hashKind": "source-tree-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-kernel",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "sha256": "440f4e32633f5b15cb6dcd0f4900b595bc1a68529743abff2901cf603fe3eb0c",
+      "hashKind": "source-tree-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "cloud-object",
+      "name": "uni-id-co",
+      "path": "uniCloud-alipay/cloudfunctions/uni-id-co",
+      "sha256": "9738f5f7c00a103d7771be8dc6c554c20cf47bbea9be7fcbb16d736fa0b32eb0",
+      "hashKind": "source-tree-sha256",
+      "existing": "unknown",
+      "action": "blocked-no-upload",
+      "platformExtensionDeclarations": [
+        "uni-cloud-ext-storage",
+        "uni-cloud-redis",
+        "uni-cloud-sms",
+        "uni-cloud-verify"
+      ]
+    }
+  ]
+}

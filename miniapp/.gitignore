@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Logs. Same set as the vendored uni-preset-vue template.
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# uni-app CLI output, HBuilderX compile output, and local IDE state.
+# unpackage is non-source and is ignored by default in uni-app projects.
+dist/
+dist-ssr/
+unpackage/
+.hbuilderx/
+.type-probes/
+
+# Tool caches
+.vite/
+coverage/
+.eslintcache
+*.tsbuildinfo
+
+# Local env and machine-specific files. The checked-in example has no secrets.
+.env
+.env.*
+!.env.example
+*.local
+*.local.*
+.DS_Store
+
+# WeChat DevTools private project file and packed npm output.
+project.private.config.json
+miniprogram_npm/
+
+# This package is pnpm-only. Lockfiles extracted under upstream stay tracked.
+/package-lock.json
+/yarn.lock
+/npm-shrinkwrap.json
+
+# Real uni-id config. config.example.json stays tracked.
+**/uni-config-center/uni-id/config.json
+
+# Intentionally tracked: pnpm-lock.yaml, src/uni_modules, uniCloud-alipay,
+# and vendor archives. Assembly checks those archives by digest.

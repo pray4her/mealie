@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "verified": true,
+    "source": "user-acceptance-2026-11-04",
+    "observed": "Upload warning reported cloud Node 18.18.2."
+  },
+  "region": {
+    "verified": true,
+    "source": "user-acceptance-2026-11-04",
+    "observedGatewayHost": "api-hz"
+  },
+  "existingResources": {
+    "verified": true,
+    "source": "user-acceptance-2026-11-04",
+    "observed": "Post-association inventory is recorded in ops/test-evidence.md."
+  },
+  "cloud": {
+    "status": "passed",
+    "evidenceFile": "ops/test-evidence.md",
+    "source": "user-acceptance-2026-11-04"
+  },
+  "device": {
+    "status": "passed",
+    "evidenceFile": "ops/test-evidence.md",
+    "source": "user-acceptance-2026-11-04"
+  },
+  "secretConfiguration": {
+    "verified": true,
+    "source": "user-acceptance-2026-11-04",
+    "observed": "Configured outside this chat. Values were not read or stored."
+  }
+}

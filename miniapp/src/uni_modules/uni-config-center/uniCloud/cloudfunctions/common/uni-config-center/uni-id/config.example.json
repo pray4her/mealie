@@ -1,0 +1,17 @@
+{
+  "dcloudAppid": "__UNI__5FDC0D7",
+  "tokenSecret": "",
+  "tokenExpiresIn": 7200,
+  "tokenExpiresThreshold": 1200,
+  "userRegisterDefaultRole": [],
+  "autoSetInviteCode": false,
+  "forceInviteCode": false,
+  "mp-weixin": {
+    "oauth": {
+      "weixin": {
+        "appid": "wx68649810a6f363f3",
+        "appsecret": ""
+      }
+    }
+  }
+}

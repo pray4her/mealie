@@ -1,0 +1,7 @@
+{
+  "name": "home-kernel", "version": "0.0.0", "main": "index.js", "types": "index.ts", "private": true,
+  "dependencies": {
+    "home-contracts": "file:../home-contracts",
+    "uni-id-common": "file:../../../../src/uni_modules/uni-id-common/uniCloud/cloudfunctions/common/uni-id-common"
+  }
+}

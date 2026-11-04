@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "home-contracts": ["uniCloud-alipay/cloudfunctions/common/home-contracts/index.ts"],
+      "home-kernel": ["uniCloud-alipay/cloudfunctions/common/home-kernel/index.ts"]
+    },
+    "types": ["node", "vitest", "vite/client", "@dcloudio/types", "@uni-helper/uni-app-types"]
+  },
+  "include": ["tests/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vitest.config.ts"]
+}
