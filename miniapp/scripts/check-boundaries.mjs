@@ -19,8 +19,12 @@ export async function checkBoundaries({ root, artifacts = false }) {
   const discovered = [...client, ...cloud].filter(path => /[\\/]uni-id-co[\\/]index\.obj\.[jt]s$/.test(path));
   if (discovered.length !== 1 || !discovered[0].includes('uniCloud-alipay')) throw new Error('Expected unique uni-id-co; duplicate or missing object');
   const objectEntries = [...client, ...cloud].filter(path => /[\\/]index\.obj\.[jt]s$/.test(path));
-  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
-  if (objectEntries.length !== 2 || objectEntries.some(path => !allowed.includes(path))) throw new Error('Unexpected discoverable public cloud object');
+  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts', 'family-co/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
+  if (objectEntries.length !== 3 || objectEntries.some(path => !allowed.includes(path))) throw new Error('Unexpected discoverable public cloud object');
+  for (const path of [...client, ...cloud].filter(path => path.endsWith('.schema.json'))) {
+    const permission = JSON.parse(await readFile(path, 'utf8')).permission;
+    if (!permission || ['read', 'create', 'update', 'delete'].some(key => permission[key] !== false)) throw new Error('ClientDB permission open: ' + path);
+  }
   for (const path of client) {
     const source = await readFile(path, 'utf8');
     if (path.endsWith('.schema.json')) {
@@ -32,7 +36,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
       const ast = ts.createSourceFile(path, code, ts.ScriptTarget.Latest, true);
       const check = (specifier, typeOnly) => {
         if (typeof specifier !== 'string') throw new Error('Client dynamic runtime import denied: ' + path);
-        if (/(?:home-kernel|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
+        if (/(?:home-kernel|home-family|uni-sec-check|uni-open-bridge|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
       };
       const visit = node => {
         if (ts.isImportDeclaration(node)) {
@@ -46,12 +50,14 @@ export async function checkBoundaries({ root, artifacts = false }) {
       }; visit(ast);
     }
   }
-  for (const path of cloud.filter(p => /[\\/]package\.json$/.test(p))) {
+  for (const path of [...cloud, ...client.filter(p => /[\\/]cloudfunctions[\\/]common[\\/]/.test(p))].filter(p => /[\\/]package\.json$/.test(p))) {
     const pkg = JSON.parse(await readFile(path, 'utf8'));
     for (const dependency of Object.values(pkg.dependencies || {})) {
       if (typeof dependency !== 'string' || !dependency.startsWith('file:')) continue;
       const target = resolve(path, '..', dependency.slice(5));
       if (!target.startsWith(resolve(root) + (process.platform === 'win32' ? '\\' : '/'))) throw new Error('Deployment dependency path escape: ' + path);
+      try { JSON.parse(await readFile(join(target, 'package.json'), 'utf8')); }
+      catch { throw new Error('Deployment dependency package missing/invalid: ' + path); }
     }
   }
   const packages = cloud.filter(p => /[\\/]package\.json$/.test(p)).map(dirname).sort((a, b) => b.length - a.length);
@@ -72,17 +78,25 @@ export async function checkBoundaries({ root, artifacts = false }) {
       }
       ts.forEachChild(node, visit);
     }; visit(ast);
-    if (/[\\/]account-co[\\/]index\.obj\.ts$/.test(path)) {
+    if (/[\\/](?:account-co|family-co)[\\/]index\.obj\.ts$/.test(path)) {
       const exports = ast.statements.filter(node => ts.isExportDeclaration(node) || ts.isExportAssignment(node) || (ts.canHaveModifiers(node) && ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)));
-      if (exports.length !== 1 || !ts.isFunctionDeclaration(exports[0]) || exports[0].name?.text !== 'session' || ts.getModifiers(exports[0])?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword)) throw new Error('Unexpected account-co public method export');
+      const expected = path.includes('family-co') ? ['create', 'current'] : ['session'];
+      if (exports.length !== expected.length || exports.some(node => !ts.isFunctionDeclaration(node) || !expected.includes(node.name?.text) || ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword))
+        || new Set(exports.map(node => node.name?.text)).size !== expected.length) throw new Error('Unexpected public method export: ' + path);
     }
   }
   if (artifacts) {
     const files = await walk(join(root, 'dist/build/mp-weixin'));
     if (!files.length) throw new Error('Artifact missing');
+    let manifest;
+    try { manifest = JSON.parse(await readFile(join(root, 'dist/build/mp-weixin/app.json'), 'utf8')); }
+    catch { throw new Error('Artifact route manifest missing/invalid'); }
+    const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home'];
+    if (!Array.isArray(manifest.pages) || manifest.pages.length !== pages.length || manifest.pages.some((page, index) => page !== pages[index])
+      || manifest.subPackages || manifest.subpackages || manifest.tabBar) throw new Error('Artifact routes must be exactly login/onboarding/home');
     for (const path of files) {
       if (/(?:[\\/](?:vendor|tests|cloudfunctions)[\\/]|uniCloud-|\.zip$|\.tar\.gz$)/i.test(path.slice(root.length))) throw new Error('Artifact contains forbidden source');
-      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/uni-id|tests\/support|home-kernel|cloudfunctions\/common|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
+      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|uni-sec-check|uni-open-bridge|cloudfunctions\/common|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
     }
   }
 }

@@ -1,0 +1,1070 @@
+{
+  "ticket": "task02",
+  "authorization": {
+    "status": "approved",
+    "userReply": "批准",
+    "proposalFile": "ops/task02-upload-scope.json",
+    "proposalSha256": "4e27cfc0ad4605c74c7d0a2c2f91fe9eb2dd11cb8347584b29310008f4e183d2",
+    "isolatedTestUseConfirmed": true,
+    "scope": "13 production resources only; no probes or test-row cleanup"
+  },
+  "target": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie"
+  },
+  "preflight": {
+    "stagingDigestsVerified": 13,
+    "currentProtectedModulesByteEqual": true,
+    "businessCollectionConflicts": [],
+    "existingFunctions": [
+      "account-co",
+      "uni-id-co"
+    ],
+    "existingCollectionCount": 10
+  },
+  "events": [
+    {
+      "atUtc": "2026-11-06T06:26:03.0551479Z",
+      "resource": "home-contracts",
+      "operation": "update",
+      "result": "succeeded",
+      "diagnostics": [
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-contracts，开始类型检查..."
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "TypeScript 公共模块 home-contracts 类型检查通过"
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-contracts，开始编译..."
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 family.ts"
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 identity.ts"
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 index.ts"
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译完成，共 3 个文件"
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "正在上传公共模块home-contracts..."
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块home-contracts被云端云函数依赖，正在更新相关云端云函数..."
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "更新云端云函数成功"
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块home-contracts上传成功"
+        },
+        {
+          "resource": "home-contracts",
+          "operation": "update",
+          "type": "result",
+          "phase": null,
+          "code": null,
+          "message": "公共模块 home-contracts 上传完成"
+        }
+      ]
+    },
+    {
+      "atUtc": "2026-11-06T06:26:32.0351142Z",
+      "resource": "home-kernel",
+      "operation": "update",
+      "result": "failed-or-unknown",
+      "diagnostics": [
+        {
+          "resource": "home-kernel",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-kernel，开始类型检查..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "TypeScript 公共模块 home-kernel 类型检查失败，共 3 个错误，已取消上传"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update",
+          "type": "progress",
+          "phase": "transfer-error",
+          "code": null,
+          "message": "公共模块home-kernel上传失败：TypeScript 公共模块 home-kernel 类型检查失败，共 3 个错误，已取消上传"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update",
+          "type": "error",
+          "phase": null,
+          "code": "BUSINESS_ERROR",
+          "message": "TypeScript 公共模块 home-kernel 类型检查失败，共 3 个错误，已取消上传"
+        }
+      ]
+    },
+    {
+      "atUtc": "2026-11-06T06:28:30.5308721Z",
+      "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+      "operation": "create-approved-four-collections-and-index",
+      "result": "succeeded",
+      "diagnostics": [
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在创建数据表 families"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据表 families 创建成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在创建数据表 family_members"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据表 family_members 创建成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在创建数据表 mutation_receipts"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据表 mutation_receipts 创建成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在创建数据表 request_limits"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据表 request_limits 创建成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在上传数据集合 Schema families.schema.json"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据集合 Schema families.schema.json 上传成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在上传数据集合 Schema family_members.schema.json"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据集合 Schema family_members.schema.json 上传成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在上传数据集合 Schema mutation_receipts.schema.json"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据集合 Schema mutation_receipts.schema.json 上传成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在上传数据集合 Schema request_limits.schema.json"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "数据集合 Schema request_limits.schema.json 上传成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "正在上传初始索引 family_members.index.json"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "初始索引 family_members.index.json 上传成功"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database",
+          "code": null,
+          "message": "云数据库资源上传完成"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "progress",
+          "phase": "initialize-database-complete",
+          "code": null,
+          "message": "初始化云数据库完成"
+        },
+        {
+          "resource": "families,family_members,mutation_receipts,request_limits+family_members.familyId-index",
+          "operation": "create-approved-four-collections-and-index",
+          "type": "result",
+          "phase": null,
+          "code": null,
+          "message": "云数据库初始化完成"
+        }
+      ]
+    },
+    {
+      "atUtc": "2026-11-06T06:28:40.692977Z",
+      "resource": "uni-sec-check",
+      "operation": "create",
+      "result": "succeeded",
+      "diagnostics": [
+        {
+          "resource": "uni-sec-check",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "正在上传公共模块uni-sec-check..."
+        },
+        {
+          "resource": "uni-sec-check",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块uni-sec-check上传成功"
+        },
+        {
+          "resource": "uni-sec-check",
+          "operation": "create",
+          "type": "result",
+          "phase": null,
+          "code": null,
+          "message": "公共模块 uni-sec-check 上传完成"
+        }
+      ]
+    },
+    {
+      "atUtc": "2026-11-06T06:32:30.5562282Z",
+      "resource": "home-kernel",
+      "operation": "update-after-reviewed-type-compatibility-fix",
+      "result": "succeeded",
+      "diagnostics": [
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-kernel，开始类型检查..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "TypeScript 公共模块 home-kernel 类型检查通过"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-kernel，开始编译..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 auth.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 clock.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 content.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 database-platform.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 database.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 errors.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 idempotency.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 index.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 persistent-request-limit.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 request-limit.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 uni-id-adapter.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译完成，共 11 个文件"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "正在上传公共模块home-kernel..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块home-kernel被云端云函数依赖，正在更新相关云端云函数..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "更新云端云函数成功"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块home-kernel上传成功"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "update-after-reviewed-type-compatibility-fix",
+          "type": "result",
+          "phase": null,
+          "code": null,
+          "message": "公共模块 home-kernel 上传完成"
+        }
+      ]
+    },
+    {
+      "atUtc": "2026-11-06T06:33:02.0814912Z",
+      "resource": "home-family",
+      "operation": "create",
+      "result": "succeeded",
+      "diagnostics": [
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-family，开始类型检查..."
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "TypeScript 公共模块 home-family 类型检查通过"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-family，开始编译..."
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 create.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 current.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 index.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 membership.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 model.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 repository.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 validation.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 weixin-content.ts"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译完成，共 8 个文件"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "正在上传公共模块home-family..."
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块home-family上传成功"
+        },
+        {
+          "resource": "home-family",
+          "operation": "create",
+          "type": "result",
+          "phase": null,
+          "code": null,
+          "message": "公共模块 home-family 上传完成"
+        }
+      ]
+    },
+    {
+      "atUtc": "2026-11-06T06:33:19.4228452Z",
+      "resource": "family-co",
+      "operation": "create-with-approved-dependency-closure",
+      "result": "succeeded",
+      "diagnostics": [
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "progress",
+          "phase": "runtime-warning",
+          "code": null,
+          "message": "本地node版本是18.20.0，云端node版本是18.18.2，请注意兼容问题。调整云端node版本参考"
+        },
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 云函数，开始类型检查..."
+        },
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "TypeScript 类型检查通过"
+        },
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "开始编译 TypeScript 云函数..."
+        },
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 index.obj.ts"
+        },
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译完成，共 1 个文件"
+        },
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "正在上传云对象family-co..."
+        },
+        {
+          "resource": "family-co",
+          "operation": "create-with-approved-dependency-closure",
+          "type": "result",
+          "phase": null,
+          "code": null,
+          "message": "云对象family-co上传完成"
+        }
+      ]
+    },
+    {
+      "atUtc": "2026-11-06T07:30:35.0458929Z",
+      "resource": "home-kernel",
+      "operation": "fix-fulfilled-void-transaction-commit",
+      "result": "succeeded",
+      "diagnostics": [
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-kernel，开始类型检查..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "TypeScript 公共模块 home-kernel 类型检查通过"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "检测到 TypeScript 公共模块 home-kernel，开始编译..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 auth.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 clock.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 content.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 database-platform.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 database.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 errors.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 idempotency.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 index.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 persistent-request-limit.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 request-limit.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译 uni-id-adapter.ts"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "编译完成，共 11 个文件"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "正在上传公共模块home-kernel..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块home-kernel被云端云函数依赖，正在更新相关云端云函数..."
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "更新云端云函数成功"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "progress",
+          "phase": "transfer",
+          "code": null,
+          "message": "公共模块home-kernel上传成功"
+        },
+        {
+          "resource": "home-kernel",
+          "operation": "fix-fulfilled-void-transaction-commit",
+          "type": "result",
+          "phase": null,
+          "code": null,
+          "message": "公共模块 home-kernel 上传完成"
+        }
+      ]
+    }
+  ],
+  "status": "closed-on-user-acceptance-with-validation-gaps",
+  "cloudArtifactSha256": "210c8ce5a095b34b10d8ca4f533068345651d2ed81c72e34bad3362b95b20c8f",
+  "cloudAcceptance": "pending",
+  "deviceAcceptance": "pending",
+  "compatibilityAdjustment": {
+    "reason": "Installed HBuilderX checker defaults to ES2021; target Node 18 and project use ES2022",
+    "file": "uniCloud-alipay/cloudfunctions/common/home-kernel/platform.d.ts",
+    "change": "Explicit ES2022 library reference only, no runtime behavior change",
+    "originalKernelSourceSha256": "900f86a51e3bf52b3a68d513af2a937a7f9619566233882457db8f6b49ce0108",
+    "currentKernelSourceSha256": "221638a3b750f50a9f8ad8e9507b649b5d37249226f64475cc99b41c33513d58",
+    "installedCheckerDiagnosticsAfterFix": {
+      "homeFamily": 0,
+      "familyCo": 0,
+      "kernel": 0
+    },
+    "independentReview": "passed; actual installed HX checker 0/0/0 diagnostics and negative control 6 diagnostics"
+  },
+  "sourceSha256": "f5a2977718f97a115bcb9bcb01d8421865d7d0fbe814bb3c4e9460bc1b878b4e",
+  "clientBuildSha256": "3507b04d0fd6c66fb59c6a89dfe97d41a71a48ddf53e7dd8cb4ef5ea84475bfb",
+  "postVerification": {
+    "functionNames": [
+      "account-co",
+      "family-co",
+      "uni-id-co"
+    ],
+    "commonModuleCount": 9,
+    "schemaCount": 14,
+    "clientDbActionCount": 0,
+    "businessSchemaPermissions": "all 16 operations denied in downloaded Schemas",
+    "familyIdIndex": "installed CLI initialization reports successful upload; direct index readback pending",
+    "protectedModulesByteEqual": true,
+    "probeNamesAbsent": true,
+    "cloudNodeVersion": "18.18.2",
+    "normalArtifact": "dist/task02-normal-cloud",
+    "runtimePackageProvenance": "Actual downloaded remote ZIP __dist__ bytes captured before installed CLI source-only cleanup; original ZIP SHA-256 and entry SHA-256 in artifact manifest; no local recompilation substituted.",
+    "normalArtifactSecretScan": "passed",
+    "independentReview": "passed; live inventory, Schema structure/permissions, protected bytes, exact ZIP compiled bytes, three-object/five-method surface and all current hashes independently verified"
+  },
+  "localVerification": {
+    "fullCheck": "passed",
+    "tests": 350,
+    "suites": 23,
+    "typeChecks": 3,
+    "compatibilityReview": "passed",
+    "reviewCorrectionsReview": "passed",
+    "closeoutCheck": "passed: 350 tests / 23 suites, assembly, lint, three type checks, WeChat build, boundaries and secrets"
+  },
+  "runtimeCorrection": {
+    "symptom": "Successful session followed by family.current UNAVAILABLE",
+    "cause": "Fulfilled void commit incorrectly treated as malformed acknowledgement",
+    "file": "uniCloud-alipay/cloudfunctions/common/home-kernel/database-platform.ts",
+    "kernelSourceSha256": "ff86f462e5030f7de69d0dda4f78fef83a7a24a138359a075852b37827a4e3d6",
+    "change": "Accept fulfilled undefined; preserve rejection/malformed acknowledgement handling and bounded retries",
+    "nativeSdkVersion": "1.1.27",
+    "nativeReproBefore": "commit-unknown, rollback after successful commit, zero cloud calls",
+    "targetedTests": "112 tests / 6 suites passed",
+    "independentReview": "passed; 39 contract tests and rejected-undefined zero-cloud negative check",
+    "userSessionRetest": "passed: user retried once in the same logged-in WeChat DevTools session and observed the creation form",
+    "nativeReproAfter": "passed against actual newly deployed compiled adapter readback; fulfilled void preserves callback, commits once, no rollback, zero cloud calls",
+    "protectedModuleReadback": "all three identity module trees still byte-identical"
+  },
+  "clientCorrection": {
+    "symptom": "Create button displayed an uncertain-result error without any network request",
+    "observedCause": "Native callback returned a genuine 16-byte foreign-realm ArrayBuffer rejected by instanceof",
+    "change": "Use native ArrayBuffer byteLength getter for internal-brand and exact-length validation, retain native secure randomness and all bytes; distinguish preparation failure from uncertain submitted result",
+    "affectedSourceFiles": [
+      "src/features/family/intents.ts",
+      "src/shared/copy.ts",
+      "src/pages/family/onboarding.vue"
+    ],
+    "independentReview": "passed; 65 target cases",
+    "fullCheck": "339 tests / 23 suites, lint, 3 type checks, WeChat build, source/artifact boundaries and secrets passed",
+    "compiledDevRepro": "foreign buffer red before fix and green after, 32 hex characters, zero cloud calls",
+    "temporaryDiagnosticsRemoved": true,
+    "userSessionRetest": "passed: user retried creation after hot compilation and confirmed arrival at the family home page",
+    "cloudResourceChanges": false,
+    "cleanupOfCreatedFamily": false
+  },
+  "functionalObservations": {
+    "firstLoginFamilyCurrent": "passed in actual WeChat DevTools session after void-commit fix",
+    "familyCreation": "user confirmed real creation entered the family page after cross-realm fix",
+    "physicalDevice": "passed: user-reported acceptance on 2026-11-06; device/build/scenario metadata not supplied",
+    "concurrency": "pending",
+    "contentRejectAndUnavailable": "pending"
+  },
+  "reviewCorrection": {
+    "date": "2026-11-06",
+    "issues": [
+      "Resume the current family page after pending logout across hide/show",
+      "Resume the current login page after pending sign-in across hide/show",
+      "Accept valid fulfilled-void commits in the generated SDK shape probe"
+    ],
+    "affectedFiles": [
+      "src/pages/family/home.vue",
+      "src/pages/family/onboarding.vue",
+      "src/pages/account/login.vue",
+      "scripts/stage-task02-probes.mjs",
+      "tests/app/family-home.test.ts",
+      "tests/app/auth.test.ts",
+      "tests/contracts/task02-ops.test.ts"
+    ],
+    "regressionEvidence": "All three observed RED before their corresponding minimal repair; focused 65 tests / 4 suites passed",
+    "fullCheck": "350 tests / 23 suites; both assembly checks, full lint, three type checks, WeChat build, boundaries and secrets passed",
+    "independentReview": "passed: spec and quality; no actionable findings; no duplicate suites run by reviewer",
+    "installedSdkProbeRetest": "passed: generated entry with installed alipay SDK Transaction, fulfilled undefined, one commit, zero cloud calls",
+    "formalCloudSourceSha256": "58582e7ca130c344bb5f04770ac280901e0d6e973ffa19912ea8626c54f1e4fe",
+    "formalCloudSourceUnchanged": true,
+    "cloudArtifactUnchanged": true,
+    "cloudResourceChanges": false,
+    "realActorBinding": false,
+    "realFamilyCleanup": false,
+    "userSessionRetest": "pending",
+    "cloudAcceptance": "pending",
+    "deviceAcceptance": "pending"
+  },
+  "closeout": {
+    "status": "closed-on-user-acceptance",
+    "date": "2026-11-06",
+    "issueUrl": "https://github.com/pray4her/mealie/issues/2",
+    "authorizedBy": "explicit user request after physical-device acceptance",
+    "userAcceptance": "passed",
+    "detailedAcceptance": "pending",
+    "evidenceFile": "ops/task02-test-evidence.md",
+    "evidenceRef": "User acceptance and issue closeout - 2026-11-06",
+    "note": "Issue closure does not certify unreported cloud races, fault injection, content rejection, quota checks, cleanup or device scenarios. Strict doctor remains NON-READY.",
+    "userReport": {
+      "status": "passed",
+      "reportedBy": "user",
+      "date": "2026-11-06",
+      "statement": "真机实测通过，关闭issues，根据文档和skills内容收尾。",
+      "evidenceFile": "ops/task02-test-evidence.md",
+      "evidenceRef": "User acceptance and issue closeout - 2026-11-06",
+      "deviceModel": null,
+      "osVersion": null,
+      "wechatVersion": null,
+      "testedBuildSha256": null,
+      "scenarioDetails": "Not itemized by user; do not infer all A-F checks passed."
+    },
+    "sourceSnapshot": {
+      "sourceSha256": "f5a2977718f97a115bcb9bcb01d8421865d7d0fbe814bb3c4e9460bc1b878b4e",
+      "clientBuildSha256": "3507b04d0fd6c66fb59c6a89dfe97d41a71a48ddf53e7dd8cb4ef5ea84475bfb",
+      "cloudBuildSha256": "210c8ce5a095b34b10d8ca4f533068345651d2ed81c72e34bad3362b95b20c8f",
+      "probeRemnants": []
+    },
+    "issueState": "closed",
+    "stateReason": "completed",
+    "closedAtUtc": "2026-11-06T09:05:10Z",
+    "commentUrl": "https://github.com/pray4her/mealie/issues/2#issuecomment-6681246166",
+    "strictDoctor": {
+      "ready": false,
+      "blockerCount": 51,
+      "localBlockers": []
+    }
+  }
+}

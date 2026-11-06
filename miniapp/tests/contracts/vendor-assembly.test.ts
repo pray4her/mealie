@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { expect, test } from 'vitest';
-import { assembleUniId } from '../../scripts/assemble-uni-id.mjs';
+import { assembleUniId, unzip } from '../../scripts/assemble-uni-id.mjs';
 import { testDirectory } from '../support/temp-directory';
 const archivePath = resolve('vendor/uni-id/upstream.zip'); const lockPath = resolve('vendor/uni-id/lock.json');
 async function target() { return testDirectory('assembly-'); }
@@ -45,4 +45,22 @@ test('never_overwrites_non_generated_files', async () => {
   await mkdir(join(path, '..'), { recursive: true }); await writeFile(path, 'user-owned');
   await expect(assembleUniId({ archivePath, lockPath, targetPath: dir })).rejects.toThrow(/overwrite/i);
   expect(await readFile(path, 'utf8')).toBe('user-owned');
+});
+
+test('known_hbuilderx_config_center_provenance_is_adopted_repeatably', async () => {
+  const dir = await target(); await assembleUniId({ archivePath, lockPath, targetPath: dir });
+  const path = join(dir, 'src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/package.json');
+  const lock = JSON.parse(await readFile(lockPath, 'utf8'));
+  const original = unzip(await readFile(archivePath)).get(lock.root + '/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/package.json')!;
+  const manifestPath = join(dir, 'vendor/uni-id/generated.json'); const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  manifest.files['src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/package.json'] = createHash('sha256').update(original).digest('hex');
+  await writeFile(manifestPath, JSON.stringify(manifest));
+  const pkg = JSON.parse(original.toString());
+  Object.assign(pkg, { 'origin-plugin-dev-name': 'uni-config-center', 'origin-plugin-version': '0.0.3', 'plugin-dev-name': 'uni-config-center', 'plugin-version': '0.0.3' });
+  await writeFile(path, JSON.stringify(pkg, null, 4));
+  await assembleUniId({ archivePath, lockPath, targetPath: dir });
+  await expect(assembleUniId({ archivePath, lockPath, targetPath: dir, check: true })).resolves.toBeDefined();
+  expect(JSON.parse(await readFile(path, 'utf8'))).toEqual(pkg);
+  pkg.main = 'changed.js'; await writeFile(path, JSON.stringify(pkg));
+  await expect(assembleUniId({ archivePath, lockPath, targetPath: dir })).rejects.toThrow(/overwrite/i);
 });

@@ -1,7 +1,9 @@
 import { createCloudClient } from './cloud-client';
 import { createSessionBoundary } from './session-boundary';
 import { createAccountApi } from '../features/auth/api';
-export function createProductionClient() {
+import { createFamilyApi } from '../features/family/api';
+import type { AppClient } from 'home-contracts';
+export function createProductionClient(): AppClient {
   const boundary = createSessionBoundary({
     get: key => uni.getStorageSync(key), set: (key, value) => { uni.setStorageSync(key, value); }, remove: key => { uni.removeStorageSync(key); },
   });
@@ -11,7 +13,7 @@ export function createProductionClient() {
     if (!api) { api = uniCloud.importObject(object, { customUI: true }); objects.set(object, api!); }
     return api![method](input);
   } });
-  return { account: createAccountApi({ boundary, wire: cloud.account, platformLogin: async () => {
+  return { family: createFamilyApi({ boundary, invoke: cloud.invoke }), account: createAccountApi({ boundary, wire: cloud.account, platformLogin: async () => {
     const result = await uni.login({ provider: 'weixin' });
     if (!result.code) throw new Error('UNAVAILABLE'); return result.code;
   } }) };

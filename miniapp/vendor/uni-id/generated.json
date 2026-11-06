@@ -26,7 +26,7 @@
     "src/uni_modules/uni-config-center/package.json": "9b6f762f8b716e44de1559b8a0b284a9abbb9326c4bcb39afdca1b749f79c81a",
     "src/uni_modules/uni-config-center/readme.md": "ed32768b77ad2dba75cb5694d993228921eaa4c6497bfe6bed7616392591ee2f",
     "src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/index.js": "569c0ec9f9f575997ee1dd3d7539a0c54fcb8c78872ba936c02b022bbde47991",
-    "src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/package.json": "05b8ca737123cc7d8fbdb01751867972c663d27bca2f49054f78f4ca415d7c62",
+    "src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/package.json": "9c8653a02400b97d8a1506eb89e1ab68e64b88c0cb3ad771fab0bd113886e987",
     "src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/uni-id/config.example.json": "c1b4f06c417c6339746e51c54d7fca066f4e423c0e46ead3f1497fc2b0cf3027",
     "src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/uni-id/hooks/index.js": "d755f602be6dd9d234e0c30df9138a1d77e0f8f5bc8fa25f46b7a1b0c69ccbe6",
     "src/uni_modules/uni-data-checkbox/changelog.md": "a45b7c2b8ca26ace7d3d838a09fe1dcc97ccc540444963b1e98b8eff75e623e9",

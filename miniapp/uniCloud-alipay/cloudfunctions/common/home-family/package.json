@@ -1,0 +1,4 @@
+{
+  "name": "home-family", "version": "0.0.0", "main": "index.js", "types": "index.ts", "private": true,
+  "dependencies": { "home-contracts": "file:../home-contracts", "home-kernel": "file:../home-kernel", "uni-sec-check": "file:../../../../src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check" }
+}

@@ -1,4 +1,4 @@
-export type ErrorCode = 'AUTH_REQUIRED' | 'INVALID_INPUT' | 'QUOTA_EXCEEDED' | 'UNAVAILABLE';
+export type ErrorCode = 'AUTH_REQUIRED' | 'FAMILY_REQUIRED' | 'ALREADY_IN_FAMILY' | 'CONFLICT' | 'NOT_FOUND' | 'FORBIDDEN' | 'INVALID_INPUT' | 'QUOTA_EXCEEDED' | 'UNAVAILABLE';
 export class AppError extends Error {
   constructor(public readonly code: ErrorCode) { super(code); this.name = 'AppError'; }
 }

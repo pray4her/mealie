@@ -1,0 +1,13 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "subject", "operation", "windowStart", "count", "expiresAt"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "minLength": 1 },
+    "subject": { "bsonType": "string", "minLength": 1 },
+    "operation": { "bsonType": "string", "minLength": 1 },
+    "windowStart": { "bsonType": "long", "minimum": 0 },
+    "count": { "bsonType": "int", "minimum": 0 },
+    "expiresAt": { "bsonType": "long", "minimum": 0 }
+  }
+}

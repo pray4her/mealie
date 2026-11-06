@@ -1,0 +1,24 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "uid", "operation", "requestId", "payloadHash", "result", "createdAt"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "minLength": 1 },
+    "uid": { "bsonType": "string", "minLength": 1 },
+    "operation": { "bsonType": "string", "enum": ["family-create-v1"] },
+    "requestId": { "bsonType": "string", "minLength": 16, "maxLength": 128, "pattern": "^[A-Za-z0-9_-]+$" },
+    "payloadHash": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
+    "result": {
+      "bsonType": "object",
+      "required": ["uid", "familyId", "role", "generation", "name"],
+      "properties": {
+        "uid": { "bsonType": "string", "minLength": 1 },
+        "familyId": { "bsonType": "string", "minLength": 1 },
+        "role": { "bsonType": "string", "enum": ["owner"] },
+        "generation": { "bsonType": "string", "minLength": 1 },
+        "name": { "bsonType": "string", "minLength": 1, "maxLength": 40 }
+      }
+    },
+    "createdAt": { "bsonType": "long", "minimum": 0 }
+  }
+}

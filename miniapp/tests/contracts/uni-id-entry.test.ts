@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import { assembleUniId } from '../../scripts/assemble-uni-id.mjs';
+import { testDirectory } from '../support/temp-directory';
 const require = createRequire(import.meta.url);
 const { createEntry } = require('../../cloud-policies/uni-id-entry.cjs') as { createEntry: (deps: object) => Record<string, (...args: unknown[]) => Promise<unknown>> };
 const { beforeRegister } = require('../../cloud-policies/before-register.cjs') as { beforeRegister: (input: object) => Promise<Record<string, unknown>> };
@@ -20,11 +21,12 @@ test('rejects_non_code_fields_and_oversized_code', async () => {
   expect(calls).toBe(0);
 });
 test('logout_does_not_refresh_near_threshold_using_pinned_auth_middleware', async () => {
-  await assembleUniId({ archivePath: resolve('vendor/uni-id/upstream.zip'), lockPath: resolve('vendor/uni-id/lock.json'), targetPath: resolve('.') });
-  const auth = require('../../uniCloud-alipay/cloudfunctions/uni-id-co/upstream/middleware/auth.js');
+  const targetPath = await testDirectory('pinned-auth-');
+  await assembleUniId({ archivePath: resolve('vendor/uni-id/upstream.zip'), lockPath: resolve('vendor/uni-id/lock.json'), targetPath });
+  const auth = require(resolve(targetPath, 'uniCloud-alipay/cloudfunctions/uni-id-co/upstream/middleware/auth.js'));
   let refreshCalls = 0; const removals: string[] = [];
   const libModule = { exports: {} };
-  runInNewContext(await readFile(resolve('uniCloud-alipay/cloudfunctions/uni-id-co/upstream/lib/utils/logout.js'), 'utf8'), {
+  runInNewContext(await readFile(resolve(targetPath, 'uniCloud-alipay/cloudfunctions/uni-id-co/upstream/lib/utils/logout.js'), 'utf8'), {
     module: libModule,
     require: (path: string) => {
       if (path !== '../../common/constants') throw new Error('Unexpected pinned logout dependency');

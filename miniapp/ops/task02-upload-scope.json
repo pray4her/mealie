@@ -1,0 +1,203 @@
+{
+  "ticket": "task02",
+  "observedAt": "2026-11-06",
+  "provider": "alipay",
+  "spaceId": "env-00jy7289et7b",
+  "spaceName": "mealie",
+  "sourceStaging": "%TEMP%/opencode/task02-upload-stage-20261106",
+  "readOnlySnapshot": "%TEMP%/opencode/task02-cloud-readonly-20261106",
+  "uploadAuthorized": false,
+  "compiledCloudArtifactSha256": null,
+  "isolatedTestUse": "requires-user-confirmation",
+  "resources": [
+    {
+      "name": "family-co",
+      "kind": "cloud-object",
+      "path": "uniCloud-alipay/cloudfunctions/family-co",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "1a67017dd6eef240bf8053194be5c9800a22af5232549a058d6e7b0e769fafd7",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": false,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "home-contracts",
+      "kind": "common-module",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "existing": true,
+      "proposedOperation": "update",
+      "sha256": "9c0de9d85f4f4f0a13180ab1ed9f8152fa1f53c316ed14ca3bdbb2f38f9ab794",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": false,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "home-kernel",
+      "kind": "common-module",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "existing": true,
+      "proposedOperation": "update",
+      "sha256": "900f86a51e3bf52b3a68d513af2a937a7f9619566233882457db8f6b49ce0108",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": false,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "home-family",
+      "kind": "common-module",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-family",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "b59dda9eb2b378aff5ec7e7f2ca01981871554feeb229361c878c6503e5e0233",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": false,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "uni-sec-check",
+      "kind": "common-module",
+      "path": "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "df6ab134d7b00d3ca64203266692acb7dde5b449152f13e369491fe3182f9c50",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": false,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "uni-id-common",
+      "kind": "common-module",
+      "path": "src/uni_modules/uni-id-common/uniCloud/cloudfunctions/common/uni-id-common",
+      "existing": true,
+      "proposedOperation": "preserve-current-remote-bytes",
+      "sha256": "9546f32f49816b9f8b7cf470f23ab62fdc41901b9528747c728ed704606b6ca3",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": false,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "uni-config-center",
+      "kind": "common-module",
+      "path": "src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+      "existing": true,
+      "proposedOperation": "preserve-current-remote-bytes",
+      "sha256": "9530d65fde895d93378412d20eb1f0b0ae0765d51d3156dfc3840d03a4cbcc26",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": true,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "kind": "common-module",
+      "path": "src/uni_modules/uni-open-bridge-common/uniCloud/cloudfunctions/common/uni-open-bridge-common",
+      "existing": true,
+      "proposedOperation": "preserve-current-remote-bytes",
+      "sha256": "86ca47b29e285b97ef26abc91c1637b0c5244b369c80a14552b81847076440ae",
+      "hashKind": "source-tree-sha256-config-excluded",
+      "credentialFilesPresent": false,
+      "uploadAuthorized": false
+    },
+    {
+      "name": "families.schema.json",
+      "kind": "schema",
+      "path": "uniCloud-alipay/database/families.schema.json",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "aceb9eaaf30087e023afb5bbc2a32cce354a4e24bc0054c2c253358e8d39966d",
+      "hashKind": "file-sha256",
+      "uploadAuthorized": false
+    },
+    {
+      "name": "family_members.index.json",
+      "kind": "index",
+      "path": "uniCloud-alipay/database/family_members.index.json",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "8c67190587f02425b1d7ae8a0ea7838e595aed5d168320cc7eb90e209c127475",
+      "hashKind": "file-sha256",
+      "uploadAuthorized": false
+    },
+    {
+      "name": "family_members.schema.json",
+      "kind": "schema",
+      "path": "uniCloud-alipay/database/family_members.schema.json",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "588b28132d1d122cad441e73071f19df165ae18313d54527c87c6c0479de5f86",
+      "hashKind": "file-sha256",
+      "uploadAuthorized": false
+    },
+    {
+      "name": "mutation_receipts.schema.json",
+      "kind": "schema",
+      "path": "uniCloud-alipay/database/mutation_receipts.schema.json",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "33583c44c1fca068ccc9f6dd16af8fa0878cf2bb096ba5241c7f83fcf026b080",
+      "hashKind": "file-sha256",
+      "uploadAuthorized": false
+    },
+    {
+      "name": "request_limits.schema.json",
+      "kind": "schema",
+      "path": "uniCloud-alipay/database/request_limits.schema.json",
+      "existing": false,
+      "proposedOperation": "create",
+      "sha256": "3c3fca50180cb3ba75b192028001a586d62097655826e6c26ae4c1c68a65ad11",
+      "hashKind": "file-sha256",
+      "uploadAuthorized": false
+    }
+  ],
+  "excludedExistingResources": [
+    "account-co",
+    "uni-id-co",
+    "uni-captcha",
+    "uni-cloud-s2s",
+    "all ten identity collections"
+  ],
+  "scope": "Only the four business collections and ordinary family_members.familyId index; no init data, extensions or validators; no wholesale database initialization.",
+  "preservation": "All files of the three protected modules verified byte-for-byte against current read-only remote snapshots. Credential content remains outside the repository; hashes above exclude config.json. Do not upload original workspace dependency tree.",
+  "temporaryTestArtifacts": {
+    "sourceStaging": "%TEMP%/opencode/task02-probes-C442Wo",
+    "artifactKind": "isolated-test-source-artifact",
+    "objects": [
+      {
+        "name": "task02-probe-a",
+        "path": "uniCloud-alipay/cloudfunctions/task02-probe-a",
+        "sourceSha256": "d128d40fe9b0d58dc797185208e63689468a62c0681c14ee2bdef343eae2ba3b",
+        "hashKind": "relative-path-nul-bytes-nul-sha256"
+      },
+      {
+        "name": "task02-probe-b",
+        "path": "uniCloud-alipay/cloudfunctions/task02-probe-b",
+        "sourceSha256": "107fc0d85ceefec9ca73ae9c430c6ebea18584236ed6c3895bce77716dab0f84",
+        "hashKind": "relative-path-nul-bytes-nul-sha256"
+      }
+    ],
+    "manifestSha256": "839f742dc3e9957e17f66c58f9a5436227206d392978227bcc36d5826b8f4f85",
+    "uploadAuthorized": false,
+    "actorBindingComplete": false,
+    "compiledCloudArtifactSha256": null,
+    "recordScope": {
+      "status": "pending-real-actor-binding",
+      "actorUids": [],
+      "familyIds": [],
+      "generationIds": [],
+      "requestIds": [],
+      "receiptIds": [],
+      "quotaBucketIds": []
+    },
+    "cleanup": {
+      "objectNames": [
+        "task02-probe-a",
+        "task02-probe-b"
+      ],
+      "records": "Exact server-bound IDs only after separately approved record inventory; no collection-wide removal",
+      "allowCollectionDelete": false,
+      "verified": false
+    },
+    "execution": "Blocked until actual actor/record inventory is bound and reviewed, normal compiled module digests are verified, and those concrete operations are authorized. Empty actors reject every caller."
+  },
+  "cleanup": "No existing user rows or identity resources may be removed. Exact test names/record allowlists require review before their authorization."
+}

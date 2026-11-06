@@ -10,6 +10,7 @@ tasks:
   check:
     cmds:
       - node scripts/assemble-uni-id.mjs --check
+      - node scripts/assemble-content-check.mjs --check
       - pnpm exec eslint . --max-warnings 0
       - pnpm exec vue-tsc --noEmit -p tsconfig.json
       - pnpm exec tsc --noEmit -p tsconfig.cloud.json
@@ -24,3 +25,9 @@ tasks:
   deploy:preview:
     cmds:
       - node scripts/deploy-preview.mjs
+  task02:preview:
+    cmds:
+      - node scripts/deploy-preview.mjs --ticket task02
+  task02:doctor:
+    cmds:
+      - node scripts/doctor.mjs --ticket task02

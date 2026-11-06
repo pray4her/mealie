@@ -4,7 +4,28 @@ import { createCloudClient } from '../../src/shared/cloud-client';
 import { createAccountApi } from '../../src/features/auth/api';
 import { createMemoryStorage, deferCall } from '../support/sdk-transport';
 import { createAuthController } from '../../src/features/auth/use-auth';
+import { createFamilyApi } from '../../src/features/family/api';
+import { createFamilyController } from '../../src/features/family/use-family';
+import { createFamilyIntentStore } from '../../src/features/family/intents';
 const tick = async () => { for (let i = 0; i < 15; i++) await Promise.resolve(); };
+
+test('family_late_sdk_token_cannot_restore_signed_out_controller_or_draft', async () => {
+  const storage = createMemoryStorage(); storage.set('uni_id_token', 'alice');
+  const boundary = createSessionBoundary(storage); const response = deferCall(); let creates = 0;
+  const cloud = createCloudClient({ boundary, transport: async (object, method) => {
+    if (object === 'family-co' && method === 'create') { creates++; return response.promise; }
+    return { errCode: 0, data: method === 'session' ? { uid: 'alice' } : null };
+  } });
+  const account = createAccountApi({ boundary, wire: cloud.account, platformLogin: async () => 'unused' });
+  const auth = createAuthController(account); const intents = createFamilyIntentStore(storage);
+  const controller = createFamilyController({ api: createFamilyApi({ boundary, invoke: cloud.invoke }), account, auth, intents, newRequestId: async () => 'random-request-0001' });
+  try {
+    await controller.load(); const creating = controller.submit('家'); const failed = expect(creating).rejects.toMatchObject({ code: 'AUTH_REQUIRED' }); await tick(); expect(creates).toBe(1);
+    const closing = account.signOut(); expect(controller.view.value).toBeNull(); expect(controller.pending.value).toBeNull(); expect(intents.read('alice')).toBeNull();
+    response.resolveWithNewToken(storage, 'late-alice', { uid: 'alice', familyId: 'family-1', generation: 'generation-1', name: '家', role: 'owner' });
+    await closing; await failed; expect(storage.get('uni_id_token')).toBeUndefined(); expect(controller.view.value).toBeNull(); expect(intents.read('alice')).toBeNull();
+  } finally { controller.dispose(); }
+});
 test('late_sdk_refresh_cannot_restore_logout', async () => {
   const storage = createMemoryStorage(); const boundary = createSessionBoundary(storage); const old = deferCall();
   const cloud = createCloudClient({ boundary, transport: () => old.promise });

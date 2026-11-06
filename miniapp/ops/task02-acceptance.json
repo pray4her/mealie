@@ -1,0 +1,331 @@
+{
+  "ticket": "task02",
+  "version": 1,
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "f5a2977718f97a115bcb9bcb01d8421865d7d0fbe814bb3c4e9460bc1b878b4e",
+  "cloudArtifact": {
+    "status": "passed",
+    "evidenceFile": "ops/task02-test-evidence.md",
+    "evidenceRef": "User acceptance and issue closeout - 2026-11-06 - formal cloud source and exact deployed artifact unchanged",
+    "sourceSha256": "f5a2977718f97a115bcb9bcb01d8421865d7d0fbe814bb3c4e9460bc1b878b4e",
+    "buildSha256": "210c8ce5a095b34b10d8ca4f533068345651d2ed81c72e34bad3362b95b20c8f"
+  },
+  "cleanup": {
+    "status": "pending",
+    "evidenceFile": "ops/task02-cloud-checks.md",
+    "evidenceRef": "not-executed",
+    "verified": false,
+    "remaining": [
+      "task02-probe-a/b deployment and cleanup not yet executed"
+    ]
+  },
+  "local": {
+    "status": "passed",
+    "evidenceFile": "ops/task02-test-evidence.md",
+    "evidenceRef": "User acceptance and issue closeout - 2026-11-06 - fresh full check 350 tests / 23 suites passed",
+    "buildSha256": "3507b04d0fd6c66fb59c6a89dfe97d41a71a48ddf53e7dd8cb4ef5ea84475bfb",
+    "scenarios": {
+      "full-check": {
+        "status": "passed",
+        "evidenceFile": "ops/task02-test-evidence.md",
+        "evidenceRef": "User acceptance and issue closeout - 2026-11-06 - fresh full check 350 tests / 23 suites passed"
+      }
+    }
+  },
+  "cloud": {
+    "status": "pending",
+    "evidenceFile": "ops/task02-cloud-checks.md",
+    "evidenceRef": "not-executed",
+    "buildSha256": "210c8ce5a095b34b10d8ca4f533068345651d2ed81c72e34bad3362b95b20c8f",
+    "scenarios": {
+      "A-content-pass": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "A-content-reject": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "A-content-unavailable": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "B-same-request": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "B-conflicting-payload": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "B-different-request": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "B-cross-uid": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "C-primary-key": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "C-rollback-family": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "C-rollback-member": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "C-rollback-receipt": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "C-commit-ack-lost": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "C-sdk-shapes": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-families-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-families-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-families-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-families-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-family_members-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-family_members-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-family_members-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-family_members-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-mutation_receipts-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-mutation_receipts-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-mutation_receipts-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-mutation_receipts-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-request_limits-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-request_limits-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-request_limits-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-clientdb-request_limits-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-forged-token": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-expired-token": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-extra-fields": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-create-quota": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-user-current-quota": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-family-current-quota": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-window-recovery": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "D-cross-instance": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "E-sdk-response-lost": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "E-reopen-current": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "E-normal-artifact": {
+        "status": "passed",
+        "evidenceFile": "ops/task02-test-evidence.md",
+        "evidenceRef": "Void commit correction - exact deployed kernel readback plus unchanged normal runtime package"
+      },
+      "E-probe-cleanup": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    }
+  },
+  "device": {
+    "status": "pending",
+    "evidenceFile": "ops/task02-cloud-checks.md",
+    "evidenceRef": "not-executed",
+    "buildSha256": null,
+    "scenarios": {
+      "F-two-accounts": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "F-reopen": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "F-weak-network": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "F-existing-family": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "F-unauthenticated-route": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "F-late-response": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "F-account-isolation": {
+        "status": "pending",
+        "evidenceFile": "ops/task02-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    },
+    "userReport": {
+      "status": "passed",
+      "reportedBy": "user",
+      "date": "2026-11-06",
+      "statement": "真机实测通过，关闭issues，根据文档和skills内容收尾。",
+      "evidenceFile": "ops/task02-test-evidence.md",
+      "evidenceRef": "User acceptance and issue closeout - 2026-11-06",
+      "deviceModel": null,
+      "osVersion": null,
+      "wechatVersion": null,
+      "testedBuildSha256": null,
+      "scenarioDetails": "Not itemized by user; do not infer all A-F checks passed."
+    }
+  },
+  "closeout": {
+    "status": "closed-on-user-acceptance",
+    "date": "2026-11-06",
+    "issueUrl": "https://github.com/pray4her/mealie/issues/2",
+    "authorizedBy": "explicit user request after physical-device acceptance",
+    "userAcceptance": "passed",
+    "detailedAcceptance": "pending",
+    "evidenceFile": "ops/task02-test-evidence.md",
+    "evidenceRef": "User acceptance and issue closeout - 2026-11-06",
+    "note": "Issue closure does not certify unreported cloud races, fault injection, content rejection, quota checks, cleanup or device scenarios. Strict doctor remains NON-READY.",
+    "issueState": "closed",
+    "stateReason": "completed",
+    "closedAtUtc": "2026-11-06T09:05:10Z",
+    "commentUrl": "https://github.com/pray4her/mealie/issues/2#issuecomment-6681246166",
+    "strictDoctor": {
+      "ready": false,
+      "blockerCount": 51,
+      "localBlockers": []
+    }
+  }
+}

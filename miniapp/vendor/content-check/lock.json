@@ -1,0 +1,13 @@
+{
+  "source": "https://ext.dcloud.net.cn/plugin?id=5460",
+  "module": "uni-sec-check",
+  "version": "2.0.2",
+  "sha256": "63f5ce5f56f0d667fe10f26474b921f387bfb22ed6501ca069552c77299435b1",
+  "acquired": "2026-11-05 HBuilderX official marketplace import; original cache/source/uni-sec-check@2.0.2.zip",
+  "archiveRoot": "flat",
+  "license": { "cloudPackage": "ISC (original declaration preserved)", "marketplace": "DCloud source license; see marketplace source page" },
+  "dependencies": {
+    "uni-config-center": { "pluginVersion": "0.0.3", "cloudPackageVersion": "0.0.3", "source": "existing locked uni-id archive" },
+    "uni-open-bridge-common": { "pluginVersion": "1.2.0", "cloudPackageVersion": "1.0.0", "source": "existing locked uni-id archive", "api": "getAccessToken", "cloudHistoricalPluginVersion": "1.2.1", "resolution": "pending target runtime verification; do not downgrade cloud module" }
+  }
+}

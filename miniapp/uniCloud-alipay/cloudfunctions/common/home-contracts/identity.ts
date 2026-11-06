@@ -1,3 +1,5 @@
+import type { FamilyApi } from './family';
+
 export type Id = string;
 export type TokenPair = { token: string; tokenExpired: number };
 export type Identity = { uid: Id; refreshedToken?: TokenPair };
@@ -6,7 +8,7 @@ export interface AccountApi {
   session(): Promise<Identity>;
   signOut(): Promise<void>;
 }
-export interface AppClient { account: AccountApi }
+export interface AppClient { account: AccountApi; family: FamilyApi }
 export type CloudSuccess<T> = { errCode: 0; data: T; newToken?: TokenPair };
 export type ClientInfo = { appId: string; uniPlatform: string; deviceId?: string; clientIP?: string; locale?: string };
 export type VerifiedToken = { uid: Id; issuedAtSeconds: number; expiresAtSeconds: number };

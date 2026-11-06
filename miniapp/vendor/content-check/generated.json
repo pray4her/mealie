@@ -1,0 +1,24 @@
+{
+  "sha256": "63f5ce5f56f0d667fe10f26474b921f387bfb22ed6501ca069552c77299435b1",
+  "files": {
+    "src/uni_modules/uni-sec-check/changelog.md": "fa9dd69f609be8edfde29c257b7358cf4230ca3682dd6dd61b414775c905f971",
+    "src/uni_modules/uni-sec-check/package.json": "9742f3a02b28df00dd1c27780c2a46f19a3fd4f137e4d7e332c060a7474f5885",
+    "src/uni_modules/uni-sec-check/readme.md": "68175e6b579febd15fea998c4c34ccef21ed8bce833502d2ba8eb8c8093e3d9c",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/index.js": "c68bbd68e212395ec95457d9ba92a0e351abf955c0a00c83804e64585a35a7b0",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/package.json": "f74ad869c584f34ed35e3300a09f807bbf8af55b8f24e520de0bd5b28b0bd514",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/platform/mp-weixin/index.js": "5b76198f14825b3b9f8261fd21498e41e70d3fe6d442996be70dd36ae8200413",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/platform/mp-weixin/protocol.js": "2fda92f24cee9f3ad3f2ac425de68fa59c67e340d4d0cbd0a30f62beee23091d",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/platform/mp-weixin/wx-api.js": "e73b29c502a81d42de6249bfaba441ad120310aea6bfaa48ba44aca8e053c9eb",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/cache.js": "f2d257b6959284784c4b43caae4415cef5a62a66d2edd62d7f21afe787246e37",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/case-transform.js": "ac1fa8f812126d363978187fc523ecbbd24edb1465edf02c5237b8db9d35ff8b",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/client-info.js": "f4af6cf2d22b533a61b81d423cd9506b2cbb5e6164853eebb9739a5a5b817a6c",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/create-api.js": "85710e9cef9327aeb4f70d34c52a4cd63fa0355d8b9fac774895661695a51505",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/error.js": "80e8d37b8484da04f344e083ebcf7c20a6b41916f365a6272409e9770208377a",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/form-data.js": "0478cbcaffe53e2d49759257be4c0efddd67cb70b9c8946da9302a583b13094c",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/index.js": "932e19fc5a6f0455eef8205452ceaa100d7770ea653a39616aad6b06a1754f8d",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/request.js": "3e3e017100f60fa647efc71d0f641a8ce330202e08ac6b74903534800f0bada0",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/resolve-file.js": "69425391732d012256ed56a43ee0a2dbd9f135efc960f959eb57f03339004787",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/type.js": "8d1bb5830f12ce52d80427295ac2a9fc8f916e42c5a1604e35b1237f076b565c",
+    "src/uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check/utils/utils.js": "1da74ed990e6d6db7392e2caf4ebb65803898bbd9e564fbde1bc1745db10542b"
+  }
+}

@@ -1,3 +1,6 @@
+/// <reference lib="es2022" />
+
+// HBuilderX checks cloud modules independently of tsconfig.cloud.json.
 export interface CloudPlatform {
   database(): {
     collection(name: string): {

@@ -1,0 +1,9 @@
+[
+  {
+    "IndexName": "familyId",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [{ "Name": "familyId", "Direction": "1" }],
+      "MgoIsUnique": false
+    }
+  }
+]

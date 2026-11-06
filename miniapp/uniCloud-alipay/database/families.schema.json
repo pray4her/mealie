@@ -1,0 +1,14 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "name", "ownerUid", "status", "version", "createdAt", "updatedAt"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "minLength": 1 },
+    "name": { "bsonType": "string", "minLength": 1, "maxLength": 40 },
+    "ownerUid": { "bsonType": "string", "minLength": 1 },
+    "status": { "bsonType": "string", "enum": ["active"] },
+    "version": { "bsonType": "int", "minimum": 1 },
+    "createdAt": { "bsonType": "long", "minimum": 0 },
+    "updatedAt": { "bsonType": "long", "minimum": 0 }
+  }
+}

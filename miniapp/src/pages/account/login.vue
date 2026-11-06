@@ -3,17 +3,32 @@ import { copy } from '../../shared/copy';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { useAppClient } from '../../shared/app-client';
 import { ref } from 'vue';
+import type { Identity } from 'home-contracts';
 const { auth } = useAppClient();
 const { phase } = auth;
-let active = true;
+let active = false; let generation = 0;
+let signInAttempt: Promise<Identity> | null = null;
 const failed = ref(false);
-async function signIn() {
-  failed.value = false;
-  try { await auth.signIn(); if (active && auth.phase.value === 'authenticated') uni.reLaunch({ url: '/pages/family/onboarding' }); }
-  catch { failed.value = true; }
+function finishSignIn(current: number, uid: string) {
+  if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) uni.reLaunch({ url: '/pages/family/onboarding' });
 }
-onShow(async () => { active = true; if (await auth.restore() && active) uni.reLaunch({ url: '/pages/family/onboarding' }); });
-onHide(() => { active = false; }); onUnload(() => { active = false; });
+async function signIn() {
+  const current = generation;
+  failed.value = false;
+  const attempt = signInAttempt = auth.signIn();
+  try { const identity = await attempt; finishSignIn(current, identity.uid); }
+  catch { if (active && current === generation) failed.value = true; }
+  finally { if (signInAttempt === attempt) signInAttempt = null; }
+}
+onShow(async () => {
+  const current = ++generation; active = true; failed.value = false;
+  if (signInAttempt) {
+    try { const identity = await signInAttempt; finishSignIn(current, identity.uid); }
+    catch { if (active && current === generation) failed.value = true; }
+  } else if (await auth.restore() && active && current === generation) uni.reLaunch({ url: '/pages/family/onboarding' });
+});
+function conceal() { active = false; generation++; failed.value = false; }
+onHide(conceal); onUnload(conceal);
 </script>
 <template>
   <view class="page">

@@ -7,21 +7,21 @@ import ts from 'typescript';
 
 const project = fileURLToPath(new URL('../', import.meta.url));
 const revision = '993791b9eb298be8013f22daa9f2efee6c50cc23';
-const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const json = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
-const safePath = path => {
+export const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+export const json = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+export const safePath = path => {
   if (!path || path.includes('\\') || path.includes(':') || path.startsWith('/') || path.split('/').some(s => s === '..' || s === '.')) throw new Error('Archive path escape');
   return path;
 };
 
 // Minimal ZIP reader: central-directory sizes, regular files/directories only;
 // no extraction to disk, no symlinks, duplicate/case-colliding paths, or bombs.
-function unzip(bytes) {
+export function unzip(bytes, expectedComment = revision) {
   let end = bytes.length - 22;
   while (end >= Math.max(0, bytes.length - 65557) && bytes.readUInt32LE(end) !== 0x06054b50) end--;
   if (end < 0 || bytes.readUInt32LE(end) !== 0x06054b50) throw new Error('Invalid ZIP archive');
   const commentLength = bytes.readUInt16LE(end + 20);
-  if (bytes.subarray(end + 22, end + 22 + commentLength).toString('ascii') !== revision) throw new Error('Archive revision comment mismatch');
+  if (bytes.subarray(end + 22, end + 22 + commentLength).toString('ascii') !== expectedComment) throw new Error('Archive revision comment mismatch');
   const count = bytes.readUInt16LE(end + 10); let pos = bytes.readUInt32LE(end + 16); let total = 0;
   if (count > 10000) throw new Error('Archive too large');
   const files = new Map(); const seen = new Set();
@@ -45,8 +45,8 @@ function unzip(bytes) {
   }
   return files;
 }
-async function existing(path) { try { return await readFile(path); } catch (error) { if (error.code === 'ENOENT') return null; throw error; } }
-async function noSymlinks(root, path) {
+export async function existing(path) { try { return await readFile(path); } catch (error) { if (error.code === 'ENOENT') return null; throw error; } }
+export async function noSymlinks(root, path) {
   const rel = relative(root, path); if (rel.startsWith('..') || resolve(root, rel) !== path) throw new Error('Output path escape');
   let dir = root;
   for (const part of rel.split(sep)) { dir = resolve(dir, part); try { if ((await lstat(dir)).isSymbolicLink()) throw new Error('Output symlink escape'); } catch (error) { if (error.code !== 'ENOENT') throw error; } }
@@ -58,6 +58,10 @@ export async function assembleUniId({ archivePath, lockPath, targetPath, check =
   const bytes = await readFile(archivePath); const sha256 = hash(bytes);
   if (sha256 !== lock.sha256) throw new Error('Archive digest mismatch');
   const archive = unzip(bytes); const outputs = new Map(); const prefix = lock.root + '/';
+  // HBuilderX's verified 0.0.3 import adds only these four provenance fields.
+  // Keep the source archive untouched and make this exact transformation repeatable.
+  const configPackage = 'src/uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center/package.json';
+  let originalConfigHash;
   const entryPrefix = 'uni_modules/uni-id-pages/uniCloud/cloudfunctions/uni-id-co/';
   const objectRoot = 'uniCloud-alipay/cloudfunctions/uni-id-co/';
   for (const [name, bytes] of archive) {
@@ -71,6 +75,13 @@ export async function assembleUniId({ archivePath, lockPath, targetPath, check =
     }
     if (path.includes('/uniCloud/cloudfunctions/') && !path.includes('/uniCloud/cloudfunctions/common/')) continue;
     let data = bytes;
+    if ('src/' + path === configPackage) {
+      const pkg = JSON.parse(bytes.toString());
+      if (pkg.name !== 'uni-config-center' || pkg.version !== '0.0.3') throw new Error('Unknown config-center provenance source');
+      originalConfigHash = hash(bytes);
+      Object.assign(pkg, { 'origin-plugin-dev-name': 'uni-config-center', 'origin-plugin-version': '0.0.3', 'plugin-dev-name': 'uni-config-center', 'plugin-version': '0.0.3' });
+      data = Buffer.from(JSON.stringify(pkg, null, 4));
+    }
     if (path.endsWith('.schema.json')) {
       const parsed = ts.parseConfigFileTextToJson(path, bytes.toString());
       if (parsed.error) throw new Error('Invalid upstream Schema JSONC: ' + path);
@@ -97,7 +108,8 @@ export async function assembleUniId({ archivePath, lockPath, targetPath, check =
   // Complete preflight first; never partially overwrite when a later path conflicts.
   for (const [path, data] of outputs) {
     safePath(path); const full = resolve(root, path); await noSymlinks(root, full); const current = await existing(full);
-    if (current && (!previous.files[path] || hash(current) !== previous.files[path])) throw new Error('Refusing overwrite of non-generated/modified file: ' + path);
+    const knownImport = path === configPackage && previous.files[path] === originalConfigHash && current?.equals(data);
+    if (current && !knownImport && (!previous.files[path] || hash(current) !== previous.files[path])) throw new Error('Refusing overwrite of non-generated/modified file: ' + path);
     if (check && (!current || !current.equals(data))) throw new Error('Generated output differs: ' + path);
   }
   const manifest = json({ sha256, files });
