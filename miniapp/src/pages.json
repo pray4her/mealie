@@ -2,7 +2,10 @@
   "pages": [
     { "path": "pages/account/login", "style": { "navigationStyle": "custom" } },
     { "path": "pages/family/onboarding", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/family/home", "style": { "navigationStyle": "custom" } }
+    { "path": "pages/family/home", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/family/invite", "style": { "navigationStyle": "custom", "enableShareAppMessage": true } },
+    { "path": "pages/family/join", "style": { "navigationStyle": "custom", "enableShareAppMessage": false, "enableShareTimeline": false } },
+    { "path": "pages/family/members", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": { "backgroundColor": "#f6f5ef" }
 }

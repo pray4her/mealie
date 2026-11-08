@@ -41,7 +41,7 @@ function fixture(commitAcknowledgement: 'object' | 'void' = 'object') {
     if (cache.has(path)) return cache.get(path)!.exports;
     const module = { exports: {} }; cache.set(path, module);
     const code = ts.transpileModule(readFileSync(path, 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
-    runInNewContext(code, { module, exports: module.exports, setTimeout, clearTimeout, uniCloud: { database: () => database }, require: (name: string) => {
+    runInNewContext(code, { module, exports: module.exports, Buffer, setTimeout, clearTimeout, process: { env: { FAMILY_INVITATION_KEY_VERSION: 'test', FAMILY_INVITATION_KEYS: JSON.stringify({ test: '01'.repeat(32) }) } }, uniCloud: { database: () => database }, require: (name: string) => {
       if (name === 'uni-id-common') { sdkImports++; return { createInstance: () => ({ async checkToken(token: string, options: { autoRefresh: boolean }) {
         checks.push({ token, ...options }); if (token !== 'verified-token') return { errCode: 'bad' };
         return { errCode: 0, uid: 'alice', iat: Math.floor(Date.now() / 1000) - 60, exp: Math.floor(Date.now() / 1000) + 3600, ...(options.autoRefresh ? { token: 'renewed-token', tokenExpired: Date.now() + 3600000 } : {}) };
@@ -57,14 +57,33 @@ function fixture(commitAcknowledgement: 'object' | 'void' = 'object') {
   const entry = load(resolve('uniCloud-alipay/cloudfunctions/family-co/index.obj.ts')) as {
     current: (this: object, ...args: unknown[]) => Promise<unknown>;
     create: (this: object, input: unknown) => Promise<unknown>;
+    invite: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    revokeInvite: (this: object, input: unknown) => Promise<unknown>;
+    join: (this: object, input: unknown) => Promise<unknown>;
+    members: (this: object, ...args: unknown[]) => Promise<unknown>;
+    invitations: (this: object, input: unknown) => Promise<unknown>;
   };
   const context = { getUniIdToken: () => 'verified-token', getClientInfo: () => ({ appId: '__UNI__5FDC0D7', uniPlatform: 'mp-weixin' }), getUniCloudRequestId: () => 'platform-request' };
   return { entry, context, checks, contentCalls, contexts, reads, rows, get transactions() { return transactions; }, get commits() { return commits; }, get rollbacks() { return rollbacks; }, get sdkImports() { return sdkImports; }, revoke() { active = false; }, restore() { active = true; }, setContent(value: unknown) { contentResult = value; }, afterContent(fn: () => void) { afterContent = fn; } };
 }
 
 test('real_public_exports_are_lazy_and_current_has_only_safe_dto_and_top_level_token', async () => {
-  const f = fixture(); expect(Object.keys(f.entry).sort()).toEqual(['create', 'current']); expect(f.sdkImports).toBe(0); expect(f.transactions).toBe(0);
+  const f = fixture(); expect(Object.keys(f.entry).sort()).toEqual(['create', 'current', 'invitations', 'invite', 'join', 'members', 'revokeInvite']); expect(f.sdkImports).toBe(0); expect(f.transactions).toBe(0);
   expect(await f.entry.current.call(f.context)).toEqual({ errCode: 0, data: null, newToken: { token: 'renewed-token', tokenExpired: expect.any(Number) } });
+});
+
+test('new_public_methods_use_current_identity_and_reject_privileged_or_extra_parameters', async () => {
+  const f = fixture();
+  await f.entry.create.call(f.context, { requestId: 'cloud-create-000001', name: '家' });
+  const response = await f.entry.invite.call(f.context, { requestId: 'cloud-invite-000001' }) as { data: { invitationId: string; token: string } };
+  expect(response.data.token).toMatch(/^v1\.test\./);
+  expect(JSON.stringify([...f.rows.values()])).not.toContain(response.data.token);
+  expect(await f.entry.invite.call(f.context, { requestId: 'cloud-invite-000002', role: 'owner' })).toEqual({ errCode: 'INVALID_INPUT' });
+  expect(await f.entry.invite.call(f.context, { requestId: 'cloud-invite-000002' }, 'extra')).toEqual({ errCode: 'INVALID_INPUT' });
+  expect(await f.entry.members.call(f.context, { familyId: 'other' })).toEqual({ errCode: 'INVALID_INPUT' });
+  expect(await f.entry.revokeInvite.call(f.context, { requestId: 'cloud-revoke-000001', invitationId: response.data.invitationId })).toMatchObject({ errCode: 0, data: null });
+  f.revoke();
+  for (const method of ['invite', 'revokeInvite', 'join', 'invitations'] as const) expect(await f.entry[method].call(f.context, {})).toEqual({ errCode: 'AUTH_REQUIRED' });
 });
 
 test('authenticated_family_current_returns_no_membership_after_successful_alipay_void_commits', async () => {

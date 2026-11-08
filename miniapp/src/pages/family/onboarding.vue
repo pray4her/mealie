@@ -9,6 +9,7 @@ import { errorCode } from '../../shared/errors';
 const { auth, family } = useAppClient();
 const { phase } = auth;
 const { phase: familyPhase, pending, view } = family;
+const openJoin = () => uni.navigateTo({ url: '/pages/family/join' });
 const confirmed = ref(false); const name = ref(''); const message = ref('');
 const submitting = ref(false);
 let generation = 0; let active = false;
@@ -73,6 +74,12 @@ onShow(check); onHide(conceal); onUnload(conceal);
         {{ copy.welcome }}
       </text>
       <text>{{ copy.onboarding }}</text>
+      <button
+        data-open-join
+        @tap="openJoin"
+      >
+        {{ copy.joinFamily }}
+      </button>
       <view data-family-form>
         <text>{{ copy.familyName }}</text>
         <input

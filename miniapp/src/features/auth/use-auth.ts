@@ -5,6 +5,7 @@ import { observeAccountClosure } from './api';
 export type AuthPhase = 'anonymous' | 'authenticating' | 'checking' | 'authenticated' | 'signing-out' | 'unavailable';
 export function createAuthController(account: AccountApi) {
   const identity = ref<Identity | null>(null); const phase = ref<AuthPhase>('anonymous');
+  const signOutEpoch = ref(0);
   let generation = 0; let signInAttempt: Promise<Identity> | null = null; let restoreAttempt: Promise<boolean> | null = null;
   let signInGeneration = 0;
   observeAccountClosure(account, closing => {
@@ -12,7 +13,7 @@ export function createAuthController(account: AccountApi) {
     else if (phase.value === 'signing-out') phase.value = 'anonymous';
   });
   const controller = {
-    identity: readonly(identity), phase: readonly(phase),
+    identity: readonly(identity), phase: readonly(phase), signOutEpoch: readonly(signOutEpoch),
     signIn(): Promise<Identity> {
       if (signInAttempt && signInGeneration === generation) return signInAttempt;
       const current = ++generation; identity.value = null; phase.value = 'authenticating';
@@ -35,6 +36,7 @@ export function createAuthController(account: AccountApi) {
       })(); return restoreAttempt;
     },
     async signOut(): Promise<void> {
+      signOutEpoch.value++;
       generation++; identity.value = null; phase.value = 'signing-out';
       try { await account.signOut(); } finally { identity.value = null; phase.value = 'anonymous'; }
     },

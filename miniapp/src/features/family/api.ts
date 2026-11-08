@@ -2,6 +2,7 @@ import type { FamilyApi, FamilyView } from 'home-contracts';
 import type { SessionBoundary } from '../../shared/session-boundary';
 import { AppError, errorCode } from '../../shared/errors';
 import { normalizeFamilyName, validRequestId } from './validation';
+import { exactObject, mutationInput, parseInvitation, parseJoined, parseMembers, parseInvitationPage } from './invitation-validation';
 
 function parseView(value: unknown): FamilyView {
   if (!value || typeof value !== 'object' || Array.isArray(value)
@@ -32,6 +33,18 @@ export function createFamilyApi({ invoke, boundary }: { invoke: Invoke; boundary
       if (!input || Object.keys(input).length !== 2 || !validRequestId(input.requestId)) throw new AppError('INVALID_INPUT');
       const name = normalizeFamilyName(input.name);
       return parseView(await call('create', { requestId: input.requestId, name }));
+    },
+    async invite(input) { mutationInput(input); return parseInvitation(await call('invite', { requestId: input.requestId })); },
+    async revokeInvite(input) {
+      mutationInput(input, 'invitationId');
+      if (await call('revokeInvite', { requestId: input.requestId, invitationId: input.invitationId }) !== null) throw new AppError('UNAVAILABLE');
+    },
+    async join(input) { mutationInput(input, 'token'); return parseJoined(await call('join', { requestId: input.requestId, token: input.token })); },
+    async members() { return parseMembers(await call('members', {})); },
+    async invitations(input) {
+      try { const row = exactObject(input, [], ['cursor']); if ('cursor' in row && (typeof row.cursor !== 'string' || !/^[A-Za-z0-9_-]{1,512}$/.test(row.cursor))) throw new Error(); }
+      catch { throw new AppError('INVALID_INPUT'); }
+      return parseInvitationPage(await call('invitations', input.cursor ? { cursor: input.cursor } : {}));
     },
   };
 }

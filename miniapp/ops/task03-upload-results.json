@@ -1,0 +1,600 @@
+[
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database",
+    "message": "正在创建数据表 family_invitations"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database",
+    "message": "数据表 family_invitations 创建成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database",
+    "message": "正在上传数据集合 Schema family_invitations.schema.json"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database",
+    "message": "数据集合 Schema family_invitations.schema.json 上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database",
+    "message": "正在上传初始索引 family_invitations.index.json"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database",
+    "message": "初始索引 family_invitations.index.json 上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database",
+    "message": "云数据库资源上传完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "progress",
+    "phase": "initialize-database-complete",
+    "message": "初始化云数据库完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-db-initialize",
+    "type": "result",
+    "data": {
+      "message": "云数据库初始化完成",
+      "outcome": "completed"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-receipt-schema",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始运行上传数据集合Schema(mutation_receipts.schema.json)",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-receipt-schema",
+    "type": "progress",
+    "phase": "database-error",
+    "message": "上传数据集合Schema(mutation_receipts.schema.json)：Schema mutation_receipts 已存在，强制执行请使用 --force",
+    "level": "error"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-receipt-schema",
+    "type": "error",
+    "error": {
+      "code": "BUSINESS_ERROR",
+      "message": "Schema mutation_receipts 已存在，强制执行请使用 --force",
+      "details": {}
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-home-contracts",
+    "type": "error",
+    "error": {
+      "code": "BUSINESS_ERROR",
+      "message": "公共模块 home-contracts 已存在，强制覆盖请使用 --force",
+      "details": {}
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-mutation_receipts.schema.json",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始运行上传数据集合Schema(mutation_receipts.schema.json)",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-mutation_receipts.schema.json",
+    "type": "progress",
+    "phase": "database",
+    "message": "上传数据集合Schema(mutation_receipts.schema.json)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-mutation_receipts.schema.json",
+    "type": "result",
+    "data": {
+      "projectPath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage",
+      "provider": "alipay",
+      "resourceName": "mutation_receipts.schema.json",
+      "resourcePath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage/uniCloud-alipay/database/mutation_receipts.schema.json",
+      "message": "mutation_receipts.schema.json 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-contracts，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 公共模块 home-contracts 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-contracts，开始编译..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 family.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 identity.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 3 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传公共模块home-contracts..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-contracts被云端云函数依赖，正在更新相关云端云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "更新云端云函数成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-contracts上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-contracts",
+    "type": "result",
+    "data": {
+      "projectPath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage",
+      "provider": "alipay",
+      "resourceName": "home-contracts",
+      "resourcePath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage/uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "message": "公共模块 home-contracts 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-kernel，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 公共模块 home-kernel 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-kernel，开始编译..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 auth.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 clock.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 content.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 database-platform.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 database.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 errors.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 idempotency.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 persistent-request-limit.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 request-limit.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 uni-id-adapter.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 11 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传公共模块home-kernel..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-kernel被云端云函数依赖，正在更新相关云端云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "更新云端云函数成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-kernel上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-kernel",
+    "type": "result",
+    "data": {
+      "projectPath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage",
+      "provider": "alipay",
+      "resourceName": "home-kernel",
+      "resourcePath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage/uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "message": "公共模块 home-kernel 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-family，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 公共模块 home-family 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-family，开始编译..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 create.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 current.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 family-reads.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 invitation-model.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 invitation-token.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 invitations.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 membership.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 model.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 repository.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 validation.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 weixin-content.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 12 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传公共模块home-family..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-family被云端云函数依赖，正在更新相关云端云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "更新云端云函数成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-family上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-home-family",
+    "type": "result",
+    "data": {
+      "projectPath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage",
+      "provider": "alipay",
+      "resourceName": "home-family",
+      "resourcePath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage/uniCloud-alipay/cloudfunctions/common/home-family",
+      "message": "公共模块 home-family 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "progress",
+    "phase": "runtime-warning",
+    "message": "本地node版本是18.20.0，云端node版本是18.18.2，请注意兼容问题。调整云端node版本参考",
+    "level": "warning",
+    "links": [
+      {
+        "kind": "external",
+        "start": 42,
+        "end": 54,
+        "target": "https://doc.dcloud.net.cn/uniCloud/cf-functions.html#node%E7%89%88%E6%9C%AC",
+        "tooltip": "调整云端node版本参考"
+      }
+    ]
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 云函数，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "开始编译 TypeScript 云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.obj.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 1 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传云对象family-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task03-approved-family-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage",
+      "provider": "alipay",
+      "resourceLabel": "云对象",
+      "resourceName": "family-co",
+      "resourcePath": "C:/Users/pray4her/AppData/Local/Temp/mealie-task03-a1390a9d/upload-stage/uniCloud-alipay/cloudfunctions/family-co",
+      "message": "云对象family-co上传完成"
+    }
+  }
+]

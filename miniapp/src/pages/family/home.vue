@@ -7,6 +7,8 @@ import { createRouteGuard } from '../../shared/route-guard';
 const { auth, family } = useAppClient();
 const { phase } = auth; const { view } = family;
 const { phase: familyPhase } = family;
+const openInvite = () => uni.navigateTo({ url: '/pages/family/invite' });
+const openMembers = () => uni.navigateTo({ url: '/pages/family/members' });
 const confirmed = ref(false);
 let generation = 0; let active = false;
 let logoutAttempt: Promise<void> | null = null;
@@ -47,6 +49,19 @@ onShow(check); onHide(conceal); onUnload(conceal);
         {{ view.name }}
       </text>
       <text>{{ view.role === 'owner' ? copy.owner : copy.member }}</text>
+      <button
+        v-if="view.role === 'owner'"
+        data-invite
+        @tap="openInvite"
+      >
+        {{ copy.inviteMembers }}
+      </button>
+      <button
+        data-members
+        @tap="openMembers"
+      >
+        {{ copy.familyMembers }}
+      </button>
       <button
         data-sign-out
         @tap="signOut"

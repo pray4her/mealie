@@ -1,0 +1,21 @@
+{
+  "ticket": "task03",
+  "spaceId": "env-00jy7289et7b",
+  "function": "family-co",
+  "status": "configured-and-readback-verified",
+  "names": [
+    "FAMILY_INVITATION_KEY_VERSION",
+    "FAMILY_INVITATION_KEYS"
+  ],
+  "independentRandomBytes": 32,
+  "priorOtherVariables": 0,
+  "otherVariablesPreserved": true,
+  "mode": "remote",
+  "valuesRecorded": false,
+  "localEnvFileCreated": false,
+  "requestIds": [
+    "task03-env-before",
+    "task03-env-set",
+    "task03-env-verify"
+  ]
+}

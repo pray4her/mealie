@@ -4,13 +4,13 @@ import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { useAppClient } from '../../shared/app-client';
 import { ref } from 'vue';
 import type { Identity } from 'home-contracts';
-const { auth } = useAppClient();
+const { auth, invitations } = useAppClient();
 const { phase } = auth;
 let active = false; let generation = 0;
 let signInAttempt: Promise<Identity> | null = null;
 const failed = ref(false);
 function finishSignIn(current: number, uid: string) {
-  if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) uni.reLaunch({ url: '/pages/family/onboarding' });
+  if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) uni.reLaunch({ url: invitations.hasLoginContinuation() ? '/pages/family/join' : '/pages/family/onboarding' });
 }
 async function signIn() {
   const current = generation;
@@ -25,7 +25,7 @@ onShow(async () => {
   if (signInAttempt) {
     try { const identity = await signInAttempt; finishSignIn(current, identity.uid); }
     catch { if (active && current === generation) failed.value = true; }
-  } else if (await auth.restore() && active && current === generation) uni.reLaunch({ url: '/pages/family/onboarding' });
+  } else if (await auth.restore() && active && current === generation) uni.reLaunch({ url: invitations.hasLoginContinuation() ? '/pages/family/join' : '/pages/family/onboarding' });
 });
 function conceal() { active = false; generation++; failed.value = false; }
 onHide(conceal); onUnload(conceal);

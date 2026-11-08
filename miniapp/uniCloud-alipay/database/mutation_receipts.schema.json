@@ -5,16 +5,18 @@
   "properties": {
     "_id": { "bsonType": "string", "minLength": 1 },
     "uid": { "bsonType": "string", "minLength": 1 },
-    "operation": { "bsonType": "string", "enum": ["family-create-v1"] },
+    "operation": { "bsonType": "string", "enum": ["family-create-v1", "family-invite-v1", "family-revoke-v1", "family-join-v1"] },
     "requestId": { "bsonType": "string", "minLength": 16, "maxLength": 128, "pattern": "^[A-Za-z0-9_-]+$" },
     "payloadHash": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
+    "familyId": { "bsonType": "string", "minLength": 1 },
+    "generation": { "bsonType": "string", "minLength": 1 },
     "result": {
       "bsonType": "object",
-      "required": ["uid", "familyId", "role", "generation", "name"],
       "properties": {
+        "invitationId": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
         "uid": { "bsonType": "string", "minLength": 1 },
         "familyId": { "bsonType": "string", "minLength": 1 },
-        "role": { "bsonType": "string", "enum": ["owner"] },
+        "role": { "bsonType": "string", "enum": ["owner", "member"] },
         "generation": { "bsonType": "string", "minLength": 1 },
         "name": { "bsonType": "string", "minLength": 1, "maxLength": 40 }
       }

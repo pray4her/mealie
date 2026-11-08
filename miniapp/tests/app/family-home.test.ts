@@ -18,7 +18,7 @@ test('home_rechecks_current_before_showing_name_and_own_role', async () => {
   const client = h.client('alice'); await client.family.create({ name: '家常饭', requestId: 'home-test-request-01' });
   const page = mountPage(Home, { client }); expect(page.wrapper.find('[data-protected]').exists()).toBe(false);
   await page.show(); expect(page.wrapper.text()).toContain('家常饭'); expect(page.wrapper.text()).toContain('家庭所有者');
-  expect(page.wrapper.findAll('button')).toHaveLength(1); expect(navigation).toEqual([]);
+  expect(page.wrapper.find('[data-sign-out]').exists()).toBe(true); expect(page.wrapper.find('[data-invite]').exists()).toBe(true); expect(navigation).toEqual([]);
   await page.hide(); expect(page.wrapper.find('[data-protected]').exists()).toBe(false);
   page.wrapper.unmount();
 });
@@ -36,10 +36,10 @@ test.each([Home, Onboarding])('failed_current_hides_protected_state_and_offers_r
   page.wrapper.unmount();
 });
 
-test('member_home_shows_the_callers_role_and_has_only_logout', async () => {
+test('member_home_shows_the_callers_role_and_members_but_no_invitation_management', async () => {
   const { h } = await familyFixture(); const page = mountPage(Home, { client: h.client('member') }); await page.show();
   expect(page.wrapper.text()).toContain('家庭成员'); expect(page.wrapper.text()).not.toContain('家庭所有者');
-  expect(page.wrapper.findAll('button')).toHaveLength(1); expect(navigation).toEqual([]); page.wrapper.unmount();
+  expect(page.wrapper.find('[data-sign-out]').exists()).toBe(true); expect(page.wrapper.find('[data-members]').exists()).toBe(true); expect(page.wrapper.find('[data-invite]').exists()).toBe(false); expect(navigation).toEqual([]); page.wrapper.unmount();
 });
 
 test.each([Home, Onboarding])('unauthenticated_direct_entry_goes_to_login_%#', async component => {
@@ -141,7 +141,7 @@ test.each([Home, Onboarding])('logout_completion_from_previous_uid_cannot_naviga
   const client: AppClient = { account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(),
     async signOut() { const account = selected.account; await gate.promise; await account.signOut(); },
-  }, family: { current: () => selected.family.current(), create: input => selected.family.create(input) } };
+  }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };
   const page = mountPage(component, { client }); await page.show(); await page.wrapper.find('[data-sign-out]').trigger('click');
   await page.hide(); const showing = page.show(); await flushPromises();
   // The page's UID fence also covers plain account facades used outside the SDK boundary.

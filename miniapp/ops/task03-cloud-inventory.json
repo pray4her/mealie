@@ -1,0 +1,121 @@
+{
+  "date": "2026-11-08",
+  "tool": "HBuilderX 5.34.2026102909 CLI protocol 1",
+  "readOnly": true,
+  "target": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie"
+  },
+  "isolatedPurposeConfirmed": false,
+  "function": [
+    {
+      "name": "account-co",
+      "uniModuleId": ""
+    },
+    {
+      "name": "family-co",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-co",
+      "uniModuleId": ""
+    }
+  ],
+  "common-module": [
+    {
+      "name": "home-contracts",
+      "uniModuleId": ""
+    },
+    {
+      "name": "home-family",
+      "uniModuleId": ""
+    },
+    {
+      "name": "home-kernel",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-captcha",
+      "uniModuleId": "uni-captcha"
+    },
+    {
+      "name": "uni-cloud-s2s",
+      "uniModuleId": "uni-cloud-s2s"
+    },
+    {
+      "name": "uni-config-center",
+      "uniModuleId": "uni-config-center"
+    },
+    {
+      "name": "uni-id-common",
+      "uniModuleId": "uni-id-common"
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "uniModuleId": "uni-open-bridge-common"
+    },
+    {
+      "name": "uni-sec-check",
+      "uniModuleId": "uni-sec-check"
+    }
+  ],
+  "schema": [
+    {
+      "name": "request_limits",
+      "uniModuleId": ""
+    },
+    {
+      "name": "mutation_receipts",
+      "uniModuleId": ""
+    },
+    {
+      "name": "family_members",
+      "uniModuleId": ""
+    },
+    {
+      "name": "families",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-users",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-roles",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-permissions",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-log",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-device",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-verify-codes",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-tempdata",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-open-data",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-frv-logs",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-device",
+      "uniModuleId": ""
+    }
+  ]
+}

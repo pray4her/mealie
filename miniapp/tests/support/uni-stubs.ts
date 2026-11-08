@@ -6,9 +6,9 @@ import { appClientKey, provideAppClient } from '../../src/shared/app-client';
 import { createMemoryStorage } from './sdk-transport';
 import type { SessionStorage } from '../../src/shared/session-boundary';
 
-export function registerHook(name: string, callback: () => unknown) {
+export function registerHook(name: string, callback: (value: never) => unknown) {
   const instance = getCurrentInstance(); if (!instance) throw new Error('Hook registered outside setup');
-  const context = instance as typeof instance & { uniTestHooks?: Record<string, (() => unknown)[]> };
+  const context = instance as typeof instance & { uniTestHooks?: Record<string, ((value: never) => unknown)[]> };
   const hooks = context.uniTestHooks ??= {}; (hooks[name] ??= []).push(callback);
 }
 const View = defineComponent({ setup(_, { slots }) { return () => h('div', {}, slots.default?.()); } });
@@ -27,8 +27,8 @@ export function mountPage(component: Component, { client, storage = createMemory
     if (controllers) { context = controllers; app.provide(appClientKey, controllers); }
     else context = provideAppClient(app, client, { storage, newRequestId: async () => `fixture-request-${++request}` });
   } }], stubs: { UniView: View, UniText: Text, UniButton: Button, UniInput: Input } } });
-  const hooks = (wrapper.vm.$ as typeof wrapper.vm.$ & { uniTestHooks?: Record<string, (() => unknown)[]> }).uniTestHooks ?? {};
-  async function drive(name: string) { for (const fn of hooks[name] ?? []) await fn(); await flushPromises(); }
-  const unmount = wrapper.unmount.bind(wrapper); wrapper.unmount = () => { if (!controllers) context.family.dispose(); unmount(); };
-  return { wrapper, controllers: context, auth: context.auth, family: context.family, navigation, show: () => drive('show'), hide: () => drive('hide'), unload: () => drive('unload') };
+  const hooks = (wrapper.vm.$ as typeof wrapper.vm.$ & { uniTestHooks?: Record<string, ((value: never) => unknown)[]> }).uniTestHooks ?? {};
+  async function drive(name: string, value?: unknown) { let result: unknown; for (const fn of hooks[name] ?? []) result = await fn(value as never); await flushPromises(); return result; }
+  const unmount = wrapper.unmount.bind(wrapper); wrapper.unmount = () => { if (!controllers) { context.family.dispose(); context.invitations.dispose(); } unmount(); };
+  return { wrapper, controllers: context, auth: context.auth, family: context.family, navigation, show: () => drive('show'), hide: () => drive('hide'), unload: () => drive('unload'), load: (query: Record<string, string>) => drive('load', query), share: () => drive('share') as Promise<{ title: string; path: string; imageUrl: string }> };
 }

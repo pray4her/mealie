@@ -1,0 +1,19 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "familyId", "creatorUid", "creatorGeneration", "keyVersion", "tokenHash", "createdAt", "expiresAt", "status"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "familyId": { "bsonType": "string", "minLength": 1 },
+    "creatorUid": { "bsonType": "string", "minLength": 1 },
+    "creatorGeneration": { "bsonType": "string", "minLength": 1 },
+    "keyVersion": { "bsonType": "string", "pattern": "^[A-Za-z0-9_-]{1,32}$" },
+    "tokenHash": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
+    "createdAt": { "bsonType": "long", "minimum": 0 },
+    "expiresAt": { "bsonType": "long", "minimum": 0 },
+    "status": { "bsonType": "string", "enum": ["pending", "used", "revoked"] },
+    "usedByUid": { "bsonType": "string", "minLength": 1 },
+    "usedAt": { "bsonType": "long", "minimum": 0 },
+    "revokedAt": { "bsonType": "long", "minimum": 0 }
+  }
+}

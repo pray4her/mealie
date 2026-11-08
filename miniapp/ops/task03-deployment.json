@@ -1,0 +1,171 @@
+{
+  "ticket": "task03",
+  "date": "2026-11-09",
+  "target": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie"
+  },
+  "status": "normal-resources-deployed-acceptance-pending",
+  "uploadAuthorized": true,
+  "isolatedTestUseConfirmed": true,
+  "sourceSha256": "dc3e9586969877ff961a45b6e3ede4eb0c87580b9e263c31942b82bdab655858",
+  "clientBuildSha256": "0cf7b9d5cf9a2d170d2f068facc801d7f9b9a119b7c1d7978bc3875d87c99424",
+  "deviceBuildSha256": "8ae26bff614749df104dbed36cc5a73ac59ac7e5fee0910159b12186d3da2d25",
+  "cloudBuildSha256": "84c523f18996d3d407af66e0f7ab4f9c7038f0f270a879d22a39668cf169fd14",
+  "probeRemnants": [],
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "e09181eaca0e2d9afbc15d78aae0fa239f069e95fe9dca6a58cd6ddacbc334e2",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-family",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-family",
+      "sha256": "df6026530147d22caeaf0039e2ab1eb669999d92807dce31903a9d0c64757661",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-kernel",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "sha256": "65d472e5f7a205f8ced66321018f15fb4ff9f4a38d5d2c0b414bc12430075287",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "cloud-object",
+      "name": "family-co",
+      "path": "uniCloud-alipay/cloudfunctions/family-co",
+      "sha256": "04e6a1ff7fbd62060a0f3ad5fe1b500b1cf8cd391ce1dddfa10710eda12c7610",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "index",
+      "name": "family_invitations.index.json",
+      "path": "uniCloud-alipay/database/family_invitations.index.json",
+      "sha256": "b785fc1cd254a2fa7d9013e845134879ba1e40ffd6b7584e5e250c9888dc281b",
+      "hashKind": "file-sha256",
+      "existing": "absent-before-deployment",
+      "action": "created",
+      "expectedAction": "create-new-collection-schema-and-index"
+    },
+    {
+      "kind": "schema",
+      "name": "family_invitations.schema.json",
+      "path": "uniCloud-alipay/database/family_invitations.schema.json",
+      "sha256": "be2bd7a96e644b06d30050b415cb22099737c4e44c53255c039355e58496b9d0",
+      "hashKind": "file-sha256",
+      "existing": "absent-before-deployment",
+      "action": "created",
+      "expectedAction": "create-new-collection-schema-and-index"
+    },
+    {
+      "kind": "schema",
+      "name": "mutation_receipts.schema.json",
+      "path": "uniCloud-alipay/database/mutation_receipts.schema.json",
+      "sha256": "5af5558b3444886fa980ba24cd57b6f87da4bf2cf3004366b46fb984d23b8d89",
+      "hashKind": "file-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "expectedAction": "update-existing-resource"
+    }
+  ],
+  "environmentEvidence": "ops/task03-environment.json",
+  "platformResults": "ops/task03-upload-results.json",
+  "protectedModules": [
+    {
+      "name": "uni-id-common",
+      "version": "1.0.19",
+      "pluginVersion": "1.0.19",
+      "files": 2,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-config-center",
+      "version": "0.0.3",
+      "pluginVersion": null,
+      "files": 5,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "version": "1.0.0",
+      "pluginVersion": "1.2.1",
+      "files": 9,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    }
+  ],
+  "database": {
+    "collectionsBefore": 14,
+    "collectionsAfter": 15,
+    "created": [
+      "family_invitations"
+    ],
+    "updatedSchemas": [
+      "mutation_receipts"
+    ],
+    "createdIndex": "family_created_id",
+    "indexUploadAcknowledged": true,
+    "indexIndependentReadback": "pending",
+    "schemaCanonicalReadbackMatched": true,
+    "rowsDeleted": 0,
+    "fullInitialization": false
+  },
+  "compiler": {
+    "hbuilderx": "5.34.2026102909",
+    "typechecks": "passed",
+    "compilation": "passed",
+    "uploadToolNode": "18.20.0",
+    "cloudNode": "18.18.2",
+    "cloudRuntimeCompatibility": "pending-real-SDK"
+  },
+  "cloudArtifact": {
+    "directory": "dist/task03-normal-cloud",
+    "provenance": "Official cloud downloads; family-co JS taken from __dist__ in the complete official downloaded ZIP before source restoration removes it.",
+    "publicMethods": [
+      "current",
+      "create",
+      "invite",
+      "revokeInvite",
+      "join",
+      "members",
+      "invitations"
+    ]
+  },
+  "deviceCandidate": {
+    "directory": "dist/task03-device/mp-weixin",
+    "build": "HBuilderX publish mp-weixin --project E:/pray4her/mealie/miniapp --appid wx68649810a6f363f3 --upload false",
+    "appIdVerified": true,
+    "linkedSpaceVerified": true,
+    "devtoolsOpened": true,
+    "wechatPlatformUploaded": false,
+    "physicalDeviceTested": false
+  },
+  "businessRequestsExecuted": 0,
+  "platformLogCapture": "pending; UI helper could not activate minimized browser",
+  "authenticatedActorsBound": 0,
+  "acceptance": "pending"
+}

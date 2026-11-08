@@ -20,3 +20,14 @@ export async function familyFixture() {
     ownerRecord: owner, memberRecord: member, ownerView, memberView,
   };
 }
+
+// Normal-flow fixture uses real create/invite/join; the seed fixture above also tests corrupt relationships.
+export async function invitedFamilyFixture() {
+  const h = createHarness();
+  for (const uid of ['owner', 'member', 'outsider']) await h.seedIdentity({ uid });
+  const owner = h.client('owner'); const member = h.client('member'); const outsider = h.client('outsider');
+  const family = await owner.family.create({ requestId: 'fixture-create-00001', name: '我家' });
+  const invitation = await owner.family.invite({ requestId: 'fixture-invite-00001' });
+  await member.family.join({ requestId: 'fixture-member-00001', token: invitation.token });
+  return { h, owner, member, outsider, familyId: family.familyId };
+}

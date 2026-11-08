@@ -99,7 +99,7 @@ test('task02 dry preview does not change files, associate, upload or initialize'
   const historical = await readFile('ops/acceptance.json', 'utf8');
   const preview = await createDeployPreview({ root, ticket: 'task02' });
   expect(preview).toMatchObject({ ticket: 'task02', previewOnly: true, uploadAuthorized: false, blocked: true });
-  expect(preview.resources).toHaveLength(29);
+  expect(preview.resources).toHaveLength(31);
   expect(preview.resources.every(item => item.action === 'blocked-no-upload')).toBe(true);
   expect(await task02Snapshot({ root })).toEqual(before);
   expect(await readFile('ops/acceptance.json', 'utf8')).toBe(historical);

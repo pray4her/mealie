@@ -7,9 +7,10 @@ import { AppError, errorCode } from '../../shared/errors';
 import { observeAccountClosure } from '../auth/api';
 
 export type FamilyPhase = 'idle' | 'checking' | 'ready' | 'submitting' | 'unavailable' | 'conflict';
-export function createFamilyController({ api, auth, account, intents, newRequestId }: {
+export function createFamilyController({ api, auth, account, intents, newRequestId, hasPendingJoin }: {
   api: FamilyApi; auth: AuthController; account: AccountApi;
   intents: ReturnType<typeof createFamilyIntentStore>; newRequestId: () => Promise<string>;
+  hasPendingJoin?: (uid: string) => boolean;
 }) {
   const view = ref<FamilyView | null>(null); const phase = ref<FamilyPhase>('idle'); const pending = ref<PendingIntent | null>(null);
   let inFlight: Promise<FamilyView> | null = null;
@@ -73,6 +74,7 @@ export function createFamilyController({ api, auth, account, intents, newRequest
         let wasUncertain = true;
         try {
           if (!active(uid, current)) throw new AppError('AUTH_REQUIRED');
+          if (hasPendingJoin?.(uid)) throw new AppError('CONFLICT');
           const original = pending.value ?? intents.read(uid); wasUncertain = original?.uncertain === true;
           const intent = { ...(original ?? { requestId: await newRequestId(), name: normalizeFamilyName(name) }), uncertain: true };
           if (!active(uid, current)) throw new AppError('AUTH_REQUIRED');

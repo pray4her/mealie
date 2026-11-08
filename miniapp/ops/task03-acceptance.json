@@ -1,0 +1,317 @@
+{
+  "ticket": "task03",
+  "version": 1,
+  "date": "2026-11-08",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "dc3e9586969877ff961a45b6e3ede4eb0c87580b9e263c31942b82bdab655858",
+  "configuration": {
+    "status": "pending",
+    "evidenceFile": "ops/task03-cloud-checks.md",
+    "evidenceRef": "not-executed"
+  },
+  "local": {
+    "status": "passed",
+    "evidenceFile": "ops/task03-test-evidence.md",
+    "evidenceRef": "本地检查 — 2026-11-08",
+    "buildSha256": "0cf7b9d5cf9a2d170d2f068facc801d7f9b9a119b7c1d7978bc3875d87c99424",
+    "tests": 396,
+    "suites": 29,
+    "command": "task -d miniapp check -- --maxWorkers=2",
+    "node": "22.23.3",
+    "pnpm": "10.20.0",
+    "scenarios": {
+      "full-check": {
+        "status": "passed",
+        "evidenceFile": "ops/task03-test-evidence.md",
+        "evidenceRef": "本地检查 — 2026-11-08"
+      }
+    },
+    "artifactRebuild": "2026-11-09: same implementation source; rebuilt pinned local CLI artifact after preserving HBuilderX associated-space device candidate; boundary and source/artifact secret checks passed. Full 396/29 suite was already passed for this unchanged source."
+  },
+  "cloud": {
+    "status": "pending",
+    "evidenceFile": "ops/task03-cloud-checks.md",
+    "evidenceRef": "not-executed",
+    "buildSha256": "84c523f18996d3d407af66e0f7ab4f9c7038f0f270a879d22a39668cf169fd14",
+    "scenarios": {
+      "expiry-boundary": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "single-use-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "same-request": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "conflicting-payload": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "multiple-invites": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "create-join-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "different-invites-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "revoke-join-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "primary-key": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "rollback-writes": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "commit-ack-lost": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "verified-conflict-codes": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "member-forbidden": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "existing-family": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "cross-family": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "stale-generation": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "key-rotation": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "quota-cross-instance": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "safe-dtos": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "no-plaintext-records": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "platform-log-capture": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "normal-artifact-and-cleanup": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-families-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-families-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-families-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-families-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_members-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_members-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_members-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_members-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_invitations-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_invitations-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_invitations-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-family_invitations-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-mutation_receipts-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-mutation_receipts-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-mutation_receipts-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-mutation_receipts-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-request_limits-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-request_limits-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-request_limits-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-request_limits-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    }
+  },
+  "device": {
+    "status": "pending",
+    "evidenceFile": "ops/task03-cloud-checks.md",
+    "evidenceRef": "not-executed",
+    "buildSha256": "8ae26bff614749df104dbed36cc5a73ac59ac7e5fee0910159b12186d3da2d25",
+    "scenarios": {
+      "share-card": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "anonymous-login-continuation": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "manual-paste": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "explicit-confirmation": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "shared-members": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "weak-network-cold-start": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "logout-account-isolation": {
+        "status": "pending",
+        "evidenceFile": "ops/task03-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    }
+  },
+  "review": {
+    "status": "fixed-with-regression-tests",
+    "importantFindings": 2,
+    "criticalFindings": 0,
+    "deferredMinors": [],
+    "evidenceFile": "ops/task03-test-evidence.md",
+    "evidenceRef": "独立审阅"
+  },
+  "uploadAuthorized": false,
+  "uploaded": false,
+  "deployment": {
+    "status": "deployed",
+    "evidenceFile": "ops/task03-deployment.md",
+    "evidenceRef": "已执行和核对 — 2026-11-09",
+    "sourceSha256": "dc3e9586969877ff961a45b6e3ede4eb0c87580b9e263c31942b82bdab655858",
+    "cloudBuildSha256": "84c523f18996d3d407af66e0f7ab4f9c7038f0f270a879d22a39668cf169fd14",
+    "deviceBuildSha256": "8ae26bff614749df104dbed36cc5a73ac59ac7e5fee0910159b12186d3da2d25"
+  }
+}

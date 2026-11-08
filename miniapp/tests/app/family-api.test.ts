@@ -21,7 +21,7 @@ test('family_calls_use_the_shared_transport_and_explicit_empty_current_input', a
   expect(sent).toEqual([['family-co', 'current', {}], ['family-co', 'create', { requestId: 'request-000000001', name: '家' }]]);
 });
 
-test.each(['AUTH_REQUIRED', 'FAMILY_REQUIRED', 'ALREADY_IN_FAMILY', 'CONFLICT', 'NOT_FOUND', 'FORBIDDEN', 'INVALID_INPUT', 'QUOTA_EXCEEDED', 'UNAVAILABLE'])('preserves_%s_and_only_auth_closes_the_session', async code => {
+test.each(['AUTH_REQUIRED', 'FAMILY_REQUIRED', 'ALREADY_IN_FAMILY', 'CONFLICT', 'NOT_FOUND', 'FORBIDDEN', 'INVALID_INPUT', 'INVITATION_INVALID', 'QUOTA_EXCEEDED', 'UNAVAILABLE'])('preserves_%s_and_only_auth_closes_the_session', async code => {
   const storage = createMemoryStorage(); storage.set('uni_id_token', 'existing');
   const boundary = createSessionBoundary(storage);
   const cloud = createCloudClient({ boundary, transport: async () => { throw { errCode: code, errMsg: 'private' }; } });
@@ -29,6 +29,27 @@ test.each(['AUTH_REQUIRED', 'FAMILY_REQUIRED', 'ALREADY_IN_FAMILY', 'CONFLICT', 
   await expect(api.current()).rejects.toMatchObject({ code, message: code });
   expect(storage.get('uni_id_token')).toBe(code === 'AUTH_REQUIRED' ? undefined : 'existing');
   expect(storage.get('home.auth.closed')).toBe(code === 'AUTH_REQUIRED' ? true : undefined);
+});
+
+test('invitation_and_member_api_only_accept_safe_dtos', async () => {
+  const boundary = createSessionBoundary(createMemoryStorage()); let data: unknown;
+  const cloud = createCloudClient({ boundary, transport: async () => ({ errCode: 0, data }) });
+  const api = createFamilyApi({ boundary, invoke: cloud.invoke });
+  const token = `v1.test.${'a'.repeat(32)}.${'A'.repeat(43)}`;
+  data = { invitationId: 'a'.repeat(32), token, expiresAt: 1_800_086_400_000 };
+  expect(await api.invite({ requestId: 'api-invite-0000001' })).toEqual(data);
+  data = { ...data as object, tokenHash: 'private' };
+  await expect(api.invite({ requestId: 'api-invite-0000001' })).rejects.toMatchObject({ code: 'UNAVAILABLE' });
+  data = [{ uid: 'bob', nickname: '家人', role: 'member', openid: 'private' }];
+  await expect(api.members()).rejects.toMatchObject({ code: 'UNAVAILABLE' });
+  data = [{ uid: 'bob', nickname: '家人', role: 'member' }]; expect(await api.members()).toEqual(data);
+  data = { uid: 'bob', familyId: 'home', role: 'member', generation: 'new' }; expect(await api.join({ requestId: 'api-join-000000001', token })).toEqual(data);
+  data = { ...data as object, name: 'extra' };
+  await expect(api.join({ requestId: 'api-join-000000001', token })).rejects.toMatchObject({ code: 'UNAVAILABLE' });
+  data = null; await expect(api.revokeInvite({ requestId: 'api-revoke-000001', invitationId: 'a'.repeat(32) })).resolves.toBeUndefined();
+  data = { items: [{ invitationId: 'a'.repeat(32), createdAt: 1_800_000_000_000, expiresAt: 1_800_086_400_000, status: 'pending' }] };
+  expect(await api.invitations({})).toEqual(data);
+  data = { ...data as object, token }; await expect(api.invitations({})).rejects.toMatchObject({ code: 'UNAVAILABLE' });
 });
 
 test.each([

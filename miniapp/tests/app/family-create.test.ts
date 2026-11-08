@@ -128,7 +128,7 @@ test('same_page_new_account_does_not_inherit_draft_or_validation_error', async (
   let selected = h.client('alice');
   const client: AppClient = { account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(), signOut: () => selected.account.signOut(),
-  }, family: { current: () => selected.family.current(), create: input => selected.family.create(input) } };
+  }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };
   const page = mountPage(Onboarding, { client }); await page.show(); await page.wrapper.find('input').setValue('Alice未提交的名字');
   // An external authentication refresh can change accounts on this same page instance.
   selected = h.client('bob'); await page.auth.restore(); await flushPromises();
@@ -168,7 +168,7 @@ test('old_account_create_cannot_navigate_or_overwrite_new_account_on_same_page',
   vi.spyOn(alice.family, 'create').mockImplementationOnce(async input => { const result = await create(input); await gate.promise; return result; });
   let selected = alice; const client: AppClient = { account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(), signOut: () => selected.account.signOut(),
-  }, family: { current: () => selected.family.current(), create: input => selected.family.create(input) } };
+  }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };
   const page = mountPage(Onboarding, { client }); await page.show(); await page.wrapper.find('input').setValue('Alice家');
   await page.wrapper.find('[data-create]').trigger('click'); await flushPromises();
   await page.hide(); selected = bob; await page.show(); expect((page.wrapper.find('input').element as HTMLInputElement).value).toBe('');
@@ -204,7 +204,7 @@ test('old_create_auth_rejection_cannot_navigate_after_uid_changed_during_logout'
   const client: AppClient = { account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(),
     async signOut() { const account = selected.account; await gate.promise; await account.signOut(); },
-  }, family: { current: () => selected.family.current(), create: input => selected.family.create(input) } };
+  }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };
   const page = mountPage(Onboarding, { client }); await page.show(); await page.wrapper.find('input').setValue('Alice家');
   await page.wrapper.find('[data-create]').trigger('click'); await flushPromises(); expect(page.auth.phase.value).toBe('signing-out');
   selected = bob; await page.auth.signIn(); gate.resolve(null); await flushPromises();

@@ -2,10 +2,11 @@ import { readFile, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { task02Readiness } from './task02-state.mjs';
+import { task03Readiness } from './task03-state.mjs';
 async function load(path) { try { return JSON.parse(await readFile(path, 'utf8')); } catch (error) { if (error.code === 'ENOENT') return null; throw error; } }
-/** @param {{root:string,ticket?:'task02'}} options */
+/** @param {{root:string,ticket?:'task02'|'task03'}} options */
 export async function doctor({ root, ticket }) {
-  if (ticket !== undefined && ticket !== 'task02') throw new Error('Unknown doctor ticket');
+  if (ticket !== undefined && !['task02', 'task03'].includes(ticket)) throw new Error('Unknown doctor ticket');
   const blockers = []; const target = await load(join(root, 'ops/project-target.json'));
   if (!target) blockers.push('target-missing');
   else {
@@ -13,9 +14,9 @@ export async function doctor({ root, ticket }) {
     const keys = ['provider', 'cloudRoot', 'spaceId', 'spaceAppId', 'dcloudAppId', 'weixinAppId'];
     if (target.cloudRoot !== roots[target.provider] || Object.keys(target).some(k => !keys.includes(k)) || keys.some(k => typeof target[k] !== 'string' || !target[k])) blockers.push('target-invalid');
   }
-  if (ticket === 'task02') {
-    const evidence = await load(join(root, 'ops/task02-acceptance.json'));
-    blockers.push(...await task02Readiness({ root, evidence, target }));
+  if (ticket === 'task02' || ticket === 'task03') {
+    const evidence = await load(join(root, `ops/${ticket}-acceptance.json`));
+    blockers.push(...await (ticket === 'task03' ? task03Readiness : task02Readiness)({ root, evidence, target }));
     return { ready: blockers.length === 0, blockers };
   }
   const evidence = await load(join(root, 'ops/acceptance.json'));
@@ -35,7 +36,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const index = process.argv.indexOf('--ticket');
   if (index >= 0 && !process.argv[index + 1]) throw new Error('Missing doctor ticket');
   const ticket = index < 0 ? undefined : process.argv[index + 1];
-  if (ticket !== undefined && ticket !== 'task02') throw new Error('Unknown doctor ticket');
+  if (ticket !== undefined && !['task02', 'task03'].includes(ticket)) throw new Error('Unknown doctor ticket');
   const result = await doctor({ root: fileURLToPath(new URL('../', import.meta.url)), ticket });
   console.log(JSON.stringify({ status: result.ready ? 'READY' : 'NON-READY', ...result }, null, 2));
   if (!result.ready) process.exitCode = 1;

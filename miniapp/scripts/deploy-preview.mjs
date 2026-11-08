@@ -7,7 +7,7 @@ import { doctor } from './doctor.mjs';
 
 // Offline inventory only: no cloud SDK, shell command, association, upload or DB API.
 export async function createDeployPreview({ root, ticket }) {
-  if (ticket !== undefined && ticket !== 'task02') throw new Error('Unknown preview ticket');
+  if (ticket !== undefined && !['task02', 'task03'].includes(ticket)) throw new Error('Unknown preview ticket');
   const target = JSON.parse(await readFile(join(root, 'ops/project-target.json'), 'utf8'));
   const readiness = await doctor({ root, ticket });
   if (readiness.blockers.includes('target-invalid')) throw new Error('Invalid project target');
@@ -34,11 +34,18 @@ export async function createDeployPreview({ root, ticket }) {
     previewOnly: true, uploadAuthorized: false, blocked: true,
     target, region: 'unknown', runtime: 'unknown', existingResources: 'unknown',
     inventoryEvidence: 'Offline source preview only. Current resource names, versions and contents must be reconciled against coordinator read-only inventory before upload.',
-    blockers: [...readiness.blockers, 'deployment-not-authorized', 'hbuilderx-ts-compilation-unverified', ...(ticket ? ['task02-cloud-device-acceptance-pending', 'bridge-version-reconciliation-required'] : [])],
-    ...(ticket ? {
+    blockers: [...readiness.blockers, 'deployment-not-authorized', 'hbuilderx-ts-compilation-unverified', ...(ticket ? [`${ticket}-cloud-device-acceptance-pending`, 'bridge-version-reconciliation-required'] : [])],
+    ...(ticket === 'task02' ? {
       sharedModuleImpact: ['account-co', 'uni-id-co'],
       dependencyRisks: [{ name: 'uni-open-bridge-common', localPluginVersion: '1.2.0', localCloudPackageVersion: '1.0.0', historicalCloudPluginVersion: '1.2.1', currentCloudVersion: 'unknown', action: 'blocked-no-upload', reason: 'Do not overwrite or downgrade the existing cloud dependency without reconciling actual source/version.' }],
       contentRuntimeRequirements: { provider: 'mp-weixin', version: 2, scene: 1, recentVerifiedUserOpenid: 'required; <=2 hours per official API', configuration: 'existing cloud-side uni-id/bridge secure configuration; never read by preview', cacheSchemas: ['opendb-open-data.schema.json'], cacheIndexes: ['_id built-in unique only; no additional index declared by locked source'], redis: 'optional upstream cache layer; target runtime verification pending', businessSchemaInitialization: 'only four named business collections and family_members ordinary familyId index; no full-plugin database initialization' },
+    } : {}),
+    ...(ticket === 'task03' ? {
+      sharedModuleImpact: ['account-co', 'uni-id-co', 'family-co'],
+      protectedDependencies: ['uni-id-common', 'uni-config-center', 'uni-open-bridge-common'],
+      proposedChanges: resources.filter(item => ['family-co', 'home-family', 'home-kernel', 'home-contracts', 'family_invitations.schema.json', 'family_invitations.index.json', 'mutation_receipts.schema.json'].includes(item.name)),
+      invitationConfiguration: { environmentVariables: ['FAMILY_INVITATION_KEY_VERSION', 'FAMILY_INVITATION_KEYS'], format: 'current version + JSON map of version to 64 lowercase hexadecimal characters (32 random bytes); cloud only', retainOldVersions: 'until all associated invitations expire', valuesIncluded: false, logCaptureVerified: false },
+      preservationRequired: 'Read-only reconcile and preserve exact remote identity/configuration/bridge dependencies before any upload; no full-plugin initialization or collection reset.',
     } : {}),
     compiledCloudArtifactSha256: null,
     resources: resources.sort((a, b) => a.path.localeCompare(b.path)),
@@ -48,6 +55,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const ticketIndex = process.argv.indexOf('--ticket'); const ticket = ticketIndex < 0 ? undefined : process.argv[ticketIndex + 1];
   if (ticketIndex >= 0 && !ticket) throw new Error('Missing preview ticket');
   const root = fileURLToPath(new URL('../', import.meta.url)); const preview = await createDeployPreview({ root, ticket });
-  await writeFile(join(root, ticket ? 'ops/task02-deploy-preview.json' : 'ops/deploy-preview.json'), JSON.stringify(preview, null, 2) + '\n');
+  await writeFile(join(root, ticket ? `ops/${ticket}-deploy-preview.json` : 'ops/deploy-preview.json'), JSON.stringify(preview, null, 2) + '\n');
   console.log(`Offline preview: ${preview.resources.length} resources; UNKNOWN existing resources, upload BLOCKED.`);
 }

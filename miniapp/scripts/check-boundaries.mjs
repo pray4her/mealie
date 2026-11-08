@@ -80,7 +80,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
     }; visit(ast);
     if (/[\\/](?:account-co|family-co)[\\/]index\.obj\.ts$/.test(path)) {
       const exports = ast.statements.filter(node => ts.isExportDeclaration(node) || ts.isExportAssignment(node) || (ts.canHaveModifiers(node) && ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)));
-      const expected = path.includes('family-co') ? ['create', 'current'] : ['session'];
+      const expected = path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations'] : ['session'];
       if (exports.length !== expected.length || exports.some(node => !ts.isFunctionDeclaration(node) || !expected.includes(node.name?.text) || ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword))
         || new Set(exports.map(node => node.name?.text)).size !== expected.length) throw new Error('Unexpected public method export: ' + path);
     }
@@ -91,12 +91,12 @@ export async function checkBoundaries({ root, artifacts = false }) {
     let manifest;
     try { manifest = JSON.parse(await readFile(join(root, 'dist/build/mp-weixin/app.json'), 'utf8')); }
     catch { throw new Error('Artifact route manifest missing/invalid'); }
-    const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home'];
+    const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members'];
     if (!Array.isArray(manifest.pages) || manifest.pages.length !== pages.length || manifest.pages.some((page, index) => page !== pages[index])
-      || manifest.subPackages || manifest.subpackages || manifest.tabBar) throw new Error('Artifact routes must be exactly login/onboarding/home');
+      || manifest.subPackages || manifest.subpackages || manifest.tabBar) throw new Error('Artifact routes must be exactly the six implemented account/family pages');
     for (const path of files) {
       if (/(?:[\\/](?:vendor|tests|cloudfunctions)[\\/]|uniCloud-|\.zip$|\.tar\.gz$)/i.test(path.slice(root.length))) throw new Error('Artifact contains forbidden source');
-      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|uni-sec-check|uni-open-bridge|cloudfunctions\/common|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
+      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|uni-sec-check|uni-open-bridge|cloudfunctions\/common|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
     }
   }
 }

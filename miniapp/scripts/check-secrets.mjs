@@ -15,6 +15,9 @@ export async function checkSecrets({ root, artifacts = false }) {
     if (/(?:appsecret|tokenSecret|passwordSecret|privateKey|apiKey)["']?\s*[:=]\s*["'][^"'\s]{12,}["']/i.test(source)
       || /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----/.test(source)
       || /VITE_\w*(?:SECRET|PRIVATE_KEY)\s*=\s*\S+/i.test(source)) throw new Error('Secret detected in ' + path); // No matched value or line contents.
+    if (/v1\.[A-Za-z0-9_-]{1,32}\.[a-f0-9]{32}\.[A-Za-z0-9_-]{43}/.test(source)
+      || /FAMILY_INVITATION_KEYS["']?\s*[:=]\s*["'`]/.test(source)
+      || /VITE_\w*FAMILY_INVITATION_KEYS/i.test(source)) throw new Error('Secret detected in ' + path);
   }
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) { await checkSecrets({ root: fileURLToPath(new URL('../', import.meta.url)), artifacts: true }); console.log('Source and artifact secret scan verified'); }
