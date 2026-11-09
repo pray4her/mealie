@@ -5,7 +5,7 @@
   "properties": {
     "_id": { "bsonType": "string", "minLength": 1 },
     "uid": { "bsonType": "string", "minLength": 1 },
-    "operation": { "bsonType": "string", "enum": ["family-create-v1", "family-invite-v1", "family-revoke-v1", "family-join-v1", "family-leave-v1", "family-remove-v1", "family-transfer-v1"] },
+    "operation": { "bsonType": "string", "enum": ["family-create-v1", "family-invite-v1", "family-revoke-v1", "family-join-v1", "family-leave-v1", "family-remove-v1", "family-transfer-v1", "recipe-create-v1", "recipe-update-v1"] },
     "requestId": { "bsonType": "string", "minLength": 16, "maxLength": 128, "pattern": "^[A-Za-z0-9_-]+$" },
     "payloadHash": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
     "familyId": { "bsonType": "string", "minLength": 1 },
@@ -15,6 +15,7 @@
     "result": {
       "bsonType": "object",
       "properties": {
+        "error": { "bsonType": "string", "enum": ["INVALID_INPUT"] },
         "invitationId": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
         "uid": { "bsonType": "string", "minLength": 1 },
         "familyId": { "bsonType": "string", "minLength": 1 },

@@ -7,6 +7,10 @@ import { createFamilyService, createInvitationTokens } from 'home-family';
 import type { InvitationCursor } from '../../uniCloud-alipay/cloudfunctions/common/home-family/family-reads';
 import type { InvitationRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-family/invitation-model';
 import type { MemberRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-family/model';
+import { createRecipesService } from '../../uniCloud-alipay/cloudfunctions/common/home-recipes';
+import { requireFamily } from 'home-family';
+import type { RecipesApi } from 'home-contracts';
+import type { RecipeRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-recipes/repository';
 
 export function createHarness(options: { now?: number; content?: ContentPort; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
   let now = options.now ?? 1_800_000_000_000;
@@ -48,6 +52,19 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
       async leave(input) { await (await service()).leave(input); }, async removeMember(input) { await (await service()).removeMember(input); }, async transferOwner(input) { return (await service()).transferOwner(input); },
     };
   };
+  const recipes = (uid: Id): RecipesApi => {
+    const service = async () => createRecipesService({
+      database: memory.database, now: () => now, newId: () => (++nextId).toString(16).padStart(32, '0'),
+      content: options.content ?? { async checkText() { return 'allowed'; } },
+      reads: { async list(familyId, limit, after) {
+        return (await memory.rows<RecipeRecord>('recipes')).filter(row => row.familyId === familyId && (!after || row.createdAt < after.createdAt || (row.createdAt === after.createdAt && row._id < after.id)))
+          .sort((a, b) => b.createdAt - a.createdAt || (a._id < b._id ? 1 : -1)).slice(0, limit + 1);
+      } },
+      async revalidateIdentity() { await guard(tokenFor(uid), clientInfo, { refresh: false }); },
+    }, await requireFamily(memory.database, await guard(tokenFor(uid), clientInfo)));
+    return { async create(input) { return (await service()).create(input); }, async get(id) { return (await service()).get(id); },
+      async list(input) { return (await service()).list(input); }, async update(input) { return (await service()).update(input); } };
+  };
   return {
     memory, database: memory.database,
     nickname(uid: string, value: string) { nicknames.set(uid, value); },
@@ -59,7 +76,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
     revokeToken(uid: Id) { const row = records.get(uid); if (row) row.tokens = []; },
     closeAccount(uid: Id) { records.delete(uid); },
     client(uid: Id): AppClient {
-      return { family: family(uid), account: {
+      return { recipes: recipes(uid), family: family(uid), account: {
         async signInWeixin() { return guard(tokenFor(uid), clientInfo); },
         async session() { return guard(uid ? tokenFor(uid) : undefined, clientInfo); },
         async signOut() { await guard(tokenFor(uid), clientInfo, { refresh: false }); const row = records.get(uid); if (row) row.tokens = []; },
@@ -67,7 +84,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
     },
     advance(ms: number) { now += ms; },
     async rows<T>(collection: string): Promise<T[]> {
-      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits') return memory.rows<T>(collection);
+      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes') return memory.rows<T>(collection);
       if (collection !== 'uni-id-users') throw new Error('Unsupported fixture collection');
       return [...records].map(([uid, row]) => ({ uid, ...row })) as T[];
     },

@@ -1,0 +1,5 @@
+{
+  "name": "recipes-co", "version": "0.0.0", "private": true,
+  "dependencies": { "home-contracts": "file:../common/home-contracts", "home-kernel": "file:../common/home-kernel", "home-family": "file:../common/home-family", "home-recipes": "file:../common/home-recipes" },
+  "cloudfunction-config": { "keepRunningAfterReturn": false, "timeout": 15 }
+}

@@ -1,4 +1,18 @@
 export const copy = {
+  recipes: '家庭菜谱', createRecipe: '新建菜谱', editRecipe: '编辑菜谱', saveRecipe: '保存菜谱', noRecipes: '还没有菜谱，先记下一道家常菜吧。',
+  recipeTitle: '菜谱标题', recipeDescription: '说明（可选）', servings: '份数（可选）', prepMinutes: '准备时间（分钟，可选）', cookMinutes: '烹饪时间（分钟，可选）',
+  ingredients: '食材', ingredientRaw: '食材原文，例如：盐适量', ingredientName: '食材名称，例如：盐', quantity: '数量（未知请留空）', unit: '单位（可选）', note: '处理说明（可选）',
+  steps: '做法步骤', step: '请填写这一步的做法', tags: '标签（可选，用逗号分隔）', addIngredient: '添加食材', addStep: '添加步骤', removeRow: '移除',
+  pendingRecipe: '上次保存结果尚未确认，请恢复原请求。', resumeRecipe: '恢复上次保存', reloadRecipe: '重新加载最新版本',
+  reloadRecipeConfirm: '重新加载会丢弃当前未保存的输入，是否继续？', invalidRecipe: '请填写标题、食材原文和名称、步骤；数量和份数须大于0，时间不能为负，内容须在长度上限内。',
+  recipeErrors: {
+    INVALID_INPUT: '菜谱内容不符合要求或未通过内容审核，请检查标题、食材、步骤及数量。',
+    CONFLICT: '其他成员或家庭关系已发生变化，当前输入已保留，请重新加载最新版本。',
+    AUTH_REQUIRED: '登录已失效，请重新登录。', FAMILY_REQUIRED: '你已不再属于原家庭，请重新确认。',
+    FORBIDDEN: '当前无法访问家庭菜谱。', NOT_FOUND: '该菜谱不存在或当前不可访问。',
+    QUOTA_EXCEEDED: '操作过于频繁，请稍后恢复原请求。', UNAVAILABLE: '暂时无法确认结果，请重试；保存请求将保持原样。',
+    ALREADY_IN_FAMILY: '请重新确认家庭状态。', INVITATION_INVALID: '请重新确认家庭状态。',
+  },
   title: '家庭菜谱', signIn: '微信登录', signOut: '退出登录', retry: '重试',
   retrySignIn: '重试微信登录',
   welcome: '创建你的家庭', onboarding: '创建家庭后，一起收藏和安排家常菜。',

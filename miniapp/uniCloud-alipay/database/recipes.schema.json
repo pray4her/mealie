@@ -1,0 +1,36 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "familyId", "createdBy", "slug", "version", "createdAt", "updatedAt", "title", "description", "baseServings", "prepMinutes", "cookMinutes", "ingredients", "steps", "tags", "imageIds", "source"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "familyId": { "bsonType": "string", "minLength": 1, "maxLength": 128 },
+    "createdBy": { "bsonType": ["string", "null"] },
+    "slug": { "bsonType": "string", "minLength": 1, "maxLength": 200 },
+    "version": { "bsonType": "int", "minimum": 1 },
+    "createdAt": { "bsonType": "long", "minimum": 0 },
+    "updatedAt": { "bsonType": "long", "minimum": 0 },
+    "title": { "bsonType": "string", "minLength": 1, "maxLength": 120 },
+    "description": { "bsonType": ["string", "null"], "maxLength": 2000 },
+    "baseServings": { "bsonType": ["double", "int", "null"], "minimum": 0, "maximum": 10000 },
+    "prepMinutes": { "bsonType": ["double", "int", "null"], "minimum": 0, "maximum": 10080 },
+    "cookMinutes": { "bsonType": ["double", "int", "null"], "minimum": 0, "maximum": 10080 },
+    "ingredients": {
+      "bsonType": "array", "minItems": 1, "maxItems": 100,
+      "items": {
+        "bsonType": "object", "required": ["raw", "name", "quantity", "unit", "note"],
+        "properties": {
+          "raw": { "bsonType": "string", "minLength": 1, "maxLength": 500 },
+          "name": { "bsonType": "string", "minLength": 1, "maxLength": 100 },
+          "quantity": { "bsonType": ["double", "int", "null"], "minimum": 0, "maximum": 1000000 },
+          "unit": { "bsonType": ["string", "null"], "maxLength": 40 },
+          "note": { "bsonType": ["string", "null"], "maxLength": 500 }
+        }
+      }
+    },
+    "steps": { "bsonType": "array", "minItems": 1, "maxItems": 50, "items": { "bsonType": "string", "minLength": 1, "maxLength": 2000 } },
+    "tags": { "bsonType": "array", "maxItems": 20, "items": { "bsonType": "string", "minLength": 1, "maxLength": 40 } },
+    "imageIds": { "bsonType": "array", "maxItems": 20, "items": { "bsonType": "string" } },
+    "source": { "bsonType": "object" }
+  }
+}

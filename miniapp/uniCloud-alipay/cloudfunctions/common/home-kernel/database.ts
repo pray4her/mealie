@@ -1,4 +1,4 @@
-export type CollectionName = 'families' | 'family_members' | 'family_invitations' | 'mutation_receipts' | 'request_limits';
+export type CollectionName = 'families' | 'family_members' | 'family_invitations' | 'mutation_receipts' | 'request_limits' | 'recipes';
 
 export interface TransactionPort {
   get<T>(collection: CollectionName, id: string): Promise<T | null>;

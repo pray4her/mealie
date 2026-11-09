@@ -38,7 +38,7 @@ test('archive_identity_and_unknown_import_files_cannot_be_adopted', async () => 
 test('task02_offline_preview_lists_exact_new_resources_and_blocks_existing_dependency_updates', async () => {
   const preview = await createDeployPreview({ root: resolve('.'), ticket: 'task02' });
   expect(preview.ticket).toBe('task02'); expect(preview.uploadAuthorized).toBe(false);
-  expect(preview.resources.filter((item: { kind: string }) => item.kind === 'cloud-object').map((item: { name: string }) => item.name).sort()).toEqual(['account-co', 'family-co', 'uni-id-co']);
+  expect(preview.resources.filter((item: { kind: string }) => item.kind === 'cloud-object').map((item: { name: string }) => item.name).sort()).toEqual(['account-co', 'family-co', 'recipes-co', 'uni-id-co']);
   for (const name of ['families.schema.json', 'family_members.schema.json', 'mutation_receipts.schema.json', 'request_limits.schema.json', 'family_members.index.json', 'uni-sec-check', 'home-family', 'opendb-open-data.schema.json']) expect(preview.resources).toContainEqual(expect.objectContaining({ name, action: 'blocked-no-upload', existing: 'unknown' }));
   expect(preview.blockers).toContain('task02-cloud-device-acceptance-pending');
   expect(preview.dependencyRisks).toContainEqual(expect.objectContaining({ name: 'uni-open-bridge-common', localPluginVersion: '1.2.0', localCloudPackageVersion: '1.0.0', historicalCloudPluginVersion: '1.2.1', action: 'blocked-no-upload' }));

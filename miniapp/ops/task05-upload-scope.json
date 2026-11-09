@@ -1,0 +1,129 @@
+{
+  "ticket": "task05",
+  "version": 1,
+  "status": "deployed-to-approved-isolated-space",
+  "uploadAuthorized": true,
+  "uploaded": true,
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "5309fde6f835d5899c1e64355dd699d012c11e0dff6c2e6d0a5ac7a2a3628fe1",
+  "localClientBuildSha256": "ff02ff9dc9f3fabccf9d6a4b651e1ded4e0a5ccd7dfb2315e9a5fed0e9a5d724",
+  "candidateDeviceBuildSha256": "3253f554a6561f249aeabb4338c826bf8dd1593f37aeb705efd3dfd58171fbec",
+  "cloudBuildSha256": "a0945d691d201eed9e7aa011f16432b63cfebd09eb6b5250efc076103135fad4",
+  "inventory": {
+    "source": "official HBuilderX 5.34 CLI read-only lists on 2026-11-09 Asia/Shanghai",
+    "cloudObjects": [
+      "account-co",
+      "family-co",
+      "uni-id-co"
+    ],
+    "commonModuleCount": 9,
+    "schemaCount": 15,
+    "recipesSchemaPresent": false
+  },
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "1e04b6802718d74c46f3545293bc562fbf47417b5199f05816e951e1192e3fc3",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing-name-only",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-family",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-family",
+      "sha256": "95d795c8e954c691e1168df1cdd4379319b5ac0b2161f6163e563255d669c24b",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing-name-only",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-kernel",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "sha256": "5eccc78bfa5283a459855a4e376c7ccb1f177b4bdb4b9671c6f5bf4be00705e3",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing-name-only",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-recipes",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-recipes",
+      "sha256": "85995540e5e47ae164a365eb2fcbff1f148563875d0a2b6bdb1a57bb038cac85",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-absent-name-only",
+      "action": "created",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "create-resource"
+    },
+    {
+      "kind": "cloud-object",
+      "name": "recipes-co",
+      "path": "uniCloud-alipay/cloudfunctions/recipes-co",
+      "sha256": "6fa4ed6087b0a72f993f771e93086284a6bf3305f00253bf5287918cc01f0d10",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-absent-name-only",
+      "action": "created",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "create-resource"
+    },
+    {
+      "kind": "schema",
+      "name": "mutation_receipts.schema.json",
+      "path": "uniCloud-alipay/database/mutation_receipts.schema.json",
+      "sha256": "551266d41228f3554dff501e81a49d2124476cea33c65511494718e208bea492",
+      "hashKind": "file-sha256",
+      "existing": "confirmed-existing-name-only",
+      "action": "updated",
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "index",
+      "name": "recipes.index.json",
+      "path": "uniCloud-alipay/database/recipes.index.json",
+      "sha256": "4abd9b98e6c990ca8370d447878be76f1be6786bc7a7ecdc3b64e5ac0be940fd",
+      "hashKind": "file-sha256",
+      "existing": "confirmed-absent-name-only",
+      "action": "created",
+      "expectedAction": "create-resource"
+    },
+    {
+      "kind": "schema",
+      "name": "recipes.schema.json",
+      "path": "uniCloud-alipay/database/recipes.schema.json",
+      "sha256": "0f00d19ee9bec4d0d1523a3d10c31c8e7422876efdf40c099b7a6bc2912bcddf",
+      "hashKind": "file-sha256",
+      "existing": "confirmed-absent-name-only",
+      "action": "created",
+      "expectedAction": "create-resource"
+    }
+  ],
+  "protectedDependencies": [
+    "uni-id-common",
+    "uni-config-center",
+    "uni-open-bridge-common"
+  ],
+  "sharedModuleImpact": [
+    "account-co",
+    "uni-id-co",
+    "family-co",
+    "recipes-co"
+  ],
+  "secretValuesIncluded": false
+}

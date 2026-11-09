@@ -9,6 +9,7 @@ const { phase } = auth; const { view } = family;
 const { phase: familyPhase } = family;
 const openInvite = () => uni.navigateTo({ url: '/pages/family/invite' });
 const openMembers = () => uni.navigateTo({ url: '/pages/family/members' });
+const openRecipes = () => uni.navigateTo({ url: '/pages/recipes/index' });
 const confirmed = ref(false);
 let generation = 0; let active = false;
 let logoutAttempt: Promise<void> | null = null;
@@ -49,6 +50,12 @@ onShow(check); onHide(conceal); onUnload(conceal);
         {{ view.name }}
       </text>
       <text>{{ view.role === 'owner' ? copy.owner : copy.member }}</text>
+      <button
+        data-recipes
+        @tap="openRecipes"
+      >
+        {{ copy.recipes }}
+      </button>
       <button
         v-if="view.role === 'owner'"
         data-invite

@@ -19,8 +19,8 @@ export async function checkBoundaries({ root, artifacts = false }) {
   const discovered = [...client, ...cloud].filter(path => /[\\/]uni-id-co[\\/]index\.obj\.[jt]s$/.test(path));
   if (discovered.length !== 1 || !discovered[0].includes('uniCloud-alipay')) throw new Error('Expected unique uni-id-co; duplicate or missing object');
   const objectEntries = [...client, ...cloud].filter(path => /[\\/]index\.obj\.[jt]s$/.test(path));
-  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts', 'family-co/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
-  if (objectEntries.length !== 3 || objectEntries.some(path => !allowed.includes(path))) throw new Error('Unexpected discoverable public cloud object');
+  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts', 'family-co/index.obj.ts', 'recipes-co/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
+  if (objectEntries.length !== 4 || objectEntries.some(path => !allowed.includes(path))) throw new Error('Unexpected discoverable public cloud object');
   for (const path of [...client, ...cloud].filter(path => path.endsWith('.schema.json'))) {
     const permission = JSON.parse(await readFile(path, 'utf8')).permission;
     if (!permission || ['read', 'create', 'update', 'delete'].some(key => permission[key] !== false)) throw new Error('ClientDB permission open: ' + path);
@@ -36,7 +36,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
       const ast = ts.createSourceFile(path, code, ts.ScriptTarget.Latest, true);
       const check = (specifier, typeOnly) => {
         if (typeof specifier !== 'string') throw new Error('Client dynamic runtime import denied: ' + path);
-        if (/(?:home-kernel|home-family|uni-sec-check|uni-open-bridge|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
+        if (/(?:home-kernel|home-family|home-recipes|uni-sec-check|uni-open-bridge|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
       };
       const visit = node => {
         if (ts.isImportDeclaration(node)) {
@@ -78,9 +78,9 @@ export async function checkBoundaries({ root, artifacts = false }) {
       }
       ts.forEachChild(node, visit);
     }; visit(ast);
-    if (/[\\/](?:account-co|family-co)[\\/]index\.obj\.ts$/.test(path)) {
+    if (/[\\/](?:account-co|family-co|recipes-co)[\\/]index\.obj\.ts$/.test(path)) {
       const exports = ast.statements.filter(node => ts.isExportDeclaration(node) || ts.isExportAssignment(node) || (ts.canHaveModifiers(node) && ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)));
-      const expected = path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
+      const expected = path.includes('recipes-co') ? ['create', 'get', 'list', 'update'] : path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
       if (exports.length !== expected.length || exports.some(node => !ts.isFunctionDeclaration(node) || !expected.includes(node.name?.text) || ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword))
         || new Set(exports.map(node => node.name?.text)).size !== expected.length) throw new Error('Unexpected public method export: ' + path);
     }
@@ -91,12 +91,12 @@ export async function checkBoundaries({ root, artifacts = false }) {
     let manifest;
     try { manifest = JSON.parse(await readFile(join(root, 'dist/build/mp-weixin/app.json'), 'utf8')); }
     catch { throw new Error('Artifact route manifest missing/invalid'); }
-    const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members'];
+    const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit'];
     if (!Array.isArray(manifest.pages) || manifest.pages.length !== pages.length || manifest.pages.some((page, index) => page !== pages[index])
-      || manifest.subPackages || manifest.subpackages || manifest.tabBar) throw new Error('Artifact routes must be exactly the six implemented account/family pages');
+      || manifest.subPackages || manifest.subpackages || manifest.tabBar) throw new Error('Artifact routes must be exactly the nine implemented account/family/recipe pages');
     for (const path of files) {
       if (/(?:[\\/](?:vendor|tests|cloudfunctions)[\\/]|uniCloud-|\.zip$|\.tar\.gz$)/i.test(path.slice(root.length))) throw new Error('Artifact contains forbidden source');
-      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|uni-sec-check|uni-open-bridge|cloudfunctions\/common|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
+      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|uni-sec-check|uni-open-bridge|cloudfunctions\/common|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
     }
   }
 }

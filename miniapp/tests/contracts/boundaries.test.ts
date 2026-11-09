@@ -19,6 +19,9 @@ async function fixture() {
     const common = join(dir, 'uniCloud-alipay/cloudfunctions/common', name); await mkdir(common, { recursive: true });
     await writeFile(join(common, 'package.json'), JSON.stringify({ name, private: true }));
   }
+  const recipes = join(dir, 'uniCloud-alipay/cloudfunctions/recipes-co'); await mkdir(recipes, { recursive: true });
+  await writeFile(join(recipes, 'index.obj.ts'), 'export async function create() {}\nexport async function get() {}\nexport async function list() {}\nexport async function update() {}');
+  await writeFile(join(recipes, 'package.json'), '{"name":"recipes-co","private":true}');
   return dir;
 }
 test('unique_discoverable_identity_object', async () => {
@@ -45,14 +48,14 @@ test('dynamic_require_and_value_contract_imports_are_rejected', async () => {
 });
 test('vendor_and_tests_must_not_enter_build_artifact', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members'] }));
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit'] }));
   await writeFile(join(dist, 'app.js'), 'const leak="vendor/uni-id/upstream.zip";');
   await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact/i);
 });
 
-test('artifact_routes_are_exactly_the_six_implemented_account_and_family_pages', async () => {
+test('artifact_routes_are_exactly_the_nine_implemented_account_family_and_recipe_pages', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  const path = join(dist, 'app.json'); const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members'];
+  const path = join(dist, 'app.json'); const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit'];
   await writeFile(path, JSON.stringify({ pages })); await expect(checkBoundaries({ root: dir, artifacts: true })).resolves.toBeUndefined();
   for (const manifest of [{ pages: pages.slice(0, 2) }, { pages: [...pages, 'pages/family/invites'] }, { pages, subPackages: [{ root: 'future', pages: ['invite'] }] }, { pages, tabBar: { list: [] } }]) {
     await writeFile(path, JSON.stringify(manifest)); await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact.*route/i);
@@ -61,8 +64,8 @@ test('artifact_routes_are_exactly_the_six_implemented_account_and_family_pages',
 
 test('family_content_and_fixture_runtime_cannot_enter_actual_artifact_content', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members'] }));
-  for (const forbidden of ['home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common']) {
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit'] }));
+  for (const forbidden of ['home-recipes', 'home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common']) {
     await writeFile(join(dist, 'app.js'), `const leaked = '${forbidden}';`);
     await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact/i);
   }
@@ -114,9 +117,9 @@ test('family_public_surface_rejects_default_reexports_helpers_and_test_entry', a
   await writeFile(join(probe, 'index.obj.ts'), 'export function probe() {}');
   await expect(checkBoundaries({ root: dir })).rejects.toThrow(/public|object/i);
 });
-test('all_five_business_schemas_deny_every_clientdb_operation', async () => {
+test('all_six_business_schemas_deny_every_clientdb_operation', async () => {
   const dir = await fixture(); const database = join(dir, 'uniCloud-alipay/database'); await mkdir(database, { recursive: true });
-  for (const collection of ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits']) {
+  for (const collection of ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits', 'recipes']) {
     const path = join(database, collection + '.schema.json');
     const schema = { permission: { read: false, create: false, update: false, delete: false } };
     await writeFile(path, JSON.stringify(schema)); await expect(checkBoundaries({ root: dir })).resolves.toBeUndefined();
@@ -141,6 +144,14 @@ test('cloud_file_dependencies_must_resolve_to_real_deployable_packages', async (
 test('account_object_reexports_cannot_expand_public_surface', async () => {
   const dir = await fixture(); await writeFile(join(dir, 'uniCloud-alipay/cloudfunctions/account-co/index.obj.ts'), "export async function session() {}\nexport { registerAdmin } from './helper';");
   await expect(checkBoundaries({ root: dir })).rejects.toThrow(/public|export|method/i);
+});
+test('recipe_object_rejects_helpers_default_exports_and_future_methods', async () => {
+  const dir = await fixture(); const path = join(dir, 'uniCloud-alipay/cloudfunctions/recipes-co/index.obj.ts');
+  const valid = await readFile(path, 'utf8');
+  for (const extra of ['export async function seed() {}', 'export async function remove() {}', 'export default {}', "export { helper } from './helper';"]) {
+    await writeFile(path, valid + '\n' + extra);
+    await expect(checkBoundaries({ root: dir })).rejects.toThrow(/public|export|method/i);
+  }
 });
 test('extra_plugin_cloud_object_is_rejected', async () => {
   const dir = await fixture(); const rogue = join(dir, 'src/uni_modules/rogue/uniCloud/cloudfunctions/admin-co'); await mkdir(rogue, { recursive: true });

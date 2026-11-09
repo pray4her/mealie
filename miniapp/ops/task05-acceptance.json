@@ -1,0 +1,262 @@
+{
+  "ticket": "task05",
+  "version": 1,
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "5309fde6f835d5899c1e64355dd699d012c11e0dff6c2e6d0a5ac7a2a3628fe1",
+  "configuration": {
+    "status": "pending",
+    "evidenceFile": "ops/task05-cloud-checks.md",
+    "evidenceRef": "not-executed"
+  },
+  "local": {
+    "status": "passed",
+    "evidenceFile": "ops/task05-test-evidence.md",
+    "evidenceRef": "final Taskfile check: ten steps exit 0; 40 suites / 518 tests; independent review fix RED-to-GREEN",
+    "buildSha256": "ff02ff9dc9f3fabccf9d6a4b651e1ded4e0a5ccd7dfb2315e9a5fed0e9a5d724",
+    "scenarios": {
+      "full-check": {
+        "status": "passed",
+        "evidenceFile": "ops/task05-test-evidence.md",
+        "evidenceRef": "final Taskfile check: ten steps exit 0; 40 suites / 518 tests; independent review fix RED-to-GREEN"
+      }
+    }
+  },
+  "cloud": {
+    "status": "pending",
+    "evidenceFile": "ops/task05-cloud-checks.md",
+    "evidenceRef": "not-executed",
+    "buildSha256": "a0945d691d201eed9e7aa011f16432b63cfebd09eb6b5250efc076103135fad4",
+    "scenarios": {
+      "create-read-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "unknown-quantity": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "text-boundaries": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "cross-family": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "forged-ownership": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "stale-edit": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "same-version-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "same-request": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "conflicting-payload": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "rollback-writes": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "commit-ack-lost": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "protected-write-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "audit-delayed-removal": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "rejoin-generation": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "stale-first-delivery": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "read-revocation": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "content-pass": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "content-rejected": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "content-unavailable": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "quota-cross-instance": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "verified-conflict-codes": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "schema-indexes": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "safe-dtos": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "platform-log-capture": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "normal-artifact-and-cleanup": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-recipes-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-recipes-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-recipes-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-recipes-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    }
+  },
+  "device": {
+    "status": "pending",
+    "evidenceFile": "ops/task05-cloud-checks.md",
+    "evidenceRef": "not-executed",
+    "buildSha256": "3253f554a6561f249aeabb4338c826bf8dd1593f37aeb705efd3dfd58171fbec",
+    "scenarios": {
+      "create-read-edit": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "ingredient-step-rows": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "unknown-quantity": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "shared-edit-conflict": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "weak-network-original-request": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "pending-cold-start": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "hidden-late-response": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "removed-member-onboarding": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "logout-account-isolation": {
+        "status": "pending",
+        "evidenceFile": "ops/task05-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    },
+    "artifactStatus": "HBuilderX candidate only; not tested on physical device"
+  },
+  "localVerification": {
+    "node": "22.23.3",
+    "pnpm": "10.20.0",
+    "task": "3.54.0",
+    "suites": 40,
+    "tests": 518,
+    "review": {
+      "critical": 0,
+      "importantFound": 1,
+      "importantFixed": 1,
+      "minor": 0,
+      "rounds": 1
+    }
+  },
+  "deployment": {
+    "status": "uploaded-and-readback-verified",
+    "evidenceFile": "ops/task05-deployment.md",
+    "cloudBuildSha256": "a0945d691d201eed9e7aa011f16432b63cfebd09eb6b5250efc076103135fad4",
+    "resources": 8,
+    "sourceResourcesVerified": 8,
+    "protectedDependencyFilesUnchanged": 34,
+    "cloudBusinessTested": false,
+    "physicalDeviceTested": false
+  }
+}

@@ -7,7 +7,7 @@ import { doctor } from './doctor.mjs';
 
 // Offline inventory only: no cloud SDK, shell command, association, upload or DB API.
 export async function createDeployPreview({ root, ticket }) {
-  if (ticket !== undefined && !['task02', 'task03', 'task04'].includes(ticket)) throw new Error('Unknown preview ticket');
+  if (ticket !== undefined && !['task02', 'task03', 'task04', 'task05'].includes(ticket)) throw new Error('Unknown preview ticket');
   const target = JSON.parse(await readFile(join(root, 'ops/project-target.json'), 'utf8'));
   const readiness = await doctor({ root, ticket });
   if (readiness.blockers.includes('target-invalid')) throw new Error('Invalid project target');
@@ -53,6 +53,13 @@ export async function createDeployPreview({ root, ticket }) {
       proposedChanges: resources.filter(item => ['family-co', 'home-family', 'home-contracts', 'mutation_receipts.schema.json'].includes(item.name)),
       preservationRequired: 'Reconcile and preserve remote identity/configuration/bridge dependencies. Extend only the receipt schema; no collection reset, new collection, index, environment variable or plugin initialization.',
       compatibility: 'Deploy matching cloud and mini-program artifacts together in the isolated test space; MemberView now includes generation and strict older clients must be replaced.',
+    } : {}),
+    ...(ticket === 'task05' ? {
+      sharedModuleImpact: ['account-co', 'uni-id-co', 'family-co', 'recipes-co'],
+      protectedDependencies: ['uni-id-common', 'uni-config-center', 'uni-open-bridge-common'],
+      proposedChanges: resources.filter(item => ['recipes-co', 'home-recipes', 'home-family', 'home-kernel', 'home-contracts', 'recipes.schema.json', 'recipes.index.json', 'mutation_receipts.schema.json'].includes(item.name)),
+      preservationRequired: 'Reconcile remote identity/configuration/bridge dependencies before upload; no collection reset or full-plugin initialization. Family content checks retain scene 1; recipe checks use scene 3.',
+      compatibility: 'Matching cloud and client contracts; all recipe writes require expected family and membership generation. Existing family interfaces remain unchanged.',
     } : {}),
     compiledCloudArtifactSha256: null,
     resources: resources.sort((a, b) => a.path.localeCompare(b.path)),

@@ -6,7 +6,8 @@
     "paths": {
       "home-contracts": ["uniCloud-alipay/cloudfunctions/common/home-contracts/index.ts"],
       "home-kernel": ["uniCloud-alipay/cloudfunctions/common/home-kernel/index.ts"],
-      "home-family": ["uniCloud-alipay/cloudfunctions/common/home-family/index.ts"]
+      "home-family": ["uniCloud-alipay/cloudfunctions/common/home-family/index.ts"],
+      "home-recipes": ["uniCloud-alipay/cloudfunctions/common/home-recipes/index.ts"]
     },
     "types": ["node", "vitest", "vite/client", "@dcloudio/types", "@uni-helper/uni-app-types"]
   },

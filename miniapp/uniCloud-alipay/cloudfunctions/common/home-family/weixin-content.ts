@@ -1,7 +1,7 @@
 import { AppError } from 'home-kernel';
 import type { ContentPort } from 'home-kernel';
 
-interface Checker { textSecCheck(input: { content: string; openid: string; scene: 1; version: 2 }): Promise<unknown> }
+interface Checker { textSecCheck(input: { content: string; openid: string; scene: 1 | 3; version: 2 }): Promise<unknown> }
 interface CheckerConstructor { new(options: { provider: 'mp-weixin'; appId: string; requestId: string }): Checker }
 interface ContentOptions {
   uid: string; appId: string; requestId: string;
@@ -9,6 +9,7 @@ interface ContentOptions {
   readOpenid: (uid: string) => Promise<unknown>;
   loadChecker?: () => CheckerConstructor;
   timeoutMs?: number;
+  scene?: 1 | 3;
 }
 function object(value: unknown): value is Record<string, unknown> { return !!value && typeof value === 'object' && !Array.isArray(value); }
 export function createWeixinContentPort(options: ContentOptions): ContentPort {
@@ -17,7 +18,7 @@ export function createWeixinContentPort(options: ContentOptions): ContentPort {
       let timer: ReturnType<typeof setTimeout> | undefined;
       try {
         const timeoutMs = options.timeoutMs ?? 5000;
-        if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > 5000) throw new AppError('UNAVAILABLE');
+        if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > 5000 || (options.scene !== undefined && options.scene !== 1 && options.scene !== 3)) throw new AppError('UNAVAILABLE');
         return await Promise.race([
           check(content),
           new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new AppError('UNAVAILABLE')), timeoutMs); }),
@@ -33,7 +34,7 @@ export function createWeixinContentPort(options: ContentOptions): ContentPort {
       if (typeof openid !== 'string' || !openid || openid.trim() !== openid) throw new AppError('UNAVAILABLE');
       const Checker = (options.loadChecker ?? (() => require('uni-sec-check') as CheckerConstructor))();
       const result = await new Checker({ provider: 'mp-weixin', appId: options.appId, requestId: options.requestId })
-        .textSecCheck({ content, openid, scene: 1, version: 2 });
+        .textSecCheck({ content, openid, scene: options.scene ?? 1, version: 2 });
       if (!object(result) || typeof result.errMsg !== 'string' || !object(result.result) || typeof result.result.label !== 'string' || !result.result.label) throw new AppError('UNAVAILABLE');
       if (result.errCode === 0 && result.result.suggest === 'pass') return 'allowed';
       if (result.errCode === 'uni-sec-check-risk-content'

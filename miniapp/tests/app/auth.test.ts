@@ -16,7 +16,7 @@ const navigation: string[] = [];
 beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
 test('calls_weixin_then_server_session', async () => {
   const order: string[] = []; const boundary = createSessionBoundary(createMemoryStorage());
-  const client = { family: createHarness().family('alice'), account: createAccountApi({ boundary, platformLogin: async () => { order.push('weixin'); return 'short-code'; }, wire: {
+  const client = { ...createHarness().client('alice'), account: createAccountApi({ boundary, platformLogin: async () => { order.push('weixin'); return 'short-code'; }, wire: {
     async loginByWeixin(code) { expect(code).toBe('short-code'); order.push('login'); }, async session() { order.push('session'); return { uid: 'alice' }; }, async logout() {},
   } }) };
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click'); await flushPromises();
@@ -34,7 +34,7 @@ test('direct_entry_and_return_run_guard', async () => {
 });
 test('network_failure_hides_protected_content_without_revoking_token', async () => {
   const storage = createMemoryStorage(); storage.set('uni_id_token', 'existing');
-  const client: AppClient = { family: createHarness().family('alice'), account: { async session() { throw Object.assign(new Error('safe'), { code: 'UNAVAILABLE' }); }, async signInWeixin() { throw new Error('unused'); }, async signOut() {} } };
+  const client: AppClient = { ...createHarness().client('alice'), account: { async session() { throw Object.assign(new Error('safe'), { code: 'UNAVAILABLE' }); }, async signInWeixin() { throw new Error('unused'); }, async signOut() {} } };
   const page = mountPage(Onboarding, { client }); await page.show();
   expect(page.wrapper.find('[data-protected]').exists()).toBe(false); expect(page.auth.phase.value).toBe('unavailable'); expect(storage.get('uni_id_token')).toBe('existing'); expect(navigation).toEqual([]);
 });
@@ -45,7 +45,7 @@ test('clears_state_even_when_logout_fails', async () => {
 });
 test('login_double_tap_shares_one_attempt', async () => {
   const pending = deferCall(); let calls = 0;
-  const client: AppClient = { family: createHarness().family('alice'), account: { async signInWeixin() { calls++; await pending.promise; return { uid: 'alice' }; }, async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {} } };
+  const client: AppClient = { ...createHarness().client('alice'), account: { async signInWeixin() { calls++; await pending.promise; return { uid: 'alice' }; }, async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {} } };
   const page = mountPage(Login, { client }); await page.show();
   const first = page.auth.signIn(); const second = page.auth.signIn(); void first.catch(() => {}); void second.catch(() => {}); expect(first).toBe(second); expect(calls).toBe(1); pending.resolve(null); await first;
 });
@@ -78,7 +78,7 @@ test('login_hidden_then_shown_does_not_run_the_previous_show_navigation', async 
 
 test('current_login_show_finishes_pending_sign_in_once_after_repeated_hide_and_show', async () => {
   const gate = deferCall(); const signIn = vi.fn(async () => { await gate.promise; return { uid: 'alice' }; });
-  const client: AppClient = { family: createHarness().family('alice'), account: {
+  const client: AppClient = { ...createHarness().client('alice'), account: {
     signInWeixin: signIn, async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
   } };
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click');
@@ -91,7 +91,7 @@ test('current_login_show_finishes_pending_sign_in_once_after_repeated_hide_and_s
 
 test.each(['hide', 'unload'] as const)('pending_sign_in_cannot_navigate_after_current_show_%s', async lifecycle => {
   const gate = deferCall();
-  const client: AppClient = { family: createHarness().family('alice'), account: {
+  const client: AppClient = { ...createHarness().client('alice'), account: {
     async signInWeixin() { await gate.promise; return { uid: 'alice' }; },
     async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
   } };
@@ -103,7 +103,7 @@ test.each(['hide', 'unload'] as const)('pending_sign_in_cannot_navigate_after_cu
 test.each(['AUTH_REQUIRED', 'UNAVAILABLE'])('pending_sign_in_failure_after_new_show_remains_retryable_%s', async code => {
   const gate = deferCall(); const signIn = vi.fn(async () => ({ uid: 'alice' }))
     .mockImplementationOnce(async () => { await gate.promise; throw Object.assign(new Error('safe'), { code }); });
-  const client: AppClient = { family: createHarness().family('alice'), account: {
+  const client: AppClient = { ...createHarness().client('alice'), account: {
     signInWeixin: signIn, async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
   } };
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click');
@@ -117,7 +117,7 @@ test.each(['AUTH_REQUIRED', 'UNAVAILABLE'])('pending_sign_in_failure_after_new_s
 test('pending_sign_in_for_previous_uid_cannot_route_current_show', async () => {
   const gate = deferCall(); const signIn = vi.fn(async () => ({ uid: 'bob' }))
     .mockImplementationOnce(async () => { await gate.promise; return { uid: 'alice' }; });
-  const client: AppClient = { family: createHarness().family('alice'), account: {
+  const client: AppClient = { ...createHarness().client('alice'), account: {
     signInWeixin: signIn, async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
   } };
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click');

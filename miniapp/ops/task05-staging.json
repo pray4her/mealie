@@ -1,0 +1,104 @@
+{
+  "ticket": "task05",
+  "base": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\mealie-task05-4caec6f199fa4a3da261960dcd709b6e",
+  "readonlyRoot": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\mealie-task05-4caec6f199fa4a3da261960dcd709b6e\\readonly",
+  "stagingRoot": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\mealie-task05-4caec6f199fa4a3da261960dcd709b6e\\upload-stage",
+  "postRoot": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\mealie-task05-4caec6f199fa4a3da261960dcd709b6e\\post-readonly",
+  "readbackRoot": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\mealie-task05-4caec6f199fa4a3da261960dcd709b6e\\readback",
+  "target": {
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie",
+    "provider": "alipay"
+  },
+  "uploadAuthorized": true,
+  "uploaded": true,
+  "secretConfigurationParsedOrPrinted": false,
+  "protectedModules": [
+    {
+      "name": "uni-id-common",
+      "version": "1.0.19",
+      "pluginVersion": "1.0.19",
+      "files": 2,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-config-center",
+      "version": "0.0.3",
+      "pluginVersion": null,
+      "files": 5,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "version": "1.0.0",
+      "pluginVersion": "1.2.1",
+      "files": 9,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-sec-check",
+      "version": "2.0.2",
+      "pluginVersion": "2.0.2",
+      "files": 16,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-cloud-s2s",
+      "version": "1.0.1",
+      "pluginVersion": null,
+      "files": 2,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    }
+  ],
+  "postUploadProtectedBytesVerified": true,
+  "dependenciesContained": true,
+  "sourceResourcesVerified": 8,
+  "receiptSchemaDeltaVerified": true,
+  "schemaCanonicalReadbackMatched": true,
+  "cloudArtifacts": [
+    {
+      "name": "home-contracts",
+      "files": 4,
+      "provenance": "official downloaded deployed JS; no local recompile substituted"
+    },
+    {
+      "name": "home-kernel",
+      "files": 11,
+      "provenance": "official downloaded deployed JS; no local recompile substituted"
+    },
+    {
+      "name": "home-family",
+      "files": 13,
+      "provenance": "official downloaded deployed JS; no local recompile substituted"
+    },
+    {
+      "name": "home-recipes",
+      "files": 3,
+      "provenance": "official downloaded deployed JS; no local recompile substituted"
+    },
+    {
+      "name": "recipes-co",
+      "files": 1,
+      "provenance": "__dist__/index.obj.js preserved from complete official deployed ZIP; restored TS matches approved source"
+    }
+  ],
+  "publicMethods": [
+    "create",
+    "get",
+    "list",
+    "update"
+  ],
+  "deviceCandidate": {
+    "directory": "dist/task05-device/mp-weixin",
+    "build": "HBuilderX 5.34 publish mp-weixin --upload false",
+    "appIdVerified": true,
+    "linkedSpaceVerified": true,
+    "wechatPlatformUploaded": false,
+    "physicalDeviceTested": false
+  }
+}

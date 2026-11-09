@@ -1,0 +1,15 @@
+# Task05 ledger — plan: docs/superpowers/plans/2026-11-09-wechat-unicloud-task05.md
+
+Baseline: miniapp-dev at 1ea0e3cad; clean worktree, 34 suites / 445 tests passed with pinned tools during planning.
+Execution: approved inline execution in the current project checkout; no worktree creation, commits, push or issue closure.
+Pre-flight: Task 1 contracts feed Task 2 production client/controllers/harness; Task 3 gates must admit exactly the new recipe object and three routes. Existing Task04 membership generation and mutation fence are retained.
+Task 1: local implementation complete. Domain 41 cases and real cloud-entry/query contract tests passed. Existing family fixture loader was shared rather than duplicating its platform simulation. Cloud acceptance is not implied.
+Task 2: local implementation complete. Actual SFC create/list/detail/edit, rows, nullable values, double tap, lost reply/cold start, conflict reload and hidden/logout cases passed. A reproduced same-account-login draft leak was fixed RED→GREEN.
+Task 3: in progress. Task05 preview/doctor tests initially failed for an unknown ticket; implementation now binds independent source/cloud/client/device evidence. Full checks and final review pending.
+Final review: one fresh-context reviewer, 1 Important / 0 Critical / 0 Minor. Reproduced pending deadlock after UNAVAILABLE then content rejection.
+Final: Ruling: audit rejection now has a terminal request receipt — a late success must lose to a committed rejection before the client may safely unlock — costs one bounded metadata write on rejected content; no unaudited recipe is stored.
+Final: Ruling: real platform transactions/conflict codes/schema/indexes/content/device remain pending until isolated-space evidence exists; fixture success cannot establish them. Search/favorites/media/AI/deletion remain later-ticket scope.
+Final: fixed recovery deadlock — three named client/late-allow/late-reject regressions RED→GREEN, plus rejection commit-unknown coverage. Final whole suite 40 suites / 518 tests; all ten Taskfile check steps exited 0. No deferred minors; no second review.
+Task 3: local verification complete. HBuilderX 5.34 --upload false rebuilt the linked-space device candidate; 68 files copied and byte-compared, then the normal CLI build was restored by the final check. No cloud resource or WeChat platform upload occurred.
+Delivery: retain this ledger and uncommitted checkout; Git integration was explicitly excluded. Concrete eight-resource upload scope prepared; cloud/device acceptance remains pending.
+Deployment: user explicitly approved the eight-resource isolated-space update. All eight official CLI uploads succeeded; five TS resources compiled. Both schemas read back identically; all 34 files in five preserved dependencies unchanged. Actual remote JS retained (32 files), object TS matches approved source, public exports exactly four. No business/device acceptance performed or inferred.
