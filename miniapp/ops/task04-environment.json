@@ -1,0 +1,18 @@
+{
+  "ticket": "task04",
+  "target": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b"
+  },
+  "environmentNames": [
+    "FAMILY_INVITATION_KEY_VERSION",
+    "FAMILY_INVITATION_KEYS"
+  ],
+  "remoteEntryCount": 2,
+  "present": true,
+  "formatVerified": true,
+  "currentVersionHasKey": true,
+  "valuesPrintedOrStored": false,
+  "environmentWritesPerformed": false,
+  "prePostValueComparison": false
+}

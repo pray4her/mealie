@@ -13,7 +13,7 @@ async function fixture() {
   await writeFile(join(account, 'index.obj.ts'), 'export async function session() {}');
   await writeFile(join(account, 'package.json'), '{"name":"account-co","private":true}');
   const family = join(dir, 'uniCloud-alipay/cloudfunctions/family-co'); await mkdir(family, { recursive: true });
-  await writeFile(join(family, 'index.obj.ts'), 'export async function current() {}\nexport async function create() {}\nexport async function invite() {}\nexport async function revokeInvite() {}\nexport async function join() {}\nexport async function members() {}\nexport async function invitations() {}');
+  await writeFile(join(family, 'index.obj.ts'), 'export async function current() {}\nexport async function create() {}\nexport async function invite() {}\nexport async function revokeInvite() {}\nexport async function join() {}\nexport async function members() {}\nexport async function invitations() {}\nexport async function leave() {}\nexport async function removeMember() {}\nexport async function transferOwner() {}');
   await writeFile(join(family, 'package.json'), '{"name":"family-co","private":true}');
   for (const name of ['home-kernel', 'home-contracts']) {
     const common = join(dir, 'uniCloud-alipay/cloudfunctions/common', name); await mkdir(common, { recursive: true });

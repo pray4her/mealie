@@ -4,6 +4,7 @@ import { AppError, createDatabasePort, createRequireIdentity, createUniIdPorts, 
 import type { DatabasePlatform } from 'home-kernel';
 import { createFamilyService, createWeixinContentPort, createInvitationTokens, createFamilyReads } from 'home-family';
 import type { FamilyReadPlatform } from 'home-family';
+import type { MemberMutation, MembershipMutation } from 'home-contracts';
 
 interface Context { getUniIdToken(): string | undefined; getClientInfo(): ClientInfo; getUniCloudRequestId(): string }
 type Reply<T> = CloudSuccess<T> | { errCode: string };
@@ -81,4 +82,13 @@ export async function members(this: Context, ...args: unknown[]): Promise<Reply<
 }
 export async function invitations(this: Context, input: unknown, ...extra: unknown[]): Promise<Reply<InvitationPage>> {
   return call(this, extra, service => service.invitations(input as { cursor?: string }));
+}
+export async function leave(this: Context, input: unknown, ...extra: unknown[]): Promise<Reply<null>> {
+  return call(this, extra, async service => { await service.leave(input as MembershipMutation); return null; });
+}
+export async function removeMember(this: Context, input: unknown, ...extra: unknown[]): Promise<Reply<null>> {
+  return call(this, extra, async service => { await service.removeMember(input as MemberMutation); return null; });
+}
+export async function transferOwner(this: Context, input: unknown, ...extra: unknown[]): Promise<Reply<FamilyContext>> {
+  return call(this, extra, service => service.transferOwner(input as MemberMutation));
 }

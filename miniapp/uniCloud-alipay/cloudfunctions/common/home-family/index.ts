@@ -12,6 +12,7 @@ import { currentFamily } from './current';
 import { createFamily } from './create';
 import { inviteMember, revokeInvitation, joinFamily } from './invitations';
 import { listInvitations, listMembers } from './family-reads';
+import { leaveFamily, removeFamilyMember, transferFamilyOwner } from './membership-actions';
 import type { InvitationTokens } from './invitation-token';
 import type { FamilyReads } from './family-reads';
 
@@ -36,5 +37,8 @@ export function createFamilyService(deps: FamilyDeps, identity: Identity): Famil
     async join(input) { try { return await joinFamily(deps, identity, input); } catch (error) { throw safeError(error); } },
     async members() { try { return await listMembers(deps, identity); } catch (error) { throw safeError(error); } },
     async invitations(input) { try { return await listInvitations(deps, identity, input); } catch (error) { throw safeError(error); } },
+    async leave(input) { try { await leaveFamily(deps, identity, input); } catch (error) { throw safeError(error); } },
+    async removeMember(input) { try { await removeFamilyMember(deps, identity, input); } catch (error) { throw safeError(error); } },
+    async transferOwner(input) { try { return await transferFamilyOwner(deps, identity, input); } catch (error) { throw safeError(error); } },
   };
 }

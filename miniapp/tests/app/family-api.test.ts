@@ -10,6 +10,24 @@ import { afterEach, vi } from 'vitest';
 afterEach(() => { vi.unstubAllGlobals(); });
 
 const view = { uid: 'alice', familyId: 'family-1', generation: 'generation-1', role: 'owner', name: '家' };
+test('membership_api_forwards_only_the_complete_expected_context_and_checks_results', async () => {
+  const sent: unknown[] = []; let data: unknown = null;
+  const boundary = createSessionBoundary(createMemoryStorage());
+  const api = createFamilyApi({ boundary, invoke: async (_object, method, input) => { sent.push([method, input]); return data as never; } });
+  const leave = { requestId: 'membership-api-0001', familyId: 'home', generation: 'actor-generation' };
+  const member = { ...leave, uid: 'bob', targetGeneration: 'target-generation' };
+  await expect(api.leave(leave)).resolves.toBeUndefined(); await expect(api.removeMember(member)).resolves.toBeUndefined();
+  data = { uid: 'alice', familyId: 'home', role: 'member', generation: 'new-generation' };
+  expect(await api.transferOwner(member)).toEqual(data);
+  expect(sent).toEqual([['leave', leave], ['removeMember', member], ['transferOwner', member]]);
+  for (const method of ['leave', 'removeMember', 'transferOwner'] as const) {
+    const privileged = { ...member, admin: true };
+    await expect(api[method](privileged)).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+    await expect(api[method]({ ...member, generation: '' })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+  }
+  data = {}; await expect(api.leave(leave)).rejects.toMatchObject({ code: 'UNAVAILABLE' });
+  data = { uid: 'alice', familyId: 'home', role: 'owner', generation: 'new' }; await expect(api.transferOwner(member)).rejects.toMatchObject({ code: 'UNAVAILABLE' });
+});
 test('family_calls_use_the_shared_transport_and_explicit_empty_current_input', async () => {
   const sent: unknown[] = []; const boundary = createSessionBoundary(createMemoryStorage());
   const cloud = createCloudClient({ boundary, transport: async (object, method, input) => {
@@ -42,7 +60,7 @@ test('invitation_and_member_api_only_accept_safe_dtos', async () => {
   await expect(api.invite({ requestId: 'api-invite-0000001' })).rejects.toMatchObject({ code: 'UNAVAILABLE' });
   data = [{ uid: 'bob', nickname: '家人', role: 'member', openid: 'private' }];
   await expect(api.members()).rejects.toMatchObject({ code: 'UNAVAILABLE' });
-  data = [{ uid: 'bob', nickname: '家人', role: 'member' }]; expect(await api.members()).toEqual(data);
+  data = [{ uid: 'bob', nickname: '家人', role: 'member', generation: 'member-generation' }]; expect(await api.members()).toEqual(data);
   data = { uid: 'bob', familyId: 'home', role: 'member', generation: 'new' }; expect(await api.join({ requestId: 'api-join-000000001', token })).toEqual(data);
   data = { ...data as object, name: 'extra' };
   await expect(api.join({ requestId: 'api-join-000000001', token })).rejects.toMatchObject({ code: 'UNAVAILABLE' });

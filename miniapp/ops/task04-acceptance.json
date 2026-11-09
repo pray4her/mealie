@@ -1,0 +1,479 @@
+{
+  "ticket": "task04",
+  "version": 1,
+  "recordedAt": "2026-11-09T02:39:21.611Z",
+  "timezone": "Asia/Shanghai",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "1026c0a9003cf5842741f15181926af1d7e964f3a9cc3b2d8e8091934fce68b0",
+  "configuration": {
+    "status": "pending",
+    "evidenceRef": "not-executed",
+    "evidenceFile": "ops/task04-cloud-checks.md",
+    "readOnlyInspection": {
+      "hbuilderx": "5.34.2026102909",
+      "protocolVersion": 1,
+      "provider": "alipay",
+      "spaceId": "env-00jy7289et7b",
+      "spaceName": "mealie",
+      "functions": [
+        "account-co",
+        "family-co",
+        "uni-id-co"
+      ],
+      "commonModuleCount": 9,
+      "databaseResourceCount": 15,
+      "proposedResourcesExist": true,
+      "isolatedUseReconfirmed": true,
+      "protectedRemoteBytesReconciled": true
+    },
+    "deploymentChecks": {
+      "resourcesUploaded": 4,
+      "receiptSchemaReadbackMatched": true,
+      "protectedRemoteFilesUnchanged": 16,
+      "invitationEnvironmentFormatVerified": true,
+      "platformLogCaptureVerified": false
+    }
+  },
+  "local": {
+    "status": "passed",
+    "evidenceRef": "2026-11-09-final-local-check-445-tests",
+    "evidenceFile": "ops/task04-test-evidence.md",
+    "buildSha256": "bf8d5bb169dd4fea00fac65b5bdfe2a814baf58b4edb4f0db69cab62ce300065",
+    "tests": 445,
+    "suites": 34,
+    "checkSteps": 10,
+    "nodeVersion": "22.23.3",
+    "command": "Taskfile check sequence via direct pinned Node CLIs; vitest --maxWorkers=2",
+    "logFile": "dist/task04-checks/local-check.log",
+    "scenarios": {
+      "full-check": {
+        "status": "passed",
+        "evidenceRef": "2026-11-09-final-local-check-445-tests",
+        "evidenceFile": "ops/task04-test-evidence.md"
+      }
+    },
+    "originalVerifiedCliBuildSha256": "752aa01478c9fca22cd9ad1511b1a83b6a82f69fdea9cb625238c3bfcecf93c4",
+    "postDeploymentBuildAndArtifactScans": "passed; source unchanged"
+  },
+  "cloud": {
+    "status": "pending",
+    "evidenceRef": "not-executed",
+    "evidenceFile": "ops/task04-cloud-checks.md",
+    "buildSha256": "3185bec6ac4e1c67d8de5c5bc15527feb228309a6d9ab3923b33fbf59d3ffe85",
+    "scenarios": {
+      "owner-cannot-leave": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "leave-old-token": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "remove-old-token": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "transfer-normal": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "transfer-atomic": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "concurrent-transfers": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "transfer-remove-race": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "transfer-leave-race": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "protected-write-race": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "rejoin-generation": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "stale-first-delivery": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "owner-aba-invitations": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "same-request": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "conflicting-payload": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "replay-after-rejoin": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "rollback-writes": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "commit-ack-lost": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "verified-conflict-codes": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "member-forbidden": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "cross-family": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "quota-cross-instance": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "safe-dtos": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "platform-log-capture": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "normal-artifact-and-cleanup": {
+        "status": "passed",
+        "evidenceRef": "2026-11-09-official-deployed-js-downloads-no-probes",
+        "evidenceFile": "ops/task04-deployment.md"
+      },
+      "clientdb-families-read": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-families-create": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-families-update": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-families-delete": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_members-read": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_members-create": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_members-update": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_members-delete": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_invitations-read": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_invitations-create": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_invitations-update": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-family_invitations-delete": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-mutation_receipts-read": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-mutation_receipts-create": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-mutation_receipts-update": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-mutation_receipts-delete": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-request_limits-read": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-request_limits-create": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-request_limits-update": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "clientdb-request_limits-delete": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      }
+    }
+  },
+  "device": {
+    "status": "pending",
+    "evidenceRef": "not-executed",
+    "evidenceFile": "ops/task04-cloud-checks.md",
+    "buildSha256": "f5b76799e5c381999dbee4bf3ff161b35a89b1cd5ed3c664f8dff4a3b651dd90",
+    "scenarios": {
+      "leave-confirm-cancel": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "remove-member": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "transfer-owner": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "removed-member-onboarding": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "lost-transfer-cold-start": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "lost-leave-cold-start": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "weak-network-original-request": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "hidden-confirmation": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      },
+      "logout-account-isolation": {
+        "status": "pending",
+        "evidenceRef": "not-executed",
+        "evidenceFile": "ops/task04-cloud-checks.md"
+      }
+    }
+  },
+  "review": {
+    "rounds": 1,
+    "critical": 0,
+    "important": 2,
+    "importantFixed": 2,
+    "regressionTests": 4,
+    "result": "fixed-and-full-local-check-passed"
+  },
+  "deployment": {
+    "uploadAuthorized": true,
+    "uploaded": true,
+    "productionAuthorized": false,
+    "evidenceFile": "ops/task04-deployment.md",
+    "recordFile": "ops/task04-deployment.json"
+  },
+  "deliveryStatus": "completed-user-confirmed-acceptance",
+  "closeout": {
+    "status": "completed-user-confirmed-acceptance",
+    "date": "2026-11-09",
+    "timezone": "Asia/Shanghai",
+    "userStatement": "云端业务、并发及真机我已验收，关闭工单，收束文档，生成git信息提交并推送。",
+    "acceptance": {
+      "status": "accepted",
+      "source": "explicit-user-report",
+      "scope": [
+        "cloud-business",
+        "concurrency",
+        "wechat-physical-device"
+      ],
+      "issueAcceptanceCriteriaAccepted": 3,
+      "agentRepeatedCloudOrDeviceTests": false,
+      "rawScenarioEvidenceAttached": false,
+      "actualTestedBuildSha256Provided": false
+    },
+    "evidenceNote": "Historical configuration/cloud/device scenario records and deployed artifact digests remain unchanged. User-reported completion is recorded separately and is the basis for closing Issue #4; it is not presented as new agent-observed platform evidence.",
+    "issue": {
+      "url": "https://github.com/pray4her/mealie/issues/4",
+      "state": "closed",
+      "stateReason": "completed",
+      "closedAt": "2026-11-09T06:58:58Z",
+      "acceptanceCheckboxes": 3,
+      "readyForAgentRemoved": true,
+      "independentReadbackVerified": true
+    },
+    "localVerification": {
+      "status": "passed",
+      "tests": 445,
+      "suites": 34,
+      "checkSteps": 10,
+      "nodeVersion": "22.23.3",
+      "command": "all Taskfile check steps using pinned direct CLI fallback; vitest --maxWorkers=2",
+      "logFile": "dist/task04-checks/closeout-local-check.log",
+      "snapshot": {
+        "sourceSha256": "1026c0a9003cf5842741f15181926af1d7e964f3a9cc3b2d8e8091934fce68b0",
+        "clientBuildSha256": "807708fd322cd7c1b1f957f15b4201ac37ce97e0384fb0e70c6bb52529de2fb6",
+        "deviceBuildSha256": "f5b76799e5c381999dbee4bf3ff161b35a89b1cd5ed3c664f8dff4a3b651dd90",
+        "cloudBuildSha256": "3185bec6ac4e1c67d8de5c5bc15527feb228309a6d9ab3923b33fbf59d3ffe85",
+        "probeRemnants": []
+      },
+      "historicalBindingsOverwritten": false,
+      "strictDoctor": {
+        "ready": false,
+        "blockerCount": 56,
+        "blockers": [
+          "task04-configuration-unverified",
+          "task04-local-build-drift",
+          "task04-cloud-acceptance-missing",
+          "task04-cloud-scenario:owner-cannot-leave",
+          "task04-cloud-scenario:leave-old-token",
+          "task04-cloud-scenario:remove-old-token",
+          "task04-cloud-scenario:transfer-normal",
+          "task04-cloud-scenario:transfer-atomic",
+          "task04-cloud-scenario:concurrent-transfers",
+          "task04-cloud-scenario:transfer-remove-race",
+          "task04-cloud-scenario:transfer-leave-race",
+          "task04-cloud-scenario:protected-write-race",
+          "task04-cloud-scenario:rejoin-generation",
+          "task04-cloud-scenario:stale-first-delivery",
+          "task04-cloud-scenario:owner-aba-invitations",
+          "task04-cloud-scenario:same-request",
+          "task04-cloud-scenario:conflicting-payload",
+          "task04-cloud-scenario:replay-after-rejoin",
+          "task04-cloud-scenario:rollback-writes",
+          "task04-cloud-scenario:commit-ack-lost",
+          "task04-cloud-scenario:verified-conflict-codes",
+          "task04-cloud-scenario:member-forbidden",
+          "task04-cloud-scenario:cross-family",
+          "task04-cloud-scenario:quota-cross-instance",
+          "task04-cloud-scenario:safe-dtos",
+          "task04-cloud-scenario:platform-log-capture",
+          "task04-cloud-scenario:clientdb-families-read",
+          "task04-cloud-scenario:clientdb-families-create",
+          "task04-cloud-scenario:clientdb-families-update",
+          "task04-cloud-scenario:clientdb-families-delete",
+          "task04-cloud-scenario:clientdb-family_members-read",
+          "task04-cloud-scenario:clientdb-family_members-create",
+          "task04-cloud-scenario:clientdb-family_members-update",
+          "task04-cloud-scenario:clientdb-family_members-delete",
+          "task04-cloud-scenario:clientdb-family_invitations-read",
+          "task04-cloud-scenario:clientdb-family_invitations-create",
+          "task04-cloud-scenario:clientdb-family_invitations-update",
+          "task04-cloud-scenario:clientdb-family_invitations-delete",
+          "task04-cloud-scenario:clientdb-mutation_receipts-read",
+          "task04-cloud-scenario:clientdb-mutation_receipts-create",
+          "task04-cloud-scenario:clientdb-mutation_receipts-update",
+          "task04-cloud-scenario:clientdb-mutation_receipts-delete",
+          "task04-cloud-scenario:clientdb-request_limits-read",
+          "task04-cloud-scenario:clientdb-request_limits-create",
+          "task04-cloud-scenario:clientdb-request_limits-update",
+          "task04-cloud-scenario:clientdb-request_limits-delete",
+          "task04-device-acceptance-missing",
+          "task04-device-scenario:leave-confirm-cancel",
+          "task04-device-scenario:remove-member",
+          "task04-device-scenario:transfer-owner",
+          "task04-device-scenario:removed-member-onboarding",
+          "task04-device-scenario:lost-transfer-cold-start",
+          "task04-device-scenario:lost-leave-cold-start",
+          "task04-device-scenario:weak-network-original-request",
+          "task04-device-scenario:hidden-confirmation",
+          "task04-device-scenario:logout-account-isolation"
+        ]
+      }
+    },
+    "gitDelivery": {
+      "authorized": true,
+      "remote": "upstream",
+      "repository": "pray4her/mealie",
+      "branch": "miniapp-dev",
+      "commitTitle": "feat(miniapp): 实现家庭成员退出与所有权管理 (#4)",
+      "includedInThisCommit": true
+    },
+    "productionReleaseAuthorized": false
+  }
+}

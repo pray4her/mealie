@@ -95,7 +95,7 @@ export async function listMembers(deps: FamilyDeps, identity: Identity): Promise
     const rows = (await deps.familyReads!.members(current.view.familyId, after)).map(memberRecord);
     if (rows.length > 100 || rows.some((row, index) => row.familyId !== current.view.familyId || row._id <= (index ? rows[index - 1]._id : after ?? ''))) throw new AppError('UNAVAILABLE');
     const names = await deps.familyReads!.nicknames(rows.map(row => row._id));
-    result.push(...rows.map(row => ({ uid: row._id, role: row.role, nickname: names[row._id] || '家庭成员' })));
+    result.push(...rows.map(row => ({ uid: row._id, role: row.role, generation: row.generation, nickname: names[row._id] || '家庭成员' })));
     if (rows.length < 100) break;
     after = rows[rows.length - 1]._id;
   }

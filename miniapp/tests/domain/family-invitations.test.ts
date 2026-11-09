@@ -120,7 +120,7 @@ test('multiple_invites_remain_independent_and_members_only_expose_safe_names', a
   await carol.family.join({ ...request('carol'), token: second.token });
   const members = await bob.family.members();
   expect(members).toHaveLength(3);
-  expect(members.every(row => Object.keys(row).sort().join(',') === 'nickname,role,uid')).toBe(true);
+  expect(members.every(row => Object.keys(row).sort().join(',') === 'generation,nickname,role,uid')).toBe(true);
   expect(members.every(row => row.nickname === '家庭成员')).toBe(true);
 });
 
@@ -201,11 +201,11 @@ test('invitation_pages_are_stable_at_equal_timestamps_and_members_are_not_trunca
   for (let i = 0; i < 103; i++) h.memory.seed('family_members', `extra-${String(i).padStart(3, '0')}`, { ...ownerRecord, _id: `extra-${String(i).padStart(3, '0')}`, role: 'member', generation: `extra-${i}` });
   h.nickname('owner', '家长');
   const members = await owner.family.members(); expect(members).toHaveLength(104);
-  expect(members.find(item => item.uid === 'owner')).toEqual({ uid: 'owner', nickname: '家长', role: 'owner' });
+  expect(members.find(item => item.uid === 'owner')).toEqual({ uid: 'owner', nickname: '家长', role: 'owner', generation: expect.any(String) });
   expect((await owner.family.current())?.familyId).toBe(family.familyId);
   const outside = h.client('outsider'); await outside.family.create({ ...request('other'), name: '外人家' });
   await expect(outside.family.invitations({ cursor: first.nextCursor })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
-  expect(await outside.family.members()).toEqual([{ uid: 'outsider', nickname: '家庭成员', role: 'owner' }]);
+  expect(await outside.family.members()).toEqual([{ uid: 'outsider', nickname: '家庭成员', role: 'owner', generation: expect.any(String) }]);
 });
 
 test('a_transient_owner_read_conflict_is_retried_instead_of_becoming_invalid_invitation', async () => {

@@ -6,6 +6,8 @@ import { createFamilyController } from '../features/family/use-family';
 import { createFamilyIntentStore, newRequestId } from '../features/family/intents';
 import { createInvitationIntents } from '../features/family/invitation-intents';
 import { createInvitationController } from '../features/family/use-invitations';
+import { createMembershipIntents } from '../features/family/membership-intents';
+import { createMembershipController } from '../features/family/use-membership';
 import type { SessionStorage } from './session-boundary';
 
 type ControllerOptions = { storage?: SessionStorage; newRequestId?: () => Promise<string> };
@@ -14,11 +16,12 @@ function createAppControllers(client: AppClient, options: ControllerOptions) {
   const storage = options.storage ?? {
     get: (key: string) => uni.getStorageSync(key), set: (key: string, value: unknown) => { uni.setStorageSync(key, value); }, remove: (key: string) => { uni.removeStorageSync(key); },
   };
-  const creations = createFamilyIntentStore(storage); const invitationIntents = createInvitationIntents(storage);
+  const creations = createFamilyIntentStore(storage); const invitationIntents = createInvitationIntents(storage); const membershipIntents = createMembershipIntents(storage);
   const random = options.newRequestId ?? newRequestId;
-  const family = createFamilyController({ api: client.family, account: client.account, auth, intents: creations, newRequestId: random, hasPendingJoin: uid => !!invitationIntents.read(uid, 'join') });
+  const family = createFamilyController({ api: client.family, account: client.account, auth, intents: creations, newRequestId: random, hasPendingJoin: uid => !!invitationIntents.read(uid, 'join') || !!membershipIntents.read(uid) });
   const invitations = createInvitationController({ api: client.family, auth, family, intents: invitationIntents, creations, newRequestId: random });
-  return { client, auth, family, invitations };
+  const membership = createMembershipController({ api: client.family, auth, family, intents: membershipIntents, newRequestId: random, invalidate() { family.clear(); invitations.conceal(); } });
+  return { client, auth, family, invitations, membership };
 }
 export const appClientKey: InjectionKey<ReturnType<typeof createAppControllers>> = Symbol('home-app-client');
 export function provideAppClient(app: App, client: AppClient, options: ControllerOptions = {}) { const value = createAppControllers(client, options); app.provide(appClientKey, value); return value; }

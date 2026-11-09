@@ -1,0 +1,111 @@
+[
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块home-contracts..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-contracts下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-contracts",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback",
+      "provider": "alipay",
+      "resourceName": "home-contracts",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback\\uniCloud-alipay\\cloudfunctions\\common\\home-contracts",
+      "message": "公共模块 home-contracts 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块home-family..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-family下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-family",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback",
+      "provider": "alipay",
+      "resourceName": "home-family",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback\\uniCloud-alipay\\cloudfunctions\\common\\home-family",
+      "message": "公共模块 home-family 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块home-kernel..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-kernel下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-home-kernel",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback",
+      "provider": "alipay",
+      "resourceName": "home-kernel",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback\\uniCloud-alipay\\cloudfunctions\\common\\home-kernel",
+      "message": "公共模块 home-kernel 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载云函数family-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "下载云函数[family-co]完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task04-readback-family-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback",
+      "provider": "alipay",
+      "resourceLabel": "云函数",
+      "resourceName": "family-co",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback\\uniCloud-alipay\\cloudfunctions\\family-co",
+      "message": "云函数 family-co 下载完成"
+    }
+  }
+]

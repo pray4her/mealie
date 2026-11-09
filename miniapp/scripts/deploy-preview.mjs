@@ -7,7 +7,7 @@ import { doctor } from './doctor.mjs';
 
 // Offline inventory only: no cloud SDK, shell command, association, upload or DB API.
 export async function createDeployPreview({ root, ticket }) {
-  if (ticket !== undefined && !['task02', 'task03'].includes(ticket)) throw new Error('Unknown preview ticket');
+  if (ticket !== undefined && !['task02', 'task03', 'task04'].includes(ticket)) throw new Error('Unknown preview ticket');
   const target = JSON.parse(await readFile(join(root, 'ops/project-target.json'), 'utf8'));
   const readiness = await doctor({ root, ticket });
   if (readiness.blockers.includes('target-invalid')) throw new Error('Invalid project target');
@@ -46,6 +46,13 @@ export async function createDeployPreview({ root, ticket }) {
       proposedChanges: resources.filter(item => ['family-co', 'home-family', 'home-kernel', 'home-contracts', 'family_invitations.schema.json', 'family_invitations.index.json', 'mutation_receipts.schema.json'].includes(item.name)),
       invitationConfiguration: { environmentVariables: ['FAMILY_INVITATION_KEY_VERSION', 'FAMILY_INVITATION_KEYS'], format: 'current version + JSON map of version to 64 lowercase hexadecimal characters (32 random bytes); cloud only', retainOldVersions: 'until all associated invitations expire', valuesIncluded: false, logCaptureVerified: false },
       preservationRequired: 'Read-only reconcile and preserve exact remote identity/configuration/bridge dependencies before any upload; no full-plugin initialization or collection reset.',
+    } : {}),
+    ...(ticket === 'task04' ? {
+      sharedModuleImpact: ['account-co', 'uni-id-co', 'family-co'],
+      protectedDependencies: ['uni-id-common', 'uni-config-center', 'uni-open-bridge-common'],
+      proposedChanges: resources.filter(item => ['family-co', 'home-family', 'home-contracts', 'mutation_receipts.schema.json'].includes(item.name)),
+      preservationRequired: 'Reconcile and preserve remote identity/configuration/bridge dependencies. Extend only the receipt schema; no collection reset, new collection, index, environment variable or plugin initialization.',
+      compatibility: 'Deploy matching cloud and mini-program artifacts together in the isolated test space; MemberView now includes generation and strict older clients must be replaced.',
     } : {}),
     compiledCloudArtifactSha256: null,
     resources: resources.sort((a, b) => a.path.localeCompare(b.path)),

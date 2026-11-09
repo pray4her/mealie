@@ -31,8 +31,8 @@ export function parseMembers(value: unknown): MemberView[] {
   if (!Array.isArray(value)) throw new AppError('UNAVAILABLE');
   const seen = new Set<string>();
   return value.map(item => {
-    const row = exactObject(item, ['uid', 'nickname', 'role']);
-    if (!text(row.uid) || seen.has(row.uid) || !text(row.nickname) || (row.role !== 'owner' && row.role !== 'member')) throw new AppError('UNAVAILABLE');
+    const row = exactObject(item, ['uid', 'nickname', 'role', 'generation']);
+    if (!text(row.uid) || seen.has(row.uid) || !text(row.nickname) || !text(row.generation) || (row.role !== 'owner' && row.role !== 'member')) throw new AppError('UNAVAILABLE');
     seen.add(row.uid); return row as MemberView;
   });
 }

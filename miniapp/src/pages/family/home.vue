@@ -4,7 +4,7 @@ import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { copy } from '../../shared/copy';
 import { useAppClient } from '../../shared/app-client';
 import { createRouteGuard } from '../../shared/route-guard';
-const { auth, family } = useAppClient();
+const { auth, family, membership } = useAppClient();
 const { phase } = auth; const { view } = family;
 const { phase: familyPhase } = family;
 const openInvite = () => uni.navigateTo({ url: '/pages/family/invite' });
@@ -25,7 +25,7 @@ async function check() {
     if (!active || current !== generation || uid !== lastUid) return;
     if (auth.phase.value === 'anonymous') { uni.reLaunch({ url: '/pages/account/login' }); return; }
   }
-  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family);
+  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family, membership, () => active && current === generation);
   const allowed = await guard.ensureFamily('home');
   if (active && current === generation) confirmed.value = allowed;
 }
@@ -36,7 +36,7 @@ async function signOut() {
   finally { if (logoutAttempt === attempt) logoutAttempt = null; }
   if (active && current === generation && uid === lastUid && auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
 }
-function conceal() { generation++; active = false; confirmed.value = false; }
+function conceal() { const wasActive = active; generation++; active = false; confirmed.value = false; if (wasActive) membership.conceal(); }
 onShow(check); onHide(conceal); onUnload(conceal);
 </script>
 <template>

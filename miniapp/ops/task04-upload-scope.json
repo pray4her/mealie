@@ -1,0 +1,78 @@
+{
+  "ticket": "task04",
+  "version": 1,
+  "status": "deployed-to-approved-isolated-space",
+  "uploadAuthorized": true,
+  "uploaded": true,
+  "target": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie"
+  },
+  "sourceSha256": "1026c0a9003cf5842741f15181926af1d7e964f3a9cc3b2d8e8091934fce68b0",
+  "localClientBuildSha256": "752aa01478c9fca22cd9ad1511b1a83b6a82f69fdea9cb625238c3bfcecf93c4",
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "33431544f1ba99a515a0e73fef612779f395e156a9b4ab99737281aacbb309a0",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-family",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-family",
+      "sha256": "c21ae52429a518378e80868ffe3d531656da0240e674885997c83f4d41d835be",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "cloud-object",
+      "name": "family-co",
+      "path": "uniCloud-alipay/cloudfunctions/family-co",
+      "sha256": "808d5bf3b05ebfb28ede5ef59fd5750451a01718aa6a065e3051ee71bf52baa0",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "schema",
+      "name": "mutation_receipts.schema.json",
+      "path": "uniCloud-alipay/database/mutation_receipts.schema.json",
+      "sha256": "475dd9eb7a10b4caf9f27fad7790ac46337a0fdb644e8caed4f70d94c34beddb",
+      "hashKind": "file-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "expectedAction": "update-existing-resource"
+    }
+  ],
+  "protectedDependencies": [
+    "uni-id-common",
+    "uni-config-center",
+    "uni-open-bridge-common"
+  ],
+  "protectedRemoteBytesReconciled": true,
+  "additionalCollections": [],
+  "additionalIndexes": [],
+  "additionalEnvironmentVariables": [],
+  "probesAuthorized": false,
+  "compiledCloudArtifactSha256": "3185bec6ac4e1c67d8de5c5bc15527feb228309a6d9ab3923b33fbf59d3ffe85",
+  "historicalIdentityAndConfigurationMustBePreserved": true,
+  "authorization": {
+    "userMessage": "批准更新",
+    "date": "2026-11-09",
+    "timezone": "Asia/Shanghai",
+    "scope": "four normal resources only; no probes or production"
+  },
+  "postUploadProtectedBytesVerified": true
+}

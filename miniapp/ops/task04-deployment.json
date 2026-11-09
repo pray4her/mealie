@@ -1,0 +1,183 @@
+{
+  "ticket": "task04",
+  "date": "2026-11-09",
+  "timezone": "Asia/Shanghai",
+  "target": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie"
+  },
+  "status": "normal-resources-deployed-user-acceptance-confirmed",
+  "uploadAuthorized": true,
+  "isolatedTestUseConfirmed": true,
+  "sourceSha256": "1026c0a9003cf5842741f15181926af1d7e964f3a9cc3b2d8e8091934fce68b0",
+  "clientBuildSha256": "bf8d5bb169dd4fea00fac65b5bdfe2a814baf58b4edb4f0db69cab62ce300065",
+  "deviceBuildSha256": "f5b76799e5c381999dbee4bf3ff161b35a89b1cd5ed3c664f8dff4a3b651dd90",
+  "cloudBuildSha256": "3185bec6ac4e1c67d8de5c5bc15527feb228309a6d9ab3923b33fbf59d3ffe85",
+  "probeRemnants": [],
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "33431544f1ba99a515a0e73fef612779f395e156a9b4ab99737281aacbb309a0",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-family",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-family",
+      "sha256": "c21ae52429a518378e80868ffe3d531656da0240e674885997c83f4d41d835be",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "cloud-object",
+      "name": "family-co",
+      "path": "uniCloud-alipay/cloudfunctions/family-co",
+      "sha256": "808d5bf3b05ebfb28ede5ef59fd5750451a01718aa6a065e3051ee71bf52baa0",
+      "hashKind": "source-tree-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "platformExtensionDeclarations": [],
+      "expectedAction": "update-existing-resource"
+    },
+    {
+      "kind": "schema",
+      "name": "mutation_receipts.schema.json",
+      "path": "uniCloud-alipay/database/mutation_receipts.schema.json",
+      "sha256": "475dd9eb7a10b4caf9f27fad7790ac46337a0fdb644e8caed4f70d94c34beddb",
+      "hashKind": "file-sha256",
+      "existing": "confirmed-existing",
+      "action": "updated",
+      "expectedAction": "update-existing-resource"
+    }
+  ],
+  "platformResults": "ops/task04-upload-results.json",
+  "protectedModules": [
+    {
+      "name": "uni-id-common",
+      "version": "1.0.19",
+      "pluginVersion": "1.0.19",
+      "files": 2,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-config-center",
+      "version": "0.0.3",
+      "pluginVersion": null,
+      "files": 5,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "version": "1.0.0",
+      "pluginVersion": "1.2.1",
+      "files": 9,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    }
+  ],
+  "database": {
+    "collectionsBefore": 15,
+    "collectionsAfter": 15,
+    "created": [],
+    "updatedSchemas": [
+      "mutation_receipts"
+    ],
+    "schemaCanonicalReadbackMatched": true,
+    "clientdbPermissionsStillClosed": true,
+    "rowsDeleted": 0,
+    "fullInitialization": false
+  },
+  "compiler": {
+    "hbuilderx": "5.34.2026102909",
+    "typechecks": "passed",
+    "compilation": "passed",
+    "uploadToolNode": "18.20.0",
+    "cloudNode": "18.18.2",
+    "cloudRuntimeCompatibility": "pending-real-SDK"
+  },
+  "cloudArtifact": {
+    "directory": "dist/task04-normal-cloud",
+    "provenance": "Official deployed common-module JS and full-ZIP family-co __dist__ preserved before official TS restoration; no local build substituted",
+    "publicMethods": [
+      "create",
+      "current",
+      "invitations",
+      "invite",
+      "join",
+      "leave",
+      "members",
+      "removeMember",
+      "revokeInvite",
+      "transferOwner"
+    ],
+    "resources": [
+      {
+        "name": "home-contracts",
+        "files": 3,
+        "provenance": "official downloaded deployed common-module JS; no local recompile substituted"
+      },
+      {
+        "name": "home-family",
+        "files": 13,
+        "provenance": "official downloaded deployed common-module JS; no local recompile substituted"
+      },
+      {
+        "name": "home-kernel",
+        "files": 11,
+        "provenance": "official downloaded deployed common-module JS; no local recompile substituted"
+      },
+      {
+        "name": "family-co",
+        "files": 1,
+        "provenance": "__dist__ JS preserved from complete official deployed ZIP; restored TS bytes matched approved source"
+      }
+    ]
+  },
+  "deviceCandidate": {
+    "directory": "dist/task04-device/mp-weixin",
+    "build": "HBuilderX publish mp-weixin --project D:/pray4her/mealie/miniapp --appid wx68649810a6f363f3 --upload false",
+    "appIdVerified": true,
+    "linkedSpaceVerified": true,
+    "spaceConfigurationVerification": "isolated evaluation of compiler-generated numeric decoder; decoded configuration not logged or stored",
+    "minified": true,
+    "wechatPlatformUploaded": false,
+    "physicalDeviceTested": false,
+    "devtoolsOpened": true
+  },
+  "environmentEvidence": "ops/task04-environment.json",
+  "environmentWritesPerformed": false,
+  "agentInitiatedMembershipTestWrites": 0,
+  "authenticatedActorsBound": 0,
+  "platformLogCapture": "pending",
+  "businessAcceptance": "pending",
+  "physicalDeviceAcceptance": "pending",
+  "productionPublished": false,
+  "gitSubmitted": false,
+  "closeout": {
+    "status": "accepted-user-confirmed",
+    "userStatement": "云端业务、并发及真机我已验收，关闭工单，收束文档，生成git信息提交并推送。",
+    "evidenceFile": "ops/task04-closeout.md",
+    "agentRepeatedCloudOrDeviceTests": false,
+    "issue": {
+      "url": "https://github.com/pray4her/mealie/issues/4",
+      "state": "closed",
+      "stateReason": "completed",
+      "closedAt": "2026-11-09T06:58:58Z",
+      "acceptanceCheckboxes": 3,
+      "readyForAgentRemoved": true,
+      "independentReadbackVerified": true
+    }
+  }
+}

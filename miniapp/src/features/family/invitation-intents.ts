@@ -2,6 +2,7 @@ import type { SessionStorage } from '../../shared/session-boundary';
 import { AppError } from '../../shared/errors';
 import { exactObject } from './invitation-validation';
 import { validRequestId } from './validation';
+import type { FamilyContext } from 'home-contracts';
 
 export type InvitationIntent = { requestId: string; tokenHash?: string; invitationId?: string; familyId?: string; generation?: string };
 export type InvitationOperation = 'invite' | 'join' | 'revoke';
@@ -45,5 +46,13 @@ export function createInvitationIntents(storage: SessionStorage) {
       if (Object.keys(remaining).length) storage.set(key(uid, operation), remaining); else storage.remove(key(uid, operation));
     },
     clearAll(uid: string) { for (const operation of ['invite', 'join', 'revoke'] as const) storage.remove(key(uid, operation)); },
+    reconcile(uid: string, ctx: FamilyContext | null) {
+      const matches = (intent: InvitationIntent) => ctx && intent.familyId === ctx.familyId && intent.generation === ctx.generation && ctx.role === 'owner';
+      const invite = this.read(uid, 'invite');
+      if (invite && !matches(invite)) storage.remove(key(uid, 'invite'));
+      const remaining = Object.fromEntries(Object.entries(revokes(uid)).filter(([, intent]) => matches(intent)));
+      if (Object.keys(remaining).length) storage.set(key(uid, 'revoke'), remaining); else storage.remove(key(uid, 'revoke'));
+      if (ctx) storage.remove(key(uid, 'join'));
+    },
   };
 }

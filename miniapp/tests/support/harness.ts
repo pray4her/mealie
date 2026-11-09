@@ -45,6 +45,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
       async current() { return (await service()).current(); }, async create(input) { return (await service()).create(input); },
       async invite(input) { return (await service()).invite(input); }, async revokeInvite(input) { return (await service()).revokeInvite(input); },
       async join(input) { return (await service()).join(input); }, async members() { return (await service()).members(); }, async invitations(input) { return (await service()).invitations(input); },
+      async leave(input) { await (await service()).leave(input); }, async removeMember(input) { await (await service()).removeMember(input); }, async transferOwner(input) { return (await service()).transferOwner(input); },
     };
   };
   return {

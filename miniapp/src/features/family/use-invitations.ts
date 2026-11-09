@@ -29,6 +29,11 @@ export function createInvitationController({ api, auth, family, intents, creatio
       trustedUid = uid;
     } else if (phase === 'checking' || phase === 'unavailable') conceal();
   }, { flush: 'sync' });
+  const stopFamily = watch([family.phase, family.view], ([phase, view]) => {
+    if (phase !== 'ready' || auth.phase.value !== 'authenticated' || !auth.identity.value?.uid) return;
+    intents.reconcile(auth.identity.value.uid, view);
+    if (!view) conceal();
+  }, { flush: 'sync' });
   function identity() {
     const uid = auth.identity.value?.uid;
     if (disposed || !uid || auth.phase.value !== 'authenticated') throw new AppError('AUTH_REQUIRED');
@@ -41,7 +46,11 @@ export function createInvitationController({ api, auth, family, intents, creatio
     if (ctx.role !== 'owner') throw new AppError('FORBIDDEN');
     return ctx;
   }
-  async function failure(error: unknown): Promise<never> { if (errorCode(error) === 'AUTH_REQUIRED') await auth.signOut().catch(() => {}); throw new AppError(errorCode(error)); }
+  async function failure(error: unknown): Promise<never> {
+    if (errorCode(error) === 'AUTH_REQUIRED') await auth.signOut().catch(() => {});
+    else if (errorCode(error) === 'FAMILY_REQUIRED' || errorCode(error) === 'FORBIDDEN') { family.clear(); conceal(); }
+    throw new AppError(errorCode(error));
+  }
   async function write<T>(operation: InvitationOperation, action: (uid: string, epoch: number) => Promise<T>): Promise<T> {
     if (inFlight) throw new AppError('CONFLICT');
     const uid = identity(); const epoch = generation;
@@ -126,6 +135,6 @@ export function createInvitationController({ api, auth, family, intents, creatio
       });
     },
     conceal,
-    dispose() { disposed = true; stop(); token.value = ''; conceal(); },
+    dispose() { disposed = true; stop(); stopFamily(); token.value = ''; conceal(); },
   };
 }

@@ -6,7 +6,7 @@ import { useAppClient } from '../../shared/app-client';
 import { createRouteGuard } from '../../shared/route-guard';
 import { normalizeFamilyName } from '../../features/family/validation';
 import { errorCode } from '../../shared/errors';
-const { auth, family } = useAppClient();
+const { auth, family, membership } = useAppClient();
 const { phase } = auth;
 const { phase: familyPhase, pending, view } = family;
 const openJoin = () => uni.navigateTo({ url: '/pages/family/join' });
@@ -28,7 +28,7 @@ async function check() {
     if (!active || current !== generation || uid !== lastUid) return;
     if (auth.phase.value === 'anonymous') { uni.reLaunch({ url: '/pages/account/login' }); return; }
   }
-  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family);
+  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family, membership, () => active && current === generation);
   const allowed = await guard.ensureFamily('onboarding');
   if (active && current === generation) confirmed.value = allowed;
 }
@@ -61,7 +61,7 @@ async function signOut() {
   finally { if (logoutAttempt === attempt) logoutAttempt = null; }
   if (active && current === generation && uid === lastUid && auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
 }
-function conceal() { generation++; active = false; resetLocal(); }
+function conceal() { const wasActive = active; generation++; active = false; resetLocal(); if (wasActive) membership.conceal(); }
 onShow(check); onHide(conceal); onUnload(conceal);
 </script>
 <template>

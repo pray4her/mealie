@@ -16,7 +16,8 @@ export function createFamilyController({ api, auth, account, intents, newRequest
   let inFlight: Promise<FamilyView> | null = null;
   let disposed = false;
   let generation = 0; let trustedUid: string | null = auth.identity.value?.uid ?? null;
-  function conceal() { generation++; view.value = null; pending.value = null; phase.value = 'idle'; inFlight = null; }
+  // Change phase first so synchronous observers cannot mistake a local clear for confirmed absence.
+  function conceal(nextPhase: 'idle' | 'unavailable' = 'idle') { generation++; phase.value = nextPhase; view.value = null; pending.value = null; inFlight = null; }
   function forgetAccount() {
     const previousUid = trustedUid; trustedUid = null; conceal();
     if (previousUid) { try { intents.clear(previousUid); } catch { /* Protected state stays hidden when device storage fails. */ } }
@@ -28,7 +29,7 @@ export function createFamilyController({ api, auth, account, intents, newRequest
     } else if (authPhase === 'checking' || authPhase === 'authenticating') {
       if (authPhase !== previousPhase) conceal();
     } else if (authPhase === 'unavailable') {
-      view.value = null; phase.value = 'unavailable';
+      phase.value = 'unavailable'; view.value = null;
     } else if (authPhase === 'authenticated' && uid) {
       if (trustedUid && uid !== trustedUid) {
         intents.clear(trustedUid);

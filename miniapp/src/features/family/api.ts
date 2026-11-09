@@ -3,6 +3,7 @@ import type { SessionBoundary } from '../../shared/session-boundary';
 import { AppError, errorCode } from '../../shared/errors';
 import { normalizeFamilyName, validRequestId } from './validation';
 import { exactObject, mutationInput, parseInvitation, parseJoined, parseMembers, parseInvitationPage } from './invitation-validation';
+import { membershipInput } from './membership-validation';
 
 function parseView(value: unknown): FamilyView {
   if (!value || typeof value !== 'object' || Array.isArray(value)
@@ -46,5 +47,8 @@ export function createFamilyApi({ invoke, boundary }: { invoke: Invoke; boundary
       catch { throw new AppError('INVALID_INPUT'); }
       return parseInvitationPage(await call('invitations', input.cursor ? { cursor: input.cursor } : {}));
     },
+    async leave(input) { membershipInput('leave', input); if (await call('leave', input) !== null) throw new AppError('UNAVAILABLE'); },
+    async removeMember(input) { membershipInput('removeMember', input); if (await call('removeMember', input) !== null) throw new AppError('UNAVAILABLE'); },
+    async transferOwner(input) { membershipInput('transferOwner', input); return parseJoined(await call('transferOwner', input)); },
   };
 }

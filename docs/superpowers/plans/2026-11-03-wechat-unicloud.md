@@ -231,17 +231,19 @@ Task 05 锁定 `RecipeInput` 还包括 `prepMinutes:number|null`、`cookMinutes:
 
 ### Task 04: 退出、移除成员与转移所有权
 
-**Files:** Create `miniapp/uniCloud/cloudfunctions/common/home-family/membership.ts`, `miniapp/src/pages/family/settings.vue`；Modify family contracts/API/云对象、member page、kernel 的事务栅栏及 fixtures。
+**收束（2026-11-09）：**本票实现和四项隔离资源部署已交付；用户明确确认云端业务、并发及真机验收完成，并要求关闭 [#4](https://github.com/pray4her/mealie/issues/4)、收束文档及提交推送。最终依据见 `miniapp/ops/task04-closeout.md`，实际执行方案见 `2026-11-09-wechat-unicloud-task04.md`。#3 小节中“Task04 尚未启动”为当时的历史记录。
+
+**Files:** 新增 home-family/membership-actions、客户端成员操作控制器及持久意图；复用既有成员页，不新增 settings 页。更新 contracts/API/云对象、回执 Schema、权限失效处理、测试与 Task04 独立部署/验收记录。
 
 **Test:** `miniapp/tests/domain/family-membership.test.ts`, `tests/app/family-membership.test.ts`。
 
-**Interfaces:** Produces `FamilyApi.leave(input: Mutation): Promise<void>`, `removeMember(input: Mutation & {uid:Id}): Promise<void>`, `transferOwner(input: Mutation & {uid:Id}): Promise<FamilyContext>`；退出删除成员槽，重入创建新 generation。解散实体和注销在 Task 18，当前不能通过删除最后 owner 绕过它。
+**Interfaces:** `MembershipMutation = Mutation & {familyId:Id;generation:Id}`；`MemberMutation = MembershipMutation & {uid:Id;targetGeneration:Id}`。`FamilyApi.leave(MembershipMutation):Promise<void>`、`removeMember(MemberMutation):Promise<void>`、`transferOwner(MemberMutation):Promise<FamilyContext>`；转移返回发起者新的 member 上下文，MemberView 增加 generation。退出删除成员槽，重入生成新代次。解散/注销仍属 Task18。
 
-- [ ] **Step 1 — 写失败测试：**`owner_cannot_leave_before_transfer`、`removed_member_loses_access_with_existing_token`、`transfer_is_atomic`、`rejoin_changes_generation`；`expect(rejoined.generation).not.toBe(before.generation)`，并发 transfer/remove 仍恰好一个 owner。
-- [ ] **Step 2 — 确认红灯：**`task -d miniapp test -- tests/domain/family-membership.test.ts tests/app/family-membership.test.ts`，预期生命周期方法/栅栏缺失。
-- [ ] **Step 3 — 最小实现：**成员关系和 owner 事务变更，写操作与移除走同一成员栅栏；UI 在丢失家庭权限时清空缓存并回到引导。保留家庭历史数据，不把内容搬到新家庭。
-- [ ] **Step 4 — 验证绿灯：**同命令 PASS；两用户真机执行转移与移除，旧 token 无法重新访问；退出期间普通写事务不能绕过栅栏。
-- [ ] **Step 5 — 提交边界：**获准后提交 `feat(miniapp): manage household membership lifecycle`。
+- [x] **Step 1 — 写失败测试：**所有者退出限制、旧 token 权限、原子转移、重入新代次、并发与回执恢复测试先失败再实现。
+- [x] **Step 2 — 确认红灯：**领域、API/控制器、真实 SFC 和 Task04 门禁均记录 RED→GREEN；独立审阅的四项 SFC 回归亦先失败再修复。
+- [x] **Step 3 — 最小实现：**成员与 owner 原子事务、共用写栅栏、代次前置条件、完整原请求恢复和客户端权限失效处理已完成；家庭历史数据保留。
+- [x] **Step 4 — 验证绿灯：**本地完整检查通过；云端业务、并发及真机由用户明确确认验收完成，原始独立证据与最终确认分开记录。
+- [x] **Step 5 — 提交边界：**用户明确授权本票全部实现和收束文档，以 `feat(miniapp): 实现家庭成员退出与所有权管理 (#4)` 交付至 upstream/miniapp-dev。
 
 ### Task 05: 创建、查看和共同编辑文字菜谱
 

@@ -62,13 +62,16 @@ function fixture(commitAcknowledgement: 'object' | 'void' = 'object') {
     join: (this: object, input: unknown) => Promise<unknown>;
     members: (this: object, ...args: unknown[]) => Promise<unknown>;
     invitations: (this: object, input: unknown) => Promise<unknown>;
+    leave: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    removeMember: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    transferOwner: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
   };
   const context = { getUniIdToken: () => 'verified-token', getClientInfo: () => ({ appId: '__UNI__5FDC0D7', uniPlatform: 'mp-weixin' }), getUniCloudRequestId: () => 'platform-request' };
   return { entry, context, checks, contentCalls, contexts, reads, rows, get transactions() { return transactions; }, get commits() { return commits; }, get rollbacks() { return rollbacks; }, get sdkImports() { return sdkImports; }, revoke() { active = false; }, restore() { active = true; }, setContent(value: unknown) { contentResult = value; }, afterContent(fn: () => void) { afterContent = fn; } };
 }
 
 test('real_public_exports_are_lazy_and_current_has_only_safe_dto_and_top_level_token', async () => {
-  const f = fixture(); expect(Object.keys(f.entry).sort()).toEqual(['create', 'current', 'invitations', 'invite', 'join', 'members', 'revokeInvite']); expect(f.sdkImports).toBe(0); expect(f.transactions).toBe(0);
+  const f = fixture(); expect(Object.keys(f.entry).sort()).toEqual(['create', 'current', 'invitations', 'invite', 'join', 'leave', 'members', 'removeMember', 'revokeInvite', 'transferOwner']); expect(f.sdkImports).toBe(0); expect(f.transactions).toBe(0);
   expect(await f.entry.current.call(f.context)).toEqual({ errCode: 0, data: null, newToken: { token: 'renewed-token', tokenExpired: expect.any(Number) } });
 });
 
@@ -83,7 +86,26 @@ test('new_public_methods_use_current_identity_and_reject_privileged_or_extra_par
   expect(await f.entry.members.call(f.context, { familyId: 'other' })).toEqual({ errCode: 'INVALID_INPUT' });
   expect(await f.entry.revokeInvite.call(f.context, { requestId: 'cloud-revoke-000001', invitationId: response.data.invitationId })).toMatchObject({ errCode: 0, data: null });
   f.revoke();
-  for (const method of ['invite', 'revokeInvite', 'join', 'invitations'] as const) expect(await f.entry[method].call(f.context, {})).toEqual({ errCode: 'AUTH_REQUIRED' });
+  for (const method of ['invite', 'revokeInvite', 'join', 'invitations', 'leave', 'removeMember', 'transferOwner'] as const) expect(await f.entry[method].call(f.context, {})).toEqual({ errCode: 'AUTH_REQUIRED' });
+});
+
+test('membership_cloud_methods_use_verified_actor_and_replay_transfer_before_role_checks', async () => {
+  const f = fixture('void');
+  const created = await f.entry.create.call(f.context, { requestId: 'cloud-membership-create', name: '家' }) as { data: { familyId: string; generation: string } };
+  const { familyId, generation } = created.data;
+  const owner = f.rows.get('family_members/alice')!;
+  f.rows.set('family_members/bob', { ...owner, _id: 'bob', role: 'member', generation: 'bob-generation' });
+  const input = { requestId: 'cloud-membership-transfer', familyId, generation, uid: 'bob', targetGeneration: 'bob-generation' };
+  for (const method of ['leave', 'removeMember', 'transferOwner'] as const) {
+    expect(await f.entry[method].call(f.context, { ...input, ownerUid: 'forged' })).toEqual({ errCode: 'INVALID_INPUT' });
+    expect(await f.entry[method].call(f.context, input, {})).toEqual({ errCode: 'INVALID_INPUT' });
+  }
+  const reply = await f.entry.transferOwner.call(f.context, input) as { data: { uid: string; generation: string }; newToken: unknown };
+  expect(reply).toMatchObject({ errCode: 0, data: { uid: 'alice', familyId, role: 'member' }, newToken: { token: 'renewed-token' } });
+  expect(reply.data.generation).not.toBe(generation);
+  expect(await f.entry.transferOwner.call(f.context, input)).toMatchObject({ errCode: 0, data: reply.data });
+  expect(await f.entry.leave.call(f.context, { requestId: 'cloud-membership-leave', familyId, generation: reply.data.generation })).toMatchObject({ errCode: 0, data: null });
+  expect(f.rows.has('family_members/alice')).toBe(false); expect(f.rows.get(`families/${familyId}`)?.ownerUid).toBe('bob');
 });
 
 test('authenticated_family_current_returns_no_membership_after_successful_alipay_void_commits', async () => {

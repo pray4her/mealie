@@ -1,0 +1,91 @@
+{
+  "ticket": "task04",
+  "base": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA",
+  "readonlyRoot": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readonly",
+  "stagingRoot": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\upload-stage",
+  "postRoot": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\post-readonly",
+  "readbackRoot": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task04-O0wTkA\\readback",
+  "target": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie"
+  },
+  "sourceResourcesVerified": 4,
+  "protectedModules": [
+    {
+      "name": "uni-id-common",
+      "version": "1.0.19",
+      "pluginVersion": "1.0.19",
+      "files": 2,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-config-center",
+      "version": "0.0.3",
+      "pluginVersion": null,
+      "files": 5,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "version": "1.0.0",
+      "pluginVersion": "1.2.1",
+      "files": 9,
+      "byteEqualityVerified": true,
+      "postUploadByteEqualityVerified": true
+    }
+  ],
+  "uploaded": true,
+  "secretConfigurationParsedOrPrinted": false,
+  "dependenciesContained": true,
+  "receiptSchemaDeltaVerified": true,
+  "uploadAuthorized": true,
+  "postUploadProtectedBytesVerified": true,
+  "receiptSchemaCanonicalReadbackMatched": true,
+  "cloudArtifacts": [
+    {
+      "name": "home-contracts",
+      "files": 3,
+      "provenance": "official downloaded deployed common-module JS; no local recompile substituted"
+    },
+    {
+      "name": "home-family",
+      "files": 13,
+      "provenance": "official downloaded deployed common-module JS; no local recompile substituted"
+    },
+    {
+      "name": "home-kernel",
+      "files": 11,
+      "provenance": "official downloaded deployed common-module JS; no local recompile substituted"
+    },
+    {
+      "name": "family-co",
+      "files": 1,
+      "provenance": "__dist__ JS preserved from complete official deployed ZIP; restored TS bytes matched approved source"
+    }
+  ],
+  "publicMethods": [
+    "create",
+    "current",
+    "invitations",
+    "invite",
+    "join",
+    "leave",
+    "members",
+    "removeMember",
+    "revokeInvite",
+    "transferOwner"
+  ],
+  "deviceCandidate": {
+    "directory": "dist/task04-device/mp-weixin",
+    "build": "HBuilderX publish mp-weixin --project D:/pray4her/mealie/miniapp --appid wx68649810a6f363f3 --upload false",
+    "appIdVerified": true,
+    "linkedSpaceVerified": true,
+    "spaceConfigurationVerification": "isolated evaluation of compiler-generated numeric decoder; decoded configuration not logged or stored",
+    "minified": true,
+    "wechatPlatformUploaded": false,
+    "physicalDeviceTested": false
+  }
+}
