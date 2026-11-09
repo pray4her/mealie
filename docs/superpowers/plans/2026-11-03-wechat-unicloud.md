@@ -210,6 +210,8 @@ Task 05 锁定 `RecipeInput` 还包括 `prepMinutes:number|null`、`cookMinutes:
 
 ### Task 03: 邀请成员加入家庭
 
+**收束（2026-11-09）：**实现已包含于 `a3482ed24`（miniapp-dev），按用户指定的相关及其他验收均已完成前提接受交付、关闭 [#3](https://github.com/pray4her/mealie/issues/3)。最终依据和本地复核见 `miniapp/ops/task03-closeout.md`；以下保留原计划步骤，不将历史预期或未附原始证据的场景改写成本轮实测。Task04 尚未启动。
+
 **Files:** Create `miniapp/uniCloud/cloudfunctions/common/home-family/invitations.ts`, `database/family_invitations.{schema,index}.json`；Create `miniapp/src/pages/family/{invite,join,members}.vue`；Modify family-co、family contracts/API、`home-family/index.ts`、fixtures 和 pages 配置。
 
 **Test:** `miniapp/tests/domain/family-invitations.test.ts`, `tests/app/family-invitations.test.ts`。

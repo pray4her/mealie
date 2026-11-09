@@ -304,8 +304,8 @@
     "evidenceFile": "ops/task03-test-evidence.md",
     "evidenceRef": "独立审阅"
   },
-  "uploadAuthorized": false,
-  "uploaded": false,
+  "uploadAuthorized": true,
+  "uploaded": true,
   "deployment": {
     "status": "deployed",
     "evidenceFile": "ops/task03-deployment.md",
@@ -313,5 +313,80 @@
     "sourceSha256": "dc3e9586969877ff961a45b6e3ede4eb0c87580b9e263c31942b82bdab655858",
     "cloudBuildSha256": "84c523f18996d3d407af66e0f7ab4f9c7038f0f270a879d22a39668cf169fd14",
     "deviceBuildSha256": "8ae26bff614749df104dbed36cc5a73ac59ac7e5fee0910159b12186d3da2d25"
+  },
+  "closeout": {
+    "status": "closed-on-user-acceptance-premise",
+    "date": "2026-11-09",
+    "issueUrl": "https://github.com/pray4her/mealie/issues/3",
+    "implementationCommit": "a3482ed24a12afb4f92e49eebb1824fdc74ca67b",
+    "branch": "miniapp-dev",
+    "authorizedBy": "explicit user request",
+    "acceptanceBasis": "user-specified-all-acceptance-completed-premise",
+    "userStatement": "假设我已完成相关验收和其他验收，收束文档，并关闭该issues。",
+    "acceptanceStatus": "accepted-on-user-premise",
+    "acceptanceScope": {
+      "configuration": true,
+      "cloudScenarioCount": 42,
+      "deviceScenarioCount": 7,
+      "scenarioCatalog": "scripts/task03-state.mjs: TASK03_SCENARIOS",
+      "issueCriteria": "3/3 accepted on the same user premise"
+    },
+    "evidenceFile": "ops/task03-closeout.md",
+    "evidenceRef": "收束依据",
+    "rawScenarioEvidence": "Historical records retained; no new cloud/device observations or tested-build attestation supplied in this session.",
+    "localVerification": {
+      "status": "passed",
+      "date": "2026-11-09",
+      "node": "22.23.3",
+      "runner": "Existing local node_modules; Task unavailable, ran the check Taskfile commands in order with pinned Node via fnm. pnpm was not invoked.",
+      "checks": [
+        "identity-assembly",
+        "content-assembly",
+        "eslint --max-warnings 0",
+        "vue-tsc tsconfig.json",
+        "tsc tsconfig.cloud.json",
+        "vue-tsc tsconfig.tests.json",
+        "vitest run --maxWorkers=2",
+        "uni build -p mp-weixin",
+        "check-boundaries --artifacts",
+        "check-secrets"
+      ],
+      "tests": 396,
+      "suites": 29,
+      "evidenceFile": "ops/task03-test-evidence.md",
+      "evidenceRef": "本轮本地复核 — 2026-11-09",
+      "sourceSha256": "52fbe53ea0d45aa5841bea98be0256ab99efc2b76d3da711a16bb306a29763d9",
+      "clientBuildSha256": "6623952a01dfae25492b9ef2f8ae628d96206144ba011f0642b42a72248da04c",
+      "deviceBuildSha256": null,
+      "cloudBuildSha256": null,
+      "probeRemnants": []
+    },
+    "strictDoctor": {
+      "ready": false,
+      "blockerCount": 58,
+      "interpretation": "Evidence reproducibility gate; does not certify or reverse the user-specified acceptance premise. Historical source/artifact bindings remain unchanged.",
+      "snapshotBlockers": [
+        "task03-source-drift",
+        "task03-cloud-artifact-missing",
+        "task03-device-artifact-missing",
+        "task03-configuration-unverified",
+        "task03-local-build-drift",
+        "task03-cloud-acceptance-missing",
+        "task03-cloud-build-drift",
+        "task03-device-acceptance-missing",
+        "task03-device-build-drift"
+      ],
+      "cloudScenarioEvidenceMissing": 42,
+      "deviceScenarioEvidenceMissing": 7
+    },
+    "gitIntegration": "After issue closeout, user explicitly authorized committing and pushing the closeout documents to upstream/miniapp-dev (pray4her/mealie). Commit subject: docs(miniapp): 收束家庭邀请验收与工单记录 (#3). No merge or PR requested.",
+    "productionReleaseAuthorized": false,
+    "issueState": "closed",
+    "stateReason": "completed",
+    "closedAtUtc": "2026-11-09T01:12:19Z",
+    "closedAtLocal": "2026-11-09 09:12:19 Asia/Shanghai",
+    "issueReadbackVerified": true,
+    "issueCriteriaChecked": 3,
+    "readyForAgentLabelRemoved": true
   }
 }

@@ -1,5 +1,7 @@
 # SDD ledger — plan: docs/superpowers/plans/2026-11-08-wechat-unicloud-task03.md
 
+当前状态（2026-11-09）：实现已交付，按用户明确指定的“相关验收和其他验收均已完成”前提收束并关闭 #3。最终结论见 `task03-closeout.md` 与 `task03-acceptance.json` 的 closeout；以下为历史执行账本，pending/NON-READY 描述保留当时的证据状态。
+
 - Ruling: 在用户指定的干净miniapp-dev功能分支直接实现，不创建额外worktree或提交 — 保持改动在用户当前工作区且遵守不提交约束 — 代价：没有第二checkout隔离；只修改计划范围。
 - Pre-flight: Tasks1→2共享邀请记录/回执/凭据接口；Tasks1/2→3共享FamilyApi；Tasks1/2/3→4共享公开面、Schema、路由、harness；无相互矛盾。
 - 工具链：系统Node22.23.3；由其Corepack下载并调用项目固定pnpm10.20.0，未修改全局版本或engines。Task.exe已在Winget目录发现，按会话PATH使用。

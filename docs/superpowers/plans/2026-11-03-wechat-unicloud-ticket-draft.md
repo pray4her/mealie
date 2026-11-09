@@ -14,7 +14,7 @@
 | --- | --- | --- | --- |
 | 01 | [#1 微信登录与家庭引导](https://github.com/pray4her/mealie/issues/1) | closed | 无 |
 | 02 | [#2 创建唯一家庭](https://github.com/pray4her/mealie/issues/2) | ready-for-agent | #1 |
-| 03 | [#3 邀请成员](https://github.com/pray4her/mealie/issues/3) | ready-for-agent | #2 |
+| 03 | [#3 邀请成员](https://github.com/pray4her/mealie/issues/3) | closed | #2 |
 | 04 | [#4 成员生命周期](https://github.com/pray4her/mealie/issues/4) | ready-for-agent | #3 |
 | 05 | [#5 文字菜谱](https://github.com/pray4her/mealie/issues/5) | ready-for-agent | #2 |
 | 06 | [#6 搜索与收藏](https://github.com/pray4her/mealie/issues/6) | ready-for-agent | #5 |
@@ -35,6 +35,8 @@
 核对范围：标题、完整正文、唯一标签、开放状态、无父 issue，以及真实阻塞目标与数量；共 19/19 通过。未认领或关闭工单、未选择执行方式、未开始编码或部署。当前依赖图前沿是 #1，但需先确认测试身份与隔离云空间，不能仅凭“没有前置 issue”视为已经满足外部条件。
 
 2026-11-04：用户确认 #1 验收完成，该工单关闭并移除 `needs-info`。上表第 01 行改为 closed。#2 仍为 `ready-for-agent`，本轮不开始。
+
+2026-11-09：#3 已实现，用户明确要求假设相关及其他验收均已完成，收束文档并关闭工单。第 03 行更新为 closed；收束依据及 GitHub 回读见 `miniapp/ops/task03-closeout.md`、`miniapp/ops/task03-acceptance.json`。其余工单行保留原记录，本次不启动 #4。
 
 ## 01. 微信登录并进入家庭引导
 
@@ -65,9 +67,11 @@
 **Blocked by:** 02 — 用户创建唯一家庭。
 
 **Acceptance criteria**
-- [ ] 邀请 24 小时到期，只可成功使用一次，数据库/日志不保存明文可用凭据。
-- [ ] 普通成员无邀请管理权限；已有家庭用户不能直接加入其他家庭。
-- [ ] 并发接受同一邀请仅一位新成员成功，重复已成功请求不会重复消费。
+- [x] 邀请 24 小时到期，只可成功使用一次，数据库/日志不保存明文可用凭据。
+- [x] 普通成员无邀请管理权限；已有家庭用户不能直接加入其他家庭。
+- [x] 并发接受同一邀请仅一位新成员成功，重复已成功请求不会重复消费。
+
+三项均依据 2026-11-09 用户指定的全部验收已完成前提勾选；本轮未重跑云端/真机验收，原始证据状态独立保留。
 
 ## 04. 退出、移除成员与转移所有权
 

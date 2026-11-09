@@ -6,7 +6,7 @@
     "spaceId": "env-00jy7289et7b",
     "spaceName": "mealie"
   },
-  "status": "normal-resources-deployed-acceptance-pending",
+  "status": "normal-resources-deployed-closed-on-user-acceptance-premise",
   "uploadAuthorized": true,
   "isolatedTestUseConfirmed": true,
   "sourceSha256": "dc3e9586969877ff961a45b6e3ede4eb0c87580b9e263c31942b82bdab655858",
@@ -167,5 +167,17 @@
   "businessRequestsExecuted": 0,
   "platformLogCapture": "pending; UI helper could not activate minimized browser",
   "authenticatedActorsBound": 0,
-  "acceptance": "pending"
+  "acceptance": "accepted-on-user-premise",
+  "closeout": {
+    "date": "2026-11-09",
+    "issueUrl": "https://github.com/pray4her/mealie/issues/3",
+    "acceptanceBasis": "user-specified-all-acceptance-completed-premise",
+    "evidenceFile": "ops/task03-closeout.md",
+    "evidenceRef": "收束依据",
+    "historicalObservations": "Other deployment fields describe the original upload session, including zero business requests, no device tests, pending log checks and absent actor bindings. They are not new observations made during closeout.",
+    "newCloudOperations": false,
+    "issueState": "closed",
+    "stateReason": "completed",
+    "closedAtUtc": "2026-11-09T01:12:19Z"
+  }
 }
