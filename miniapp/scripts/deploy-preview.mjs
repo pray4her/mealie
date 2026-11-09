@@ -7,7 +7,7 @@ import { doctor } from './doctor.mjs';
 
 // Offline inventory only: no cloud SDK, shell command, association, upload or DB API.
 export async function createDeployPreview({ root, ticket }) {
-  if (ticket !== undefined && !['task02', 'task03', 'task04', 'task05'].includes(ticket)) throw new Error('Unknown preview ticket');
+  if (ticket !== undefined && !['task02', 'task03', 'task04', 'task05', 'task06'].includes(ticket)) throw new Error('Unknown preview ticket');
   const target = JSON.parse(await readFile(join(root, 'ops/project-target.json'), 'utf8'));
   const readiness = await doctor({ root, ticket });
   if (readiness.blockers.includes('target-invalid')) throw new Error('Invalid project target');
@@ -60,6 +60,14 @@ export async function createDeployPreview({ root, ticket }) {
       proposedChanges: resources.filter(item => ['recipes-co', 'home-recipes', 'home-family', 'home-kernel', 'home-contracts', 'recipes.schema.json', 'recipes.index.json', 'mutation_receipts.schema.json'].includes(item.name)),
       preservationRequired: 'Reconcile remote identity/configuration/bridge dependencies before upload; no collection reset or full-plugin initialization. Family content checks retain scene 1; recipe checks use scene 3.',
       compatibility: 'Matching cloud and client contracts; all recipe writes require expected family and membership generation. Existing family interfaces remain unchanged.',
+    } : {}),
+    ...(ticket === 'task06' ? {
+      sharedModuleImpact: ['account-co', 'uni-id-co', 'family-co', 'recipes-co'],
+      protectedDependencies: ['uni-id-common', 'uni-config-center', 'uni-open-bridge-common'],
+      proposedChanges: resources.filter(item => ['recipes-co', 'home-recipes', 'home-kernel', 'home-contracts', 'recipe_favorites.schema.json', 'mutation_receipts.schema.json'].includes(item.name)),
+      preservationRequired: 'Preserve remote identity/configuration/bridge dependencies, existing recipes, indexes and receipts. Add only recipe_favorites with built-in _id uniqueness and extend receipt operation enum; no reset, plugin initialization or backfill.',
+      compatibility: 'Deploy matching cloud/client artifacts in the isolated test space. Recipe.isFavorite is response-only; legacy recipes and immutable recipe receipt snapshots stay readable. Old cursors restart at first page.',
+      queryBounds: { candidatesRead: 101, candidatesExamined: 100, recipesHydrated: 20, favoritesBatch: 100, index: 'existing family_created_id' },
     } : {}),
     compiledCloudArtifactSha256: null,
     resources: resources.sort((a, b) => a.path.localeCompare(b.path)),

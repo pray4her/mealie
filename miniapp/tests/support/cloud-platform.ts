@@ -52,6 +52,7 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' = 'family-co'
     get: (this: object, ...args: unknown[]) => Promise<unknown>;
     list: (this: object, ...args: unknown[]) => Promise<unknown>;
     update: (this: object, ...args: unknown[]) => Promise<unknown>;
+    favorite: (this: object, ...args: unknown[]) => Promise<unknown>;
     current: (this: object, ...args: unknown[]) => Promise<unknown>;
     create: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
     invite: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;

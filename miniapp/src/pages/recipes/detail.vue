@@ -8,8 +8,8 @@ import { copy } from '../../shared/copy';
 const id = ref<string | null>(null);
 onLoad(query => { try { id.value = validId(query?.id); } catch { id.value = null; } });
 const page = useRecipesPage(async () => { if (!id.value) throw new AppError('INVALID_INPUT'); await page.recipes.get(id.value); });
-const { confirmed, message, recipes } = page;
-const { recipe } = recipes;
+const { confirmed, busy, message, recipes } = page;
+const { recipe, pendingFavorite } = recipes;
 const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edit?id=' + recipe.value.id }); };
 </script>
 <template>
@@ -22,6 +22,32 @@ const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edi
         {{ recipe.title }}
       </text>
       <text>{{ recipe.authorLabel }}</text>
+      <button
+        data-favorite
+        :disabled="busy || !!pendingFavorite"
+        :aria-pressed="recipe.isFavorite"
+        @tap="page.act(async () => { if (recipe) await recipes.favorite(recipe.id, !recipe.isFavorite); })"
+      >
+        {{ recipe.isFavorite ? copy.unfavoriteRecipe : copy.favoriteRecipe }}
+      </button>
+      <view v-if="pendingFavorite">
+        <text role="status">
+          {{ copy.pendingFavorite }}
+        </text>
+        <button
+          data-resume-favorite
+          :disabled="busy"
+          @tap="page.act(async () => { await recipes.retryFavorite(); })"
+        >
+          {{ copy.resumeFavorite }}
+        </button>
+      </view>
+      <text
+        v-if="message"
+        role="status"
+      >
+        {{ message }}
+      </text>
       <text
         v-if="recipe.description"
         class="block"

@@ -1,0 +1,80 @@
+{
+  "ticket": "task06",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "37ba04bea9d82edb2b3758e6bb1c9484527fb2913f12f6b83c631098d0435b14",
+  "uploadAuthorized": true,
+  "authorization": "User requested cloud resource upload, verification, git commit and push on 2026-11-09",
+  "sharedModuleImpact": [
+    "account-co",
+    "uni-id-co",
+    "family-co",
+    "recipes-co"
+  ],
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "49b8b22a252470860e48a9a6207b26f68ad02924ed7f5ba319d30b93d8f36aad",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-kernel",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "sha256": "2570417ab106d8b3ef97aa830bdca2b54ae2d49e1ad96232caec1e078ed04c79",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-recipes",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-recipes",
+      "sha256": "36eca4e61a5aa74f9b0d4fa5d70c50ab1316af48429321f5fc26455a89e48cd5",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "cloud-object",
+      "name": "recipes-co",
+      "path": "uniCloud-alipay/cloudfunctions/recipes-co",
+      "sha256": "e02409d5d0f7d469d1ea4ad62ed4a74a91b2a188ad5dfe7647b4777ea037cedc",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "schema",
+      "name": "mutation_receipts.schema.json",
+      "path": "uniCloud-alipay/database/mutation_receipts.schema.json",
+      "sha256": "7f0472da2c4eaf2a4726c01a1e9483df7ef5f56c2604bde96d99091854127304",
+      "hashKind": "file-sha256",
+      "existing": "present",
+      "action": "update"
+    },
+    {
+      "kind": "schema",
+      "name": "recipe_favorites.schema.json",
+      "path": "uniCloud-alipay/database/recipe_favorites.schema.json",
+      "sha256": "ea17c95a7e410ea4ed0287109d5b7b16dc612b4c491b2ac8206199d399302a63",
+      "hashKind": "file-sha256",
+      "existing": "absent",
+      "action": "create"
+    }
+  ]
+}

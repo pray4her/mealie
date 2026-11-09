@@ -125,3 +125,102 @@ test('unknown_result_then_terminal_audit_rejection_unlocks_original_draft_and_al
   expect(send.mock.calls[2][0].requestId).not.toBe(send.mock.calls[0][0].requestId);
   expect(await h.rows('recipes')).toHaveLength(1); page.wrapper.unmount();
 });
+
+async function seedRecipe(client: Awaited<ReturnType<typeof setup>>['client'], title = '家常汤', tags = ['家常']) {
+  const view = (await client.family.current())!;
+  return client.recipes.create({ requestId: 'page-create-' + title, familyId: view.familyId, generation: view.generation,
+    recipe: { title, description: null, baseServings: null, prepMinutes: null, cookMinutes: null,
+      ingredients: [{ raw: '盐适量', name: '盐', quantity: null, unit: null, note: null }], steps: ['煮'], tags } });
+}
+
+test('list_search_is_explicit_and_combines_filters_and_favorites_then_removes_unmarked_row', async () => {
+  const { client } = await setup(); await seedRecipe(client, 'Soup', ['家常']); await seedRecipe(client, 'Noodles', ['面']);
+  const send = vi.spyOn(client.recipes, 'list'); const page = mountPage(List, { client }); await page.show();
+  await page.wrapper.find('[data-query]').setValue('sOuP'); await page.wrapper.find('[data-tag]').setValue('家常');
+  expect(send).toHaveBeenCalledTimes(1);
+  await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+  expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['Soup']);
+  await page.wrapper.find('[data-favorite]').trigger('click'); await flushPromises();
+  expect(page.wrapper.find('[data-favorite]').text()).toBe('取消收藏');
+  await page.wrapper.find('[data-favorites]').trigger('click'); await flushPromises();
+  expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(1);
+  await page.wrapper.find('[data-favorite]').trigger('click'); await flushPromises();
+  expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(0);
+  await page.hide(); await page.show();
+  expect((page.wrapper.find('[data-query]').element as HTMLInputElement).value).toBe('soup'); page.wrapper.unmount();
+});
+
+test('empty_search_segment_offers_continuation_and_duplicate_more_taps_do_not_duplicate_results', async () => {
+  const { client } = await setup(); const row = await seedRecipe(client, 'Soup');
+  const send = vi.spyOn(client.recipes, 'list').mockResolvedValueOnce({ items: [], nextCursor: 'cursor' });
+  const gate = deferCall(); const page = mountPage(List, { client }); await page.show();
+  expect(page.wrapper.text()).toContain('继续查找'); expect(page.wrapper.text()).not.toContain('没有符合');
+  send.mockImplementationOnce(async () => { await gate.promise; return { items: [row], nextCursor: null }; });
+  await Promise.all([page.wrapper.find('[data-more]').trigger('click'), page.wrapper.find('[data-more]').trigger('click')]);
+  expect(send).toHaveBeenCalledTimes(2); gate.resolve(null); await flushPromises();
+  expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(1); page.wrapper.unmount();
+});
+
+test('late_filter_response_and_hidden_response_cannot_replace_current_results', async () => {
+  const { client } = await setup(); const row = await seedRecipe(client, 'Soup');
+  const send = vi.spyOn(client.recipes, 'list'); const page = mountPage(List, { client }); await page.show();
+  const gate = deferCall(); send.mockImplementationOnce(async () => { await gate.promise; return { items: [row], nextCursor: 'old' }; });
+  await page.wrapper.find('[data-query]').setValue('Soup'); await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+  await page.wrapper.find('[data-query]').setValue('missing'); await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+  gate.resolve(null); await flushPromises();
+  expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(0); expect(page.controllers.recipes.nextCursor.value).toBeNull();
+  await page.hide(); expect(page.wrapper.find('[data-protected]').exists()).toBe(false); page.wrapper.unmount();
+});
+
+test('favorite_lost_confirmation_survives_cold_start_and_retries_same_intent_without_using_recipe_draft', async () => {
+  const { h, client } = await setup(); const row = await seedRecipe(client, 'Soup'); const storage = createMemoryStorage();
+  const actual = client.recipes.favorite.bind(client.recipes); const send = vi.spyOn(client.recipes, 'favorite').mockImplementationOnce(async input => { await actual(input); throw new AppError('UNAVAILABLE'); });
+  const page = mountPage(Detail, { client, storage }); await page.load({ id: row.id }); await page.show();
+  await Promise.all([page.wrapper.find('[data-favorite]').trigger('click'), page.wrapper.find('[data-favorite]').trigger('click')]); await flushPromises();
+  expect(send).toHaveBeenCalledTimes(1); expect(page.wrapper.find('[data-resume-favorite]').exists()).toBe(true);
+  expect(page.controllers.recipes.pending.value).toBeNull(); page.wrapper.unmount();
+  const restored = mountPage(Detail, { client, storage }); await restored.load({ id: row.id }); await restored.show();
+  await restored.wrapper.find('[data-resume-favorite]').trigger('click'); await flushPromises();
+  expect(send).toHaveBeenCalledTimes(2); expect(send.mock.calls[1][0]).toEqual(send.mock.calls[0][0]);
+  expect(await h.rows('recipe_favorites')).toHaveLength(1); expect(restored.wrapper.find('[data-resume-favorite]').exists()).toBe(false);
+  expect(restored.wrapper.find('[data-favorite]').text()).toBe('取消收藏'); restored.wrapper.unmount();
+});
+
+test('logout_discards_pending_favorite_and_late_success_cannot_publish_private_state', async () => {
+  const { client } = await setup(); const row = await seedRecipe(client, 'Soup'); const storage = createMemoryStorage(); const gate = deferCall();
+  const actual = client.recipes.favorite.bind(client.recipes); vi.spyOn(client.recipes, 'favorite').mockImplementation(async input => { await gate.promise; return actual(input); });
+  const page = mountPage(Detail, { client, storage }); await page.load({ id: row.id }); await page.show();
+  await page.wrapper.find('[data-favorite]').trigger('click'); await flushPromises();
+  await page.auth.signOut(); gate.resolve(null); await flushPromises();
+  expect(page.controllers.recipes.recipe.value).toBeNull(); expect(page.controllers.recipes.pendingFavorite.value).toBeNull();
+  expect(storage.get('home.recipes.favorite.v1:alice')).toBeUndefined(); expect(page.wrapper.find('[data-protected]').exists()).toBe(false); page.wrapper.unmount();
+});
+
+test('favorite_confirmation_supersedes_an_older_list_snapshot', async () => {
+  const { client } = await setup(); const row = await seedRecipe(client, 'Soup'); const other = await seedRecipe(client, 'Noodles'); const view = (await client.family.current())!;
+  await client.recipes.favorite({ requestId: 'initial-favorite-01', familyId: view.familyId, generation: view.generation, id: row.id, enabled: true });
+  await client.recipes.favorite({ requestId: 'initial-favorite-02', familyId: view.familyId, generation: view.generation, id: other.id, enabled: true });
+  const list = client.recipes.list.bind(client.recipes); const favorite = client.recipes.favorite.bind(client.recipes);
+  const favoriteGate = deferCall(); const listGate = deferCall();
+  const page = mountPage(List, { client }); await page.show();
+  await page.wrapper.find('[data-favorites]').trigger('click'); await flushPromises();
+  vi.spyOn(client.recipes, 'favorite').mockImplementationOnce(async input => { await favoriteGate.promise; return favorite(input); });
+  await page.wrapper.findAll('[data-favorite]')[1].trigger('click'); await flushPromises();
+  vi.spyOn(client.recipes, 'list').mockImplementationOnce(async input => { const snapshot = await list(input); await listGate.promise; return snapshot; });
+  await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+  favoriteGate.resolve(null); await flushPromises(); expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['Noodles']);
+  listGate.resolve(null); await flushPromises(); expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['Noodles']);
+  expect(page.controllers.recipes.nextCursor.value).toBeNull(); page.wrapper.unmount();
+});
+
+test('visible_retry_uses_original_request_while_a_hidden_favorite_call_is_still_pending', async () => {
+  const { client } = await setup(); const row = await seedRecipe(client, 'Soup'); const favorite = client.recipes.favorite.bind(client.recipes);
+  const gate = deferCall(); const send = vi.spyOn(client.recipes, 'favorite').mockImplementationOnce(async input => { await gate.promise; return favorite(input); });
+  const page = mountPage(Detail, { client }); await page.load({ id: row.id }); await page.show();
+  await page.wrapper.find('[data-favorite]').trigger('click'); await flushPromises(); await page.hide(); await page.show();
+  await page.wrapper.find('[data-resume-favorite]').trigger('click'); await flushPromises();
+  gate.resolve(null); await flushPromises();
+  expect(send).toHaveBeenCalledTimes(2); expect(send.mock.calls[1][0]).toEqual(send.mock.calls[0][0]);
+  expect(page.wrapper.find('[data-protected]').exists()).toBe(true); expect(page.wrapper.find('[data-favorite]').text()).toBe('取消收藏');
+  expect(page.wrapper.find('[data-resume-favorite]').exists()).toBe(false); page.wrapper.unmount();
+});

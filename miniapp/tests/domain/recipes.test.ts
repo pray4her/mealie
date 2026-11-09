@@ -166,7 +166,7 @@ test('list_revalidates_membership_after_the_scoped_query_returns', async () => {
   const gate = deferCall(); const entered = deferCall();
   const api = createRecipesService({ database: f.h.database, now: () => 1_800_000_000_000, newId: () => 'a'.repeat(32),
     content: { async checkText() { return 'allowed'; } }, async revalidateIdentity() {},
-    reads: { async list() { entered.resolve(null); await gate.promise; return f.h.rows('recipes'); } },
+    reads: { async list() { entered.resolve(null); await gate.promise; return (await f.h.rows<RecipeRecord>('recipes')).map(({ _id, familyId, title, tags, createdAt }) => ({ _id, familyId, title, tags, createdAt })); }, async favorites() { return []; } },
   }, f.joined);
   const pending = api.list({}); await entered.promise;
   await f.owner.family.removeMember({ requestId: requestId(), familyId: f.view.familyId, generation: f.view.generation, uid: 'member', targetGeneration: f.joined.generation });
@@ -223,4 +223,113 @@ test('lost_rejection_commit_ack_still_returns_terminal_rejection_on_replay', asy
   await expect(f.owner.recipes.create(input)).rejects.toMatchObject({ code: 'INVALID_INPUT' });
   await expect(f.owner.recipes.create(input)).rejects.toMatchObject({ code: 'INVALID_INPUT' });
   expect(await f.h.rows('recipes')).toHaveLength(0);
+});
+
+test('search_is_literal_case_insensitive_substring_with_exact_tag_and_and_filters', async () => {
+  const f = await setup();
+  for (const [title, tags] of [['香煎盐焗鸡', ['家常']], ['Chicken [Soup].*', ['Soup']], ['CHICKEN noodle', ['soup']]] as const) {
+    await f.owner.recipes.create({ ...f.input(), recipe: { ...textRecipe(), title, tags: [...tags] } });
+  }
+  expect((await f.owner.recipes.list({ query: ' 盐焗 ' })).items.map(r => r.title)).toEqual(['香煎盐焗鸡']);
+  expect((await f.owner.recipes.list({ query: 'cHiCkEn', tag: ' Soup ' })).items.map(r => r.title)).toEqual(['Chicken [Soup].*']);
+  expect((await f.owner.recipes.list({ query: '.*' })).items.map(r => r.title)).toEqual(['Chicken [Soup].*']);
+  expect((await f.owner.recipes.list({ tag: '家' })).items).toEqual([]);
+  expect((await f.owner.recipes.list({ query: '  ', tag: '' })).items).toHaveLength(3);
+});
+
+test.each([{ query: 1 }, { query: '字'.repeat(121) }, { tag: '字'.repeat(41) }, { query: '\u0000' }, { tag: '\uD800' },
+  { favoritesOnly: 'true' }, { favoritesOnly: null }, { limit: null }, { uid: 'member' }, { limit: 21 }, { limit: 1.5 }])('search_rejects_untrusted_input_%#', async input => {
+  const f = await setup(); await expect(f.owner.recipes.list(input as never)).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+});
+
+test('bounded_search_returns_empty_continuation_and_never_skips_fetched_but_unexamined_candidates', async () => {
+  const f = await setup(); await f.owner.recipes.create(f.input()); const [base] = await f.h.rows<RecipeRecord>('recipes');
+  for (let i = 1; i <= 125; i++) {
+    const id = i.toString(16).padStart(32, '0');
+    f.h.memory.seed('recipes', id, { ...base, _id: id, slug: 'seed-' + id, title: i <= 25 ? '匹配菜谱' : '别的菜谱' });
+  }
+  const first = await f.owner.recipes.list({ query: '匹配', limit: 2 });
+  expect(first.items).toEqual([]); expect(first.nextCursor).toBeTypeOf('string');
+  const ids: string[] = []; let cursor = first.nextCursor;
+  while (cursor) { const page = await f.owner.recipes.list({ query: '匹配', limit: 2, cursor }); ids.push(...page.items.map(r => r.id)); cursor = page.nextCursor; }
+  expect(ids).toEqual(Array.from({ length: 25 }, (_, i) => (25 - i).toString(16).padStart(32, '0')));
+});
+
+test('cursor_is_bound_to_user_filters_and_membership_generation_and_fits_unicode_filter_limit', async () => {
+  const f = await setup();
+  for (let i = 0; i < 3; i++) await f.owner.recipes.create({ ...f.input(), recipe: { ...textRecipe(), title: '🍲'.repeat(120), tags: ['🍲'.repeat(40)] } });
+  const filters = { query: '🍲'.repeat(120), tag: '🍲'.repeat(40), limit: 1 };
+  const first = await f.member.recipes.list(filters); expect(first.nextCursor!.length).toBeLessThanOrEqual(512);
+  for (const input of [{ ...filters, query: '🍲' }, { ...filters, tag: '' }, { ...filters, favoritesOnly: true }]) {
+    await expect(f.member.recipes.list({ ...input, cursor: first.nextCursor! })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+  }
+  await expect(f.owner.recipes.list({ ...filters, cursor: first.nextCursor! })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+  await f.member.family.leave({ requestId: requestId(), familyId: f.joined.familyId, generation: f.joined.generation });
+  const invite = await f.owner.family.invite({ requestId: requestId() }); await f.member.family.join({ requestId: requestId(), token: invite.token });
+  await expect(f.member.recipes.list({ ...filters, cursor: first.nextCursor! })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+});
+
+test('favorites_are_private_set_state_and_receipt_replay_never_reapplies_an_old_state', async () => {
+  const f = await setup(); const create = f.input(); const recipe = await f.owner.recipes.create(create);
+  const mark = { requestId: requestId(), familyId: f.joined.familyId, generation: f.joined.generation, id: recipe.id, enabled: true };
+  await Promise.all([f.member.recipes.favorite(mark), f.member.recipes.favorite(mark)]);
+  expect(await f.h.rows('recipe_favorites')).toHaveLength(1);
+  expect((await f.member.recipes.list({ favoritesOnly: true, query: '焗', tag: '' })).items).toMatchObject([{ id: recipe.id, isFavorite: true }]);
+  expect(await f.owner.recipes.get(recipe.id)).toMatchObject({ isFavorite: false });
+  expect((await f.owner.recipes.list({ favoritesOnly: true })).items).toEqual([]);
+  await expect(f.member.recipes.favorite({ ...mark, enabled: false })).rejects.toMatchObject({ code: 'CONFLICT' });
+  await f.member.recipes.favorite({ ...mark, requestId: requestId(), enabled: false });
+  await f.member.recipes.favorite(mark);
+  expect(await f.member.recipes.get(recipe.id)).toMatchObject({ isFavorite: false });
+  await f.owner.recipes.favorite({ ...mark, requestId: requestId(), generation: f.view.generation });
+  expect(await f.owner.recipes.create(create)).toMatchObject({ isFavorite: true });
+  expect(await f.h.rows('recipes')).toEqual([expect.not.objectContaining({ isFavorite: expect.anything() })]);
+  const receipts = await f.h.rows<{ operation: string; result: object }>('mutation_receipts');
+  expect(receipts.find(r => r.operation === 'recipe-create-v1')!.result).not.toHaveProperty('isFavorite');
+});
+
+test('favorite_rejects_foreign_missing_and_forged_target_uid', async () => {
+  const f = await setup(); const recipe = await f.owner.recipes.create(f.input());
+  for (const id of [recipe.id, 'f'.repeat(32)]) await expect(f.outsider.recipes.favorite({ requestId: requestId(), familyId: f.other.familyId, generation: f.other.generation, id, enabled: true })).rejects.toMatchObject({ code: 'NOT_FOUND' });
+  const mark = { requestId: requestId(), familyId: f.view.familyId, generation: f.view.generation, id: recipe.id, enabled: true };
+  for (const patch of [{ uid: 'member' }, { enabled: 1 }, { id: 'bad' }]) await expect(f.owner.recipes.favorite({ ...mark, ...patch } as never)).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+  expect(await f.h.rows('recipe_favorites')).toHaveLength(0);
+});
+
+test('rejoining_a_family_does_not_restore_favorites_or_authorize_old_first_delivery_and_replay', async () => {
+  const f = await setup(); const recipe = await f.owner.recipes.create(f.input());
+  const mark = { requestId: requestId(), familyId: f.joined.familyId, generation: f.joined.generation, id: recipe.id, enabled: true };
+  await f.member.recipes.favorite(mark);
+  await f.member.family.leave({ requestId: requestId(), familyId: f.joined.familyId, generation: f.joined.generation });
+  const invite = await f.owner.family.invite({ requestId: requestId() }); const joined = await f.member.family.join({ requestId: requestId(), token: invite.token });
+  expect((await f.member.recipes.list({ favoritesOnly: true })).items).toEqual([]);
+  for (const input of [mark, { ...mark, requestId: requestId() }]) await expect(f.member.recipes.favorite(input)).rejects.toMatchObject({ code: 'CONFLICT' });
+  await f.member.recipes.favorite({ ...mark, requestId: requestId(), generation: joined.generation });
+  expect(await f.member.recipes.get(recipe.id)).toMatchObject({ isFavorite: true });
+});
+
+test.each(['insert:recipe_favorites', 'insert:mutation_receipts', 'after-commit'] as const)('favorite_transaction_handles_%s', async stage => {
+  const f = await setup(); const recipe = await f.owner.recipes.create(f.input()); let armed = true;
+  const api = createRecipesService({ database: f.h.database, now: () => 1_800_000_000_000, newId: () => 'a'.repeat(32),
+    content: { async checkText() { return 'allowed'; } }, reads: { async list() { return []; }, async favorites() { return []; } },
+    async revalidateIdentity() { if (armed) { armed = false; f.h.memory.failNext(stage); } },
+  }, f.joined);
+  const mark = { requestId: requestId(), familyId: f.joined.familyId, generation: f.joined.generation, id: recipe.id, enabled: true };
+  const before = await f.h.rows('family_members');
+  if (stage === 'after-commit') { await api.favorite(mark); expect(await f.h.rows('recipe_favorites')).toHaveLength(1); }
+  else { await expect(api.favorite(mark)).rejects.toMatchObject({ code: 'UNAVAILABLE' }); expect(await f.h.rows('recipe_favorites')).toEqual([]); expect(await f.h.rows('family_members')).toEqual(before); }
+  await api.favorite(mark); expect(await f.member.recipes.get(recipe.id)).toMatchObject({ isFavorite: true });
+});
+
+test('favorite_member_fence_prevents_commit_after_removal', async () => {
+  const f = await setup(); const recipe = await f.owner.recipes.create(f.input());
+  let barrier: ReturnType<typeof f.h.memory.barrierNextCommit> | undefined;
+  const api = createRecipesService({ database: f.h.database, now: () => 1_800_000_000_000, newId: () => 'a'.repeat(32),
+    content: { async checkText() { return 'allowed'; } }, reads: { async list() { return []; }, async favorites() { return []; } },
+    async revalidateIdentity() { if (!barrier) barrier = f.h.memory.barrierNextCommit(); },
+  }, f.joined);
+  const pending = api.favorite({ requestId: requestId(), familyId: f.joined.familyId, generation: f.joined.generation, id: recipe.id, enabled: true });
+  while (!barrier) await new Promise(resolve => setTimeout(resolve, 0)); await barrier.reached;
+  await f.owner.family.removeMember({ requestId: requestId(), familyId: f.view.familyId, generation: f.view.generation, uid: 'member', targetGeneration: f.joined.generation });
+  barrier.release(); await expect(pending).rejects.toMatchObject({ code: 'FAMILY_REQUIRED' }); expect(await f.h.rows('recipe_favorites')).toEqual([]);
 });

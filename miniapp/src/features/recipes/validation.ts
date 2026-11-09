@@ -1,4 +1,4 @@
-import type { Ingredient, Recipe, RecipeInput, RecipeMutation, RecipeUpdate } from 'home-contracts';
+import type { Ingredient, Recipe, RecipeInput, RecipeMutation, RecipeUpdate, RecipeListInput, RecipeFavoriteMutation } from 'home-contracts';
 import { AppError } from '../../shared/errors';
 
 export function object(value: unknown, required: readonly string[], optional: readonly string[] = []): Record<string, unknown> {
@@ -51,7 +51,8 @@ export function parseMutation(value: unknown, update: boolean): RecipeMutation |
 export function editable(value: Recipe): RecipeInput { return Object.fromEntries(inputKeys.map(key => [key, value[key]])) as RecipeInput; }
 export function parseRecipe(value: unknown): Recipe {
   try {
-    const row = object(value, [...inputKeys, 'id', 'familyId', 'createdBy', 'version', 'createdAt', 'updatedAt', 'imageIds', 'source', 'authorLabel']);
+    const row = object(value, [...inputKeys, 'id', 'familyId', 'createdBy', 'version', 'createdAt', 'updatedAt', 'imageIds', 'source', 'authorLabel', 'isFavorite']);
+    if (typeof row.isFavorite !== 'boolean') throw new Error();
     const source = object(row.source, ['kind', 'url', 'importJobId', 'warnings']);
     if (!['manual', 'text', 'image', 'url'].includes(String(source.kind)) || (source.url !== null && typeof source.url !== 'string')
       || (source.importJobId !== null && typeof source.importJobId !== 'string') || !Array.isArray(source.warnings) || source.warnings.length > 20
@@ -63,4 +64,22 @@ export function parseRecipe(value: unknown): Recipe {
     const input = parseInput(Object.fromEntries(inputKeys.map(key => [key, row[key]])));
     return { ...row, ...input } as Recipe;
   } catch { throw new AppError('UNAVAILABLE'); }
+}
+export function parseListInput(value: unknown): RecipeListInput {
+  const row = object(value, [], ['query', 'tag', 'cursor', 'limit', 'favoritesOnly']);
+  function filter(value: unknown, max: number) {
+    if (value === undefined) return '';
+    if (typeof value !== 'string') throw new AppError('INVALID_INPUT');
+    // Validate even an empty filter before trimming whitespace.
+    return text('x' + value, max + 1).slice(1).trim();
+  }
+  if (row.limit !== undefined && (typeof row.limit !== 'number' || !Number.isSafeInteger(row.limit) || row.limit < 1 || row.limit > 20)
+    || row.cursor !== undefined && (typeof row.cursor !== 'string' || !/^[A-Za-z0-9_-]{1,512}$/.test(row.cursor))
+    || row.favoritesOnly !== undefined && typeof row.favoritesOnly !== 'boolean') throw new AppError('INVALID_INPUT');
+  return { ...row, query: filter(row.query, 120).replace(/[A-Z]/g, letter => letter.toLowerCase()), tag: filter(row.tag, 40) } as RecipeListInput;
+}
+export function parseFavoriteMutation(value: unknown): RecipeFavoriteMutation {
+  const row = object(value, ['requestId', 'familyId', 'generation', 'id', 'enabled']);
+  if (typeof row.requestId !== 'string' || !/^[A-Za-z0-9_-]{16,128}$/.test(row.requestId) || typeof row.enabled !== 'boolean') throw new AppError('INVALID_INPUT');
+  return { requestId: row.requestId, familyId: text(row.familyId, 128), generation: text(row.generation, 128), id: validId(row.id), enabled: row.enabled };
 }

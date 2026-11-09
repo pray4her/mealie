@@ -1,5 +1,9 @@
 export const copy = {
   recipes: '家庭菜谱', createRecipe: '新建菜谱', editRecipe: '编辑菜谱', saveRecipe: '保存菜谱', noRecipes: '还没有菜谱，先记下一道家常菜吧。',
+  allRecipes: '全部', myFavorites: '我的收藏', favoriteRecipe: '收藏', unfavoriteRecipe: '取消收藏',
+  searchRecipes: '搜索', recipeQuery: '搜索标题', recipeTag: '精确标签（可选）', noMatchingRecipes: '没有符合条件的菜谱。',
+  continueSearching: '继续查找', searchSegmentEmpty: '本段暂无匹配，继续查找后续菜谱。',
+  pendingFavorite: '上次收藏操作结果尚未确认，请恢复原请求后再操作。', resumeFavorite: '恢复收藏操作',
   recipeTitle: '菜谱标题', recipeDescription: '说明（可选）', servings: '份数（可选）', prepMinutes: '准备时间（分钟，可选）', cookMinutes: '烹饪时间（分钟，可选）',
   ingredients: '食材', ingredientRaw: '食材原文，例如：盐适量', ingredientName: '食材名称，例如：盐', quantity: '数量（未知请留空）', unit: '单位（可选）', note: '处理说明（可选）',
   steps: '做法步骤', step: '请填写这一步的做法', tags: '标签（可选，用逗号分隔）', addIngredient: '添加食材', addStep: '添加步骤', removeRow: '移除',

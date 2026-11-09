@@ -20,7 +20,7 @@ async function fixture() {
     await writeFile(join(common, 'package.json'), JSON.stringify({ name, private: true }));
   }
   const recipes = join(dir, 'uniCloud-alipay/cloudfunctions/recipes-co'); await mkdir(recipes, { recursive: true });
-  await writeFile(join(recipes, 'index.obj.ts'), 'export async function create() {}\nexport async function get() {}\nexport async function list() {}\nexport async function update() {}');
+  await writeFile(join(recipes, 'index.obj.ts'), 'export async function create() {}\nexport async function get() {}\nexport async function list() {}\nexport async function update() {}\nexport async function favorite() {}');
   await writeFile(join(recipes, 'package.json'), '{"name":"recipes-co","private":true}');
   return dir;
 }
@@ -117,9 +117,9 @@ test('family_public_surface_rejects_default_reexports_helpers_and_test_entry', a
   await writeFile(join(probe, 'index.obj.ts'), 'export function probe() {}');
   await expect(checkBoundaries({ root: dir })).rejects.toThrow(/public|object/i);
 });
-test('all_six_business_schemas_deny_every_clientdb_operation', async () => {
+test('all_business_schemas_deny_every_clientdb_operation', async () => {
   const dir = await fixture(); const database = join(dir, 'uniCloud-alipay/database'); await mkdir(database, { recursive: true });
-  for (const collection of ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits', 'recipes']) {
+  for (const collection of ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits', 'recipes', 'recipe_favorites']) {
     const path = join(database, collection + '.schema.json');
     const schema = { permission: { read: false, create: false, update: false, delete: false } };
     await writeFile(path, JSON.stringify(schema)); await expect(checkBoundaries({ root: dir })).resolves.toBeUndefined();

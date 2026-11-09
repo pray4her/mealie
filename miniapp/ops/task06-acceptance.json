@@ -1,0 +1,286 @@
+{
+  "ticket": "task06",
+  "version": 1,
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "37ba04bea9d82edb2b3758e6bb1c9484527fb2913f12f6b83c631098d0435b14",
+  "configuration": {
+    "status": "pending",
+    "evidenceFile": "ops/task06-cloud-checks.md",
+    "evidenceRef": "Target and unchanged protected configuration bytes verified; business configuration and platform logs remain pending"
+  },
+  "local": {
+    "status": "passed",
+    "evidenceFile": "ops/task06-test-evidence.md",
+    "evidenceRef": "Post-authorization full Taskfile check: ten steps exit 0; 41 suites / 558 tests; source unchanged",
+    "buildSha256": "e67a7f55e8f048ed338631417ca5fb5dcd56d5d238462d2ea5d1fdef9a42c76d",
+    "scenarios": {
+      "full-check": {
+        "status": "passed",
+        "evidenceFile": "ops/task06-test-evidence.md",
+        "evidenceRef": "Post-authorization full Taskfile check: ten steps exit 0; 41 suites / 558 tests; source unchanged"
+      }
+    }
+  },
+  "cloud": {
+    "status": "pending",
+    "evidenceFile": "ops/task06-cloud-checks.md",
+    "evidenceRef": "Deployment and artifact readback verified in ops/task06-deployment.md; account business scenarios remain pending",
+    "buildSha256": "95a93c839b9463735e9c7a166b6e2c014f7d3bde988cb16ebbac34a26e8d3693",
+    "scenarios": {
+      "literal-substring-and-tags": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "query-validation": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "bounded-scan-empty-page": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "same-time-pagination": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "cursor-scope": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "candidate-projection": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "favorite-private": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "favorite-set-state": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "same-request": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "conflicting-payload": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "replay-after-opposite": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "cross-family": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "rejoin-generation": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "stale-first-delivery": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "read-revocation": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "protected-write-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "rollback-writes": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "commit-ack-lost": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "quota-cross-instance": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "legacy-recipe-receipt": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "schema-indexes": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "safe-dtos": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "platform-log-capture": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "normal-artifact-and-cleanup": {
+        "status": "passed",
+        "evidenceFile": "ops/task06-deployment.md",
+        "evidenceRef": "Actual deployed artifacts: 32 official JS files, restored TS byte match, five public methods, final remote inventory with no probe object"
+      },
+      "clientdb-recipe_favorites-read": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-recipe_favorites-create": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-recipe_favorites-update": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "clientdb-recipe_favorites-delete": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-cloud-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    },
+    "artifactStatus": "32 official downloaded/deployed JS files; no local transpilation substituted; cloud business scenarios deferred by user"
+  },
+  "device": {
+    "status": "pending",
+    "evidenceFile": "ops/task06-device-checks.md",
+    "evidenceRef": "not-executed",
+    "buildSha256": "f92c51b7a6b751512f6ecc07c0df4cf38523d87f783a0763347d3cce907fe975",
+    "scenarios": {
+      "explicit-search-and-tag": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "all-favorites-switch": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "empty-page-continue": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "list-detail-favorite": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "favorite-remove-row": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "filter-response-race": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "duplicate-taps": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "weak-network-original-request": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "pending-cold-start": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "hidden-late-response": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "removed-member-onboarding": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      },
+      "logout-account-isolation": {
+        "status": "pending",
+        "evidenceFile": "ops/task06-device-checks.md",
+        "evidenceRef": "not-executed"
+      }
+    },
+    "artifactStatus": "HBuilderX 5.34 candidate with matching AppID and linked space; 67 files byte-compared; not tested on physical device"
+  },
+  "localVerification": {
+    "date": "2026-11-09",
+    "timezone": "Asia/Shanghai",
+    "node": "22.23.3",
+    "pnpm": "10.20.0",
+    "task": "3.54.0",
+    "command": "task -d miniapp check -- --maxWorkers=2",
+    "suites": 41,
+    "tests": 558,
+    "log": "dist/task06-full-check-final.log",
+    "diffCheckExitCode": 0,
+    "independentReview": {
+      "p2Found": 3,
+      "p2Fixed": 3,
+      "remainingVerifiedBlockers": 0
+    },
+    "postAuthorizationCheck": {
+      "date": "2026-11-09",
+      "command": "task -d miniapp check -- --maxWorkers=2",
+      "exitCode": 0,
+      "suites": 41,
+      "tests": 558,
+      "evidence": "Full command console output; previous log path belongs to implementation phase"
+    }
+  },
+  "deployment": {
+    "status": "uploaded-and-readback-verified",
+    "uploadAuthorized": true,
+    "evidenceFile": "ops/task06-deployment.md",
+    "wechatPlatformUploaded": false,
+    "physicalDeviceTested": false,
+    "productionReleased": false
+  },
+  "userDecision": {
+    "date": "2026-11-09",
+    "scope": "Complete cloud upload/readback/local validation and Git commit/push; keep account and physical-device acceptance pending"
+  }
+}

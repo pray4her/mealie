@@ -1,0 +1,13 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "uid", "familyId", "generation", "recipeId", "createdAt"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
+    "uid": { "bsonType": "string", "minLength": 1, "maxLength": 128 },
+    "familyId": { "bsonType": "string", "minLength": 1, "maxLength": 128 },
+    "generation": { "bsonType": "string", "minLength": 1, "maxLength": 128 },
+    "recipeId": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "createdAt": { "bsonType": "long", "minimum": 0 }
+  }
+}

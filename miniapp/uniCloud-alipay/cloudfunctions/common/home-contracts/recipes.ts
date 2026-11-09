@@ -9,14 +9,17 @@ export type RecipeInput = {
 export type RecipeSource = { kind: 'manual' | 'text' | 'image' | 'url'; url: string | null; importJobId: Id | null; warnings: string[] };
 export type Recipe = RecipeInput & {
   id: Id; familyId: Id; createdBy: Id | null; version: number; createdAt: number; updatedAt: number;
-  imageIds: Id[]; source: RecipeSource; authorLabel: string;
+  imageIds: Id[]; source: RecipeSource; authorLabel: string; isFavorite: boolean;
 };
 export type Page<T> = { items: T[]; nextCursor: string | null };
 export type RecipeMutation = MembershipMutation & { recipe: RecipeInput };
 export type RecipeUpdate = RecipeMutation & { id: Id; version: number };
+export type RecipeListInput = { query?: string; tag?: string; cursor?: string; limit?: number; favoritesOnly?: boolean };
+export type RecipeFavoriteMutation = MembershipMutation & { id: Id; enabled: boolean };
 export interface RecipesApi {
   create(input: RecipeMutation): Promise<Recipe>;
   get(id: Id): Promise<Recipe>;
-  list(input: { cursor?: string; limit?: number }): Promise<Page<Recipe>>;
+  list(input: RecipeListInput): Promise<Page<Recipe>>;
   update(input: RecipeUpdate): Promise<Recipe>;
+  favorite(input: RecipeFavoriteMutation): Promise<void>;
 }

@@ -80,7 +80,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
     }; visit(ast);
     if (/[\\/](?:account-co|family-co|recipes-co)[\\/]index\.obj\.ts$/.test(path)) {
       const exports = ast.statements.filter(node => ts.isExportDeclaration(node) || ts.isExportAssignment(node) || (ts.canHaveModifiers(node) && ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)));
-      const expected = path.includes('recipes-co') ? ['create', 'get', 'list', 'update'] : path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
+      const expected = path.includes('recipes-co') ? ['create', 'get', 'list', 'update', 'favorite'] : path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
       if (exports.length !== expected.length || exports.some(node => !ts.isFunctionDeclaration(node) || !expected.includes(node.name?.text) || ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword))
         || new Set(exports.map(node => node.name?.text)).size !== expected.length) throw new Error('Unexpected public method export: ' + path);
     }

@@ -1,0 +1,595 @@
+[
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-id-common",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块uni-id-common..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-id-common",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块uni-id-common下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-id-common",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "uni-id-common",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\uni-id-common",
+      "message": "公共模块 uni-id-common 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-config-center",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块uni-config-center..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-config-center",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块uni-config-center下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-config-center",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "uni-config-center",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\uni-config-center",
+      "message": "公共模块 uni-config-center 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-open-bridge-common",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块uni-open-bridge-common..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-open-bridge-common",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块uni-open-bridge-common下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-open-bridge-common",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "uni-open-bridge-common",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\uni-open-bridge-common",
+      "message": "公共模块 uni-open-bridge-common 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-sec-check",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块uni-sec-check..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-sec-check",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块uni-sec-check下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-sec-check",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "uni-sec-check",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\uni-sec-check",
+      "message": "公共模块 uni-sec-check 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-cloud-s2s",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块uni-cloud-s2s..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-cloud-s2s",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块uni-cloud-s2s下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-cloud-s2s",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "uni-cloud-s2s",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\uni-cloud-s2s",
+      "message": "公共模块 uni-cloud-s2s 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块home-contracts..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-contracts下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-contracts",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "home-contracts",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\home-contracts",
+      "message": "公共模块 home-contracts 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块home-kernel..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-kernel下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-kernel",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "home-kernel",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\home-kernel",
+      "message": "公共模块 home-kernel 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块home-family..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-family",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-family下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-family",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "home-family",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\home-family",
+      "message": "公共模块 home-family 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-recipes",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载公共模块home-recipes..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-recipes",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-recipes下载完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-home-recipes",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "home-recipes",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\common\\home-recipes",
+      "message": "公共模块 home-recipes 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-account-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载云函数account-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-account-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "下载云函数[account-co]完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-account-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceLabel": "云函数",
+      "resourceName": "account-co",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\account-co",
+      "message": "云函数 account-co 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载云函数family-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-family-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "下载云函数[family-co]完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-family-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceLabel": "云函数",
+      "resourceName": "family-co",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\family-co",
+      "message": "云函数 family-co 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-id-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载云函数uni-id-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-id-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "下载云函数[uni-id-co]完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-uni-id-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceLabel": "云函数",
+      "resourceName": "uni-id-co",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\cloudfunctions\\uni-id-co",
+      "message": "云函数 uni-id-co 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-mutation_receipts",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始下载数据集合(mutation_receipts.schema.json) ...",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-mutation_receipts",
+    "type": "progress",
+    "phase": "database",
+    "message": "下载数据集合Schema(mutation_receipts.schema.json)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-mutation_receipts",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "mutation_receipts.schema.json",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\database\\mutation_receipts.schema.json",
+      "message": "mutation_receipts.schema.json 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-recipes",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始下载数据集合(recipes.schema.json) ...",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-recipes",
+    "type": "progress",
+    "phase": "database",
+    "message": "下载数据集合Schema(recipes.schema.json)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-recipes",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "recipes.schema.json",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\database\\recipes.schema.json",
+      "message": "recipes.schema.json 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-recipe_favorites",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始下载数据集合(recipe_favorites.schema.json) ...",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-recipe_favorites",
+    "type": "progress",
+    "phase": "database",
+    "message": "下载数据集合Schema(recipe_favorites.schema.json)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-after-schema-recipe_favorites",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after",
+      "provider": "alipay",
+      "resourceName": "recipe_favorites.schema.json",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\after\\uniCloud-alipay\\database\\recipe_favorites.schema.json",
+      "message": "recipe_favorites.schema.json 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-readback-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在下载云函数recipes-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-readback-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "下载云函数[recipes-co]完成",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-readback-recipes-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\readback",
+      "provider": "alipay",
+      "resourceLabel": "云函数",
+      "resourceName": "recipes-co",
+      "resourcePath": "C:\\Users\\pray4her\\AppData\\Local\\Temp\\mealie-task06-12e4efca-7565-4b18-bee5-253fd50d5090\\readback\\uniCloud-alipay\\cloudfunctions\\recipes-co",
+      "message": "云函数 recipes-co 下载完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-final-function",
+    "type": "result",
+    "data": {
+      "message": "获取到 4 项云函数",
+      "resources": [
+        {
+          "name": "account-co",
+          "uniModuleId": ""
+        },
+        {
+          "name": "family-co",
+          "uniModuleId": ""
+        },
+        {
+          "name": "recipes-co",
+          "uniModuleId": ""
+        },
+        {
+          "name": "uni-id-co",
+          "uniModuleId": ""
+        }
+      ]
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-final-common-module",
+    "type": "result",
+    "data": {
+      "message": "获取到 10 项公共模块",
+      "resources": [
+        {
+          "name": "home-contracts",
+          "uniModuleId": ""
+        },
+        {
+          "name": "home-family",
+          "uniModuleId": ""
+        },
+        {
+          "name": "home-kernel",
+          "uniModuleId": ""
+        },
+        {
+          "name": "home-recipes",
+          "uniModuleId": ""
+        },
+        {
+          "name": "uni-captcha",
+          "uniModuleId": "uni-captcha"
+        },
+        {
+          "name": "uni-cloud-s2s",
+          "uniModuleId": "uni-cloud-s2s"
+        },
+        {
+          "name": "uni-config-center",
+          "uniModuleId": "uni-config-center"
+        },
+        {
+          "name": "uni-id-common",
+          "uniModuleId": "uni-id-common"
+        },
+        {
+          "name": "uni-open-bridge-common",
+          "uniModuleId": "uni-open-bridge-common"
+        },
+        {
+          "name": "uni-sec-check",
+          "uniModuleId": "uni-sec-check"
+        }
+      ]
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "task06-final-schema",
+    "type": "result",
+    "data": {
+      "message": "获取到 17 项数据库资源",
+      "resources": [
+        {
+          "name": "recipe_favorites",
+          "uniModuleId": ""
+        },
+        {
+          "name": "recipes",
+          "uniModuleId": ""
+        },
+        {
+          "name": "family_invitations",
+          "uniModuleId": ""
+        },
+        {
+          "name": "request_limits",
+          "uniModuleId": ""
+        },
+        {
+          "name": "mutation_receipts",
+          "uniModuleId": ""
+        },
+        {
+          "name": "family_members",
+          "uniModuleId": ""
+        },
+        {
+          "name": "families",
+          "uniModuleId": ""
+        },
+        {
+          "name": "uni-id-users",
+          "uniModuleId": ""
+        },
+        {
+          "name": "uni-id-roles",
+          "uniModuleId": ""
+        },
+        {
+          "name": "uni-id-permissions",
+          "uniModuleId": ""
+        },
+        {
+          "name": "uni-id-log",
+          "uniModuleId": ""
+        },
+        {
+          "name": "uni-id-device",
+          "uniModuleId": ""
+        },
+        {
+          "name": "opendb-verify-codes",
+          "uniModuleId": ""
+        },
+        {
+          "name": "opendb-tempdata",
+          "uniModuleId": ""
+        },
+        {
+          "name": "opendb-open-data",
+          "uniModuleId": ""
+        },
+        {
+          "name": "opendb-frv-logs",
+          "uniModuleId": ""
+        },
+        {
+          "name": "opendb-device",
+          "uniModuleId": ""
+        }
+      ]
+    }
+  }
+]

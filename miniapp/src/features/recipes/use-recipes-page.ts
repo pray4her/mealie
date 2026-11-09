@@ -27,8 +27,9 @@ export function useRecipesPage(load: () => Promise<void>) {
       if (active && app.family.phase.value === 'ready' && !app.family.view.value) uni.reLaunch({ url: '/pages/family/onboarding' });
     }
   }
-  async function act(action: (isCurrent: () => boolean) => Promise<void>) {
-    if (!active || !confirmed.value || busy.value) return;
+  async function act(action: (isCurrent: () => boolean) => Promise<void>, replace = false) {
+    if (!active || !confirmed.value || busy.value && !replace) return;
+    if (replace) epoch++;
     const current = epoch; busy.value = true; message.value = '';
     try { await action(() => active && current === epoch && confirmed.value); }
     catch (error) { if (active && current === epoch) { message.value = copy.recipeErrors[errorCode(error)]; await reconcile(error); } }

@@ -41,3 +41,4 @@ export async function create(this: Context, input: unknown, ...extra: unknown[])
 export async function update(this: Context, input: unknown, ...extra: unknown[]) { return call(this, extra, service => service.update(input as Parameters<RecipesApi['update']>[0])); }
 export async function get(this: Context, input: unknown, ...extra: unknown[]) { return call(this, extra, service => service.get(input as string)); }
 export async function list(this: Context, input: unknown, ...extra: unknown[]) { return call(this, extra, service => service.list(input as Parameters<RecipesApi['list']>[0])); }
+export async function favorite(this: Context, input: unknown, ...extra: unknown[]) { return call(this, extra, async service => { await service.favorite(input as Parameters<RecipesApi['favorite']>[0]); return null; }); }

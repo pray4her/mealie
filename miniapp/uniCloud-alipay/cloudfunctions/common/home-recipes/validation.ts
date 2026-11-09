@@ -1,4 +1,4 @@
-import type { Ingredient, RecipeInput, RecipeMutation, RecipeUpdate } from 'home-contracts';
+import type { Ingredient, RecipeInput, RecipeMutation, RecipeUpdate, RecipeListInput, RecipeFavoriteMutation } from 'home-contracts';
 import { AppError } from 'home-kernel';
 
 export function exact(value: unknown, keys: readonly string[], optional: readonly string[] = []): Record<string, unknown> {
@@ -56,4 +56,22 @@ export function recipeId(value: unknown): string {
 }
 export function auditText(input: RecipeInput): string {
   return [input.title, input.description, ...input.ingredients.flatMap(item => [item.raw, item.name, item.unit, item.note]), ...input.steps, ...input.tags].filter(value => value !== null).join('\n');
+}
+export function listInput(value: unknown): Required<Omit<RecipeListInput, 'cursor'>> & { cursor?: string } {
+  const row = exact(value, [], ['query', 'tag', 'cursor', 'limit', 'favoritesOnly']);
+  function filter(value: unknown, max: number) {
+    if (value === undefined) return '';
+    if (typeof value !== 'string') throw new AppError('INVALID_INPUT');
+    // Whitespace-only filters still reject control characters and excessive length.
+    return text('x' + value, max + 1).slice(1).trim();
+  }
+  const limit = row.limit === undefined ? 20 : row.limit; const favoritesOnly = row.favoritesOnly === undefined ? false : row.favoritesOnly;
+  if (typeof limit !== 'number' || !Number.isSafeInteger(limit) || limit < 1 || limit > 20 || typeof favoritesOnly !== 'boolean'
+    || row.cursor !== undefined && (typeof row.cursor !== 'string' || !/^[A-Za-z0-9_-]{1,512}$/.test(row.cursor))) throw new AppError('INVALID_INPUT');
+  return { query: filter(row.query, 120).replace(/[A-Z]/g, letter => letter.toLowerCase()), tag: filter(row.tag, 40), limit, favoritesOnly, ...(row.cursor === undefined ? {} : { cursor: row.cursor as string }) };
+}
+export function favoriteMutation(value: unknown): RecipeFavoriteMutation {
+  const row = exact(value, ['requestId', 'familyId', 'generation', 'id', 'enabled']);
+  if (typeof row.requestId !== 'string' || !/^[A-Za-z0-9_-]{16,128}$/.test(row.requestId) || typeof row.enabled !== 'boolean') throw new AppError('INVALID_INPUT');
+  return { requestId: row.requestId, familyId: text(row.familyId, 128), generation: text(row.generation, 128), id: recipeId(row.id), enabled: row.enabled };
 }

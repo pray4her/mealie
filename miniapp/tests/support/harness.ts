@@ -58,12 +58,16 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
       content: options.content ?? { async checkText() { return 'allowed'; } },
       reads: { async list(familyId, limit, after) {
         return (await memory.rows<RecipeRecord>('recipes')).filter(row => row.familyId === familyId && (!after || row.createdAt < after.createdAt || (row.createdAt === after.createdAt && row._id < after.id)))
-          .sort((a, b) => b.createdAt - a.createdAt || (a._id < b._id ? 1 : -1)).slice(0, limit + 1);
+          .sort((a, b) => b.createdAt - a.createdAt || (a._id < b._id ? 1 : -1)).slice(0, limit + 1)
+          .map(({ _id, familyId, title, tags, createdAt }) => ({ _id, familyId, title, tags, createdAt }));
+      }, async favorites(ctx, ids) {
+        return (await memory.rows<import('../../uniCloud-alipay/cloudfunctions/common/home-recipes/repository').FavoriteRecord>('recipe_favorites'))
+          .filter(row => row.uid === ctx.uid && row.familyId === ctx.familyId && row.generation === ctx.generation && ids.includes(row.recipeId));
       } },
       async revalidateIdentity() { await guard(tokenFor(uid), clientInfo, { refresh: false }); },
     }, await requireFamily(memory.database, await guard(tokenFor(uid), clientInfo)));
     return { async create(input) { return (await service()).create(input); }, async get(id) { return (await service()).get(id); },
-      async list(input) { return (await service()).list(input); }, async update(input) { return (await service()).update(input); } };
+      async list(input) { return (await service()).list(input); }, async update(input) { return (await service()).update(input); }, async favorite(input) { return (await service()).favorite(input); } };
   };
   return {
     memory, database: memory.database,
@@ -84,7 +88,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
     },
     advance(ms: number) { now += ms; },
     async rows<T>(collection: string): Promise<T[]> {
-      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes') return memory.rows<T>(collection);
+      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'recipe_favorites') return memory.rows<T>(collection);
       if (collection !== 'uni-id-users') throw new Error('Unsupported fixture collection');
       return [...records].map(([uid, row]) => ({ uid, ...row })) as T[];
     },
