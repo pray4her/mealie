@@ -1,5 +1,7 @@
 # Task05 ledger — plan: docs/superpowers/plans/2026-11-09-wechat-unicloud-task05.md
 
+Current closeout (2026-11-09): user confirmed physical-device validation and explicitly authorized Issue #5 closure, commit and push. Standards review: 0 findings; Spec review: 0 findings. Full ten-step Taskfile check passed, 40 suites / 519 tests. The existing database field-order fix and its list/detail/replay regression are included. Final delivery and evidence boundaries are recorded in task05-closeout.md and task05-acceptance.json.closeout; the entries below remain the historical implementation/deployment ledger.
+
 Baseline: miniapp-dev at 1ea0e3cad; clean worktree, 34 suites / 445 tests passed with pinned tools during planning.
 Execution: approved inline execution in the current project checkout; no worktree creation, commits, push or issue closure.
 Pre-flight: Task 1 contracts feed Task 2 production client/controllers/harness; Task 3 gates must admit exactly the new recipe object and three routes. Existing Task04 membership generation and mutation fence are retained.

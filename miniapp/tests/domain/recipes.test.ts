@@ -3,6 +3,7 @@ import type { RecipeInput, RecipeMutation, RecipeUpdate } from 'home-contracts';
 import { createHarness } from '../support/harness';
 import { deferCall } from '../support/sdk-transport';
 import { createRecipesService } from '../../uniCloud-alipay/cloudfunctions/common/home-recipes';
+import type { RecipeRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-recipes/repository';
 
 let sequence = 0;
 const requestId = () => 'recipe-request-' + String(++sequence).padStart(6, '0');
@@ -27,6 +28,17 @@ test('creates_reads_lists_and_preserves_unknown_quantity_and_server_ownership', 
   expect(recipe.prepMinutes).toBe(0); expect(recipe.baseServings).toBeNull();
   expect(await f.member.recipes.get(recipe.id)).toMatchObject({ id: recipe.id, title: '盐焗鸡' });
   expect(await f.member.recipes.list({})).toMatchObject({ items: [{ id: recipe.id }], nextCursor: null });
+});
+
+test('database_field_order_does_not_break_reads_or_original_request_replay', async () => {
+  const f = await setup(); const input = f.input(); const created = await f.owner.recipes.create(input);
+  const [row] = await f.h.rows<RecipeRecord>('recipes'); const ingredient = row.ingredients[0];
+  f.h.memory.seed('recipes', row._id, { ...row, ingredients: [{ note: ingredient.note, unit: ingredient.unit,
+    quantity: ingredient.quantity, name: ingredient.name, raw: ingredient.raw }] });
+  await expect(f.owner.recipes.list({})).resolves.toMatchObject({ items: [created], nextCursor: null });
+  await expect(f.owner.recipes.get(created.id)).resolves.toEqual(created);
+  await expect(f.owner.recipes.create(input)).resolves.toEqual(created);
+  expect(await f.h.rows('recipes')).toHaveLength(1);
 });
 test('another_member_can_edit_but_stale_versions_cannot_overwrite', async () => {
   const f = await setup(); const recipe = await f.owner.recipes.create(f.input());

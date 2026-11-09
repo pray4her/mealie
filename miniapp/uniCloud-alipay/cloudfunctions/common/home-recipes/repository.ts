@@ -32,7 +32,9 @@ export function recipeRecord(value: unknown): RecipeRecord {
       || (source.importJobId !== null && typeof source.importJobId !== 'string') || !Array.isArray(source.warnings)
       || source.warnings.length > 20 || source.warnings.some(v => typeof v !== 'string' || v.length > 2000)) throw new Error();
     const input = Object.fromEntries(recipeKeys.map(key => [key, row[key]]));
-    if (JSON.stringify(recipeInput(input)) !== JSON.stringify(input)) throw new Error();
+    // Compare normalized values independently of database object field order.
+    const keys = [...recipeKeys, 'raw', 'name', 'quantity', 'unit', 'note'];
+    if (JSON.stringify(recipeInput(input), keys) !== JSON.stringify(input, keys)) throw new Error();
     return row as unknown as RecipeRecord;
   } catch { throw new AppError('UNAVAILABLE'); }
 }

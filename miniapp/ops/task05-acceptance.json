@@ -258,5 +258,142 @@
     "protectedDependencyFilesUnchanged": 34,
     "cloudBusinessTested": false,
     "physicalDeviceTested": false
+  },
+  "deliveryStatus": "completed-user-confirmed-device-validation",
+  "closeout": {
+    "status": "completed-user-confirmed-device-validation",
+    "date": "2026-11-09",
+    "recordedAt": "2026-11-09T14:01:49.409Z",
+    "timezone": "Asia/Shanghai",
+    "evidenceFile": "ops/task05-closeout.md",
+    "userStatement": "已完成真机验证",
+    "userAuthorization": "根据相关skills，验收，关闭issues5，生成git信息提交并推送。",
+    "acceptance": {
+      "status": "accepted-for-issue-closeout",
+      "basis": [
+        "explicit-user-reported-physical-device-validation",
+        "independent-standards-and-spec-review",
+        "full-local-check"
+      ],
+      "userReportedScope": [
+        "wechat-physical-device"
+      ],
+      "issueAcceptanceCriteriaAccepted": 3,
+      "prerequisiteIssuesClosed": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "agentRepeatedCloudOrDeviceTests": false,
+      "cloudScenarioAcceptanceReported": false,
+      "rawScenarioEvidenceAttached": false,
+      "actualTestedBuildSha256Provided": false
+    },
+    "review": {
+      "baseline": "1ea0e3cadc4dea237c9543749daa0a40b200c154",
+      "reviewedHead": "e4e535ac33a41bbca20c65186e650bc7a3891d73",
+      "includedWorkingTreeFieldOrderFix": true,
+      "standards": {
+        "hardViolations": 0,
+        "actionableSmells": 0
+      },
+      "spec": {
+        "findings": 0
+      }
+    },
+    "issue": {
+      "url": "https://github.com/pray4her/mealie/issues/5",
+      "state": "closed",
+      "stateReason": "completed",
+      "closedAt": "2026-11-09T13:59:39Z",
+      "acceptanceCheckboxes": 3,
+      "readyForAgentRemoved": true,
+      "independentReadbackVerified": true,
+      "commentUrl": "https://github.com/pray4her/mealie/issues/5#issuecomment-6741884771"
+    },
+    "localVerification": {
+      "status": "passed",
+      "command": "task check -- --maxWorkers=2",
+      "nodeVersion": "22.23.3",
+      "pnpmVersion": "10.20.0",
+      "taskVersion": "3.54.0",
+      "suites": 40,
+      "tests": 519,
+      "checkSteps": 10,
+      "logFile": "dist/task05-checks/closeout-local-check.log",
+      "snapshot": {
+        "sourceSha256": "399088ee01bbc48cae0580db39a6583ab34c897160954f26bb0a27dd7855d899",
+        "clientBuildSha256": "cc8ad1f41721d4f894ed6f082fac279991db28d3095a4edc1a3fb931a353e9de",
+        "deviceBuildSha256": null,
+        "cloudBuildSha256": null,
+        "probeRemnants": []
+      },
+      "historicalBindingsOverwritten": false,
+      "strictDoctor": {
+        "ready": false,
+        "blockerCount": 47,
+        "blockers": [
+          "task05-source-drift",
+          "task05-cloud-artifact-missing",
+          "task05-device-artifact-missing",
+          "task05-configuration-unverified",
+          "task05-local-build-drift",
+          "task05-cloud-acceptance-missing",
+          "task05-cloud-build-drift",
+          "task05-cloud-scenario:create-read-update",
+          "task05-cloud-scenario:unknown-quantity",
+          "task05-cloud-scenario:text-boundaries",
+          "task05-cloud-scenario:cross-family",
+          "task05-cloud-scenario:forged-ownership",
+          "task05-cloud-scenario:stale-edit",
+          "task05-cloud-scenario:same-version-race",
+          "task05-cloud-scenario:same-request",
+          "task05-cloud-scenario:conflicting-payload",
+          "task05-cloud-scenario:rollback-writes",
+          "task05-cloud-scenario:commit-ack-lost",
+          "task05-cloud-scenario:protected-write-race",
+          "task05-cloud-scenario:audit-delayed-removal",
+          "task05-cloud-scenario:rejoin-generation",
+          "task05-cloud-scenario:stale-first-delivery",
+          "task05-cloud-scenario:read-revocation",
+          "task05-cloud-scenario:content-pass",
+          "task05-cloud-scenario:content-rejected",
+          "task05-cloud-scenario:content-unavailable",
+          "task05-cloud-scenario:quota-cross-instance",
+          "task05-cloud-scenario:verified-conflict-codes",
+          "task05-cloud-scenario:schema-indexes",
+          "task05-cloud-scenario:safe-dtos",
+          "task05-cloud-scenario:platform-log-capture",
+          "task05-cloud-scenario:normal-artifact-and-cleanup",
+          "task05-cloud-scenario:clientdb-recipes-read",
+          "task05-cloud-scenario:clientdb-recipes-create",
+          "task05-cloud-scenario:clientdb-recipes-update",
+          "task05-cloud-scenario:clientdb-recipes-delete",
+          "task05-device-acceptance-missing",
+          "task05-device-build-drift",
+          "task05-device-scenario:create-read-edit",
+          "task05-device-scenario:ingredient-step-rows",
+          "task05-device-scenario:unknown-quantity",
+          "task05-device-scenario:shared-edit-conflict",
+          "task05-device-scenario:weak-network-original-request",
+          "task05-device-scenario:pending-cold-start",
+          "task05-device-scenario:hidden-late-response",
+          "task05-device-scenario:removed-member-onboarding",
+          "task05-device-scenario:logout-account-isolation"
+        ]
+      }
+    },
+    "evidenceNote": "User reported physical-device validation only. Historical configuration/cloud/device scenario records and deployment digests remain unchanged; no new agent-observed cloud/device pass is inferred. Current source includes the field-order fix; previous Task05 cloud/device bundles are absent locally, so their coverage of this fix is unverified.",
+    "gitDelivery": {
+      "authorized": true,
+      "remote": "origin",
+      "repository": "pray4her/mealie",
+      "branch": "miniapp-dev",
+      "commitTitle": "fix(miniapp): 修复菜谱字段顺序校验并完成 #5 验收",
+      "includedInThisCommit": true
+    },
+    "newCloudDeploymentPerformed": false,
+    "productionReleaseAuthorized": false
   }
 }
