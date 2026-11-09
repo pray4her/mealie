@@ -282,5 +282,145 @@
   "userDecision": {
     "date": "2026-11-09",
     "scope": "Complete cloud upload/readback/local validation and Git commit/push; keep account and physical-device acceptance pending"
+  },
+  "deliveryStatus": "completed-user-confirmed-device-validation",
+  "closeout": {
+    "status": "completed-user-confirmed-device-validation",
+    "date": "2026-11-10",
+    "recordedAt": "2026-11-09T16:47:56.901Z",
+    "timezone": "Asia/Shanghai",
+    "evidenceFile": "ops/task06-closeout.md",
+    "userStatement": "我已完成真机验证，生成git提交信息提交并推送，验收相关文档，然后关闭该issues。",
+    "userScopeConfirmation": "Issue #6 的全部真机场景",
+    "acceptance": {
+      "status": "accepted-for-issue-closeout",
+      "basis": [
+        "explicit-user-reported-all-device-scenarios",
+        "independent-code-review",
+        "full-local-check"
+      ],
+      "userReportedScope": [
+        "explicit-search-and-tag",
+        "all-favorites-switch",
+        "empty-page-continue",
+        "list-detail-favorite",
+        "favorite-remove-row",
+        "filter-response-race",
+        "duplicate-taps",
+        "weak-network-original-request",
+        "pending-cold-start",
+        "hidden-late-response",
+        "removed-member-onboarding",
+        "logout-account-isolation"
+      ],
+      "issueAcceptanceCriteriaAccepted": 3,
+      "prerequisiteIssuesClosed": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "agentRepeatedAllDeviceTests": false,
+      "cloudScenarioAcceptanceReported": false,
+      "rawScenarioEvidenceAttached": false,
+      "actualTestedBuildSha256Provided": false
+    },
+    "diagnosis": {
+      "platform": "Android",
+      "osReported": "ColorOS 17",
+      "modelObserved": "PME110",
+      "wechatObserved": "8.0.79",
+      "baseLibraryObserved": "3.18.0",
+      "actualValidatorThrewInvalidUnicodePropertyName": true,
+      "replacementControlCharactersVerified": 65,
+      "regressionTests": 4
+    },
+    "review": {
+      "baseline": "80004bd79",
+      "clientAndTestFiles": 8,
+      "findings": 0,
+      "readOnly": true
+    },
+    "localVerification": {
+      "status": "passed",
+      "command": "task -d miniapp check -- --maxWorkers=2",
+      "exitCode": 0,
+      "nodeVersion": "22.23.3",
+      "pnpmVersion": "10.20.0",
+      "taskVersion": "3.54.0",
+      "suites": 42,
+      "tests": 565,
+      "checkSteps": 10,
+      "logFile": "dist/task06-close-check.log",
+      "snapshot": {
+        "sourceSha256": "92994da168650506f1c54b3d70aa7bfa96040dea0974f29c2cc3275ed0a0ef60",
+        "clientBuildSha256": "5eec51973488479d882435380724094c8c3856f12da1fcef04fd99498dc73df2",
+        "deviceBuildSha256": "f92c51b7a6b751512f6ecc07c0df4cf38523d87f783a0763347d3cce907fe975",
+        "cloudBuildSha256": "95a93c839b9463735e9c7a166b6e2c014f7d3bde988cb16ebbac34a26e8d3693",
+        "probeRemnants": []
+      },
+      "historicalBindingsOverwritten": false,
+      "strictDoctor": {
+        "ready": false,
+        "blockers": [
+          "task06-source-drift",
+          "task06-configuration-unverified",
+          "task06-local-build-drift",
+          "task06-cloud-acceptance-missing",
+          "task06-cloud-scenario:literal-substring-and-tags",
+          "task06-cloud-scenario:query-validation",
+          "task06-cloud-scenario:bounded-scan-empty-page",
+          "task06-cloud-scenario:same-time-pagination",
+          "task06-cloud-scenario:cursor-scope",
+          "task06-cloud-scenario:candidate-projection",
+          "task06-cloud-scenario:favorite-private",
+          "task06-cloud-scenario:favorite-set-state",
+          "task06-cloud-scenario:same-request",
+          "task06-cloud-scenario:conflicting-payload",
+          "task06-cloud-scenario:replay-after-opposite",
+          "task06-cloud-scenario:cross-family",
+          "task06-cloud-scenario:rejoin-generation",
+          "task06-cloud-scenario:stale-first-delivery",
+          "task06-cloud-scenario:read-revocation",
+          "task06-cloud-scenario:protected-write-race",
+          "task06-cloud-scenario:rollback-writes",
+          "task06-cloud-scenario:commit-ack-lost",
+          "task06-cloud-scenario:quota-cross-instance",
+          "task06-cloud-scenario:legacy-recipe-receipt",
+          "task06-cloud-scenario:schema-indexes",
+          "task06-cloud-scenario:safe-dtos",
+          "task06-cloud-scenario:platform-log-capture",
+          "task06-cloud-scenario:clientdb-recipe_favorites-read",
+          "task06-cloud-scenario:clientdb-recipe_favorites-create",
+          "task06-cloud-scenario:clientdb-recipe_favorites-update",
+          "task06-cloud-scenario:clientdb-recipe_favorites-delete",
+          "task06-device-acceptance-missing",
+          "task06-device-scenario:explicit-search-and-tag",
+          "task06-device-scenario:all-favorites-switch",
+          "task06-device-scenario:empty-page-continue",
+          "task06-device-scenario:list-detail-favorite",
+          "task06-device-scenario:favorite-remove-row",
+          "task06-device-scenario:filter-response-race",
+          "task06-device-scenario:duplicate-taps",
+          "task06-device-scenario:weak-network-original-request",
+          "task06-device-scenario:pending-cold-start",
+          "task06-device-scenario:hidden-late-response",
+          "task06-device-scenario:removed-member-onboarding",
+          "task06-device-scenario:logout-account-isolation"
+        ],
+        "blockerCount": 44
+      }
+    },
+    "delivery": {
+      "branch": "miniapp-dev",
+      "remote": "origin",
+      "commitTitle": "fix(miniapp): 修复 Android 校验与菜谱搜索并完成 #6 验收",
+      "issueUrl": "https://github.com/pray4her/mealie/issues/6",
+      "commitPushAuthorized": true,
+      "issueCloseAuthorized": true,
+      "newCloudDeployment": false,
+      "productionReleased": false
+    }
   }
 }

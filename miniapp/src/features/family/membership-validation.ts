@@ -8,7 +8,8 @@ export function membershipInput(action: MembershipAction, value: unknown): Membe
   try {
     const keys = action === 'leave' ? ['requestId', 'familyId', 'generation'] : ['requestId', 'familyId', 'generation', 'uid', 'targetGeneration'];
     const row = exactObject(value, keys);
-    if (!validRequestId(row.requestId) || keys.some(key => typeof row[key] !== 'string' || !row[key] || row[key].length > 128 || row[key].trim() !== row[key] || /\p{Cc}/u.test(row[key]))) throw new Error();
+    // eslint-disable-next-line no-control-regex -- Explicit control ranges work on Android without Unicode property escapes.
+    if (!validRequestId(row.requestId) || keys.some(key => typeof row[key] !== 'string' || !row[key] || row[key].length > 128 || row[key].trim() !== row[key] || /[\u0000-\u001F\u007F-\u009F]/.test(row[key]))) throw new Error();
     return row as MembershipMutation | MemberMutation;
   } catch { throw new AppError('INVALID_INPUT'); }
 }

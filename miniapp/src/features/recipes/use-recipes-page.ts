@@ -35,7 +35,10 @@ export function useRecipesPage(load: () => Promise<void>) {
     catch (error) { if (active && current === epoch) { message.value = copy.recipeErrors[errorCode(error)]; await reconcile(error); } }
     finally { if (current === epoch) busy.value = false; }
   }
-  function conceal() { active = false; visibility++; epoch++; confirmed.value = false; busy.value = false; app.recipes.clear(); }
+  function conceal() {
+    const wasActive = active; active = false; visibility++; epoch++; confirmed.value = false; busy.value = false;
+    if (wasActive) app.recipes.clear();
+  }
   onShow(check); onHide(conceal); onUnload(() => { conceal(); stop(); });
   return { ...app, confirmed, busy, message, check, act, isCurrent: () => active && confirmed.value, back: () => uni.reLaunch({ url: '/pages/family/home' }) };
 }

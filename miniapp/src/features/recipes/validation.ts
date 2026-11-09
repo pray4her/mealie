@@ -7,7 +7,8 @@ export function object(value: unknown, required: readonly string[], optional: re
   return value as Record<string, unknown>;
 }
 function text(value: unknown, max: number, multiline = false, raw = false): string {
-  if (typeof value !== 'string' || !value.trim() || [...value].length > max || /\p{Cc}/u.test(multiline ? value.replace(/[\r\n\t]/g, '') : value)
+  // eslint-disable-next-line no-control-regex -- Explicit control ranges work on Android without Unicode property escapes.
+  if (typeof value !== 'string' || !value.trim() || [...value].length > max || /[\u0000-\u001F\u007F-\u009F]/.test(multiline ? value.replace(/[\r\n\t]/g, '') : value)
     || /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/u.test(value)) throw new AppError('INVALID_INPUT');
   return raw ? value : value.trim();
 }

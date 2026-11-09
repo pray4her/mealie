@@ -44,6 +44,9 @@ function resume() { const intent = pending.value; if (intent) uni.navigateTo({ u
         >
           {{ copy.myFavorites }}
         </button>
+        <text class="filter-label">
+          {{ copy.recipeQuery }}
+        </text>
         <input
           data-query
           :value="query"
@@ -54,6 +57,9 @@ function resume() { const intent = pending.value; if (intent) uni.navigateTo({ u
           @input="query = $event.detail.value"
           @confirm="search()"
         >
+        <text class="filter-label">
+          {{ copy.recipeTag }}
+        </text>
         <input
           data-tag
           :value="tag"
@@ -64,6 +70,9 @@ function resume() { const intent = pending.value; if (intent) uni.navigateTo({ u
           @input="tag = $event.detail.value"
           @confirm="search()"
         >
+        <text class="filter-hint">
+          {{ copy.recipeSearchHint }}
+        </text>
         <button
           data-search
           @tap="search()"
@@ -159,6 +168,9 @@ function resume() { const intent = pending.value; if (intent) uni.navigateTo({ u
 <style scoped>
 .page { padding: 40rpx; }
 .title { display: block; font-size: 40rpx; }
+.filter-label { display: block; margin-top: 24rpx; }
+.filters input { box-sizing: border-box; width: 100%; height: 88rpx; margin-top: 16rpx; padding: 16rpx; background: white; border: 1rpx solid #76766d; border-radius: 8rpx; }
+.filter-hint { display: block; margin-top: 16rpx; font-size: 24rpx; }
 .recipe { margin-top: 24rpx; padding: 16rpx; background: white; }
 button { margin: 24rpx 0; }
 </style>

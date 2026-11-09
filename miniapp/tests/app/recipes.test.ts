@@ -150,6 +150,24 @@ test('list_search_is_explicit_and_combines_filters_and_favorites_then_removes_un
   expect((page.wrapper.find('[data-query]').element as HTMLInputElement).value).toBe('soup'); page.wrapper.unmount();
 });
 
+test('title_and_exact_tag_search_fields_keep_visible_labels_while_typing', async () => {
+  const { client } = await setup(); await seedRecipe(client, 'test123', ['22']);
+  const page = mountPage(List, { client }); await page.show();
+  try {
+    await page.wrapper.find('[data-query]').setValue('123');
+    expect(page.wrapper.findAll('.filter-label').map(label => label.text())).toEqual(['搜索标题', '精确标签（可选）']);
+    await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['test123']);
+    await page.wrapper.find('[data-tag]').setValue('22');
+    expect(page.wrapper.findAll('.filter-label').map(label => label.text())).toEqual(['搜索标题', '精确标签（可选）']);
+    await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['test123']);
+    await page.wrapper.find('[data-tag]').setValue('123');
+    await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(0);
+  } finally { page.wrapper.unmount(); }
+});
+
 test('empty_search_segment_offers_continuation_and_duplicate_more_taps_do_not_duplicate_results', async () => {
   const { client } = await setup(); const row = await seedRecipe(client, 'Soup');
   const send = vi.spyOn(client.recipes, 'list').mockResolvedValueOnce({ items: [], nextCursor: 'cursor' });
@@ -170,6 +188,32 @@ test('late_filter_response_and_hidden_response_cannot_replace_current_results', 
   gate.resolve(null); await flushPromises();
   expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(0); expect(page.controllers.recipes.nextCursor.value).toBeNull();
   await page.hide(); expect(page.wrapper.find('[data-protected]').exists()).toBe(false); page.wrapper.unmount();
+});
+
+test('unloading_a_hidden_recipe_page_cannot_discard_the_current_lists_search_response', async () => {
+  const { client } = await setup(); const row = await seedRecipe(client, 'testRecipe');
+  const old = mountPage(Detail, { client }); await old.load({ id: row.id }); await old.show(); await old.hide();
+  const page = mountPage(List, { client, controllers: old.controllers }); await page.show();
+  const list = client.recipes.list.bind(client.recipes); const gate = deferCall();
+  vi.spyOn(client.recipes, 'list').mockImplementationOnce(async input => { const result = await list(input); await gate.promise; return result; });
+  try {
+    await page.wrapper.find('[data-query]').setValue('test'); await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    await old.unload(); gate.resolve(null); await flushPromises();
+    expect(page.wrapper.find('[data-protected]').exists()).toBe(true);
+    expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['testRecipe']);
+    expect(page.wrapper.text()).not.toContain('没有符合条件的菜谱');
+  } finally { page.wrapper.unmount(); old.wrapper.unmount(); }
+});
+
+test('unloading_a_hidden_editor_cannot_erase_a_new_recipe_from_the_current_list', async () => {
+  const { client } = await setup();
+  const edit = mountPage(Edit, { client }); await edit.load({}); await edit.show(); await fill(edit);
+  await edit.wrapper.find('[data-save]').trigger('click'); await flushPromises(); await edit.hide();
+  const page = mountPage(List, { client, controllers: edit.controllers });
+  try {
+    await page.show(); await edit.unload();
+    expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['家常汤']);
+  } finally { page.wrapper.unmount(); edit.wrapper.unmount(); }
 });
 
 test('favorite_lost_confirmation_survives_cold_start_and_retries_same_intent_without_using_recipe_draft', async () => {
