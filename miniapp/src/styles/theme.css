@@ -39,7 +39,7 @@ page, .wd-root-portal {
 .status { display: block; padding: 16px 0; white-space: pre-wrap; }
 .error { color: var(--home-danger); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
-.actions > * { flex: 1; min-width: 120px; }
+.actions > .wd-button { flex: 1; min-width: 120px; }
 .page .wd-button.is-medium, .wd-root-portal .wd-button.is-medium { min-width: 44px; min-height: 48px; height: auto; white-space: normal; }
 .page .wd-button .wd-button__content, .wd-root-portal .wd-button .wd-button__content { height: auto; min-width: 0; max-width: 100%; }
 .page .wd-button .wd-button__text, .wd-root-portal .wd-button .wd-button__text { white-space: normal; line-height: 1.5; padding: 10px 0; min-width: 0; overflow-wrap: anywhere; }

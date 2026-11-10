@@ -83,6 +83,17 @@ test('artifact_routes_are_exactly_the_implemented_account_family_recipe_and_impo
   }
 });
 
+test('artifact_wxss_rejects_universal_selectors_before_wechat_compilation', async () => {
+  const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));
+  const path = join(dist, 'app.wxss');
+  for (const source of ['.actions > * { flex: 1; }', '@media (max-width: 359px) { * { margin: 0; } }', '.page :is(*) { color: red; }']) {
+    await writeFile(path, source); await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/WXSS.*universal/i);
+  }
+  await writeFile(path, '/* * comment */ .actions > .wd-button, [data-label=" *"], [class*="icon"] { flex: 1; } .label::after { content: "*"; width: calc(2 * 1px); }');
+  await expect(checkBoundaries({ root: dir, artifacts: true })).resolves.toBeUndefined();
+});
+
 test('family_content_and_fixture_runtime_cannot_enter_actual_artifact_content', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
   await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));

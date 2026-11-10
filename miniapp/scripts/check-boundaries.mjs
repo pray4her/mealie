@@ -105,6 +105,11 @@ export async function checkBoundaries({ root, artifacts = false }) {
       || manifest.tabBar.list.some((tab, index) => tab.pagePath !== tabs[index].pagePath || tab.text !== tabs[index].text)) throw new Error('Artifact routes must match the implemented account/family/recipe/import pages and native recipe/family tabs');
     for (const path of files) {
       if (/(?:[\\/](?:vendor|tests|cloudfunctions)[\\/]|uniCloud-|\.zip$|\.tar\.gz$)/i.test(path.slice(root.length))) throw new Error('Artifact contains forbidden source');
+      if (path.endsWith('.wxss')) {
+        // shortcut: reject universal selectors here; use WeChat's compiler for full WXSS compatibility.
+        const css = (await readFile(path, 'utf8')).replace(/\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g, '');
+        if ([...css.matchAll(/([^{}]+)\{/g)].some(([, selector]) => /(?:^|[\s>+~,(|])\*/.test(selector))) throw new Error('WXSS universal selector unsupported: ' + path);
+      }
       if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|home-media|home-imports|uni-sec-check|uni-open-bridge|cloudfunctions\/common|OPENROUTER_API_KEY|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
     }
   }

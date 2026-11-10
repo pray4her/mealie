@@ -60,3 +60,12 @@
 - 客户端源码 SHA-256：`16965210f951daf66d8f2d9171d05133a5cbeeb8c47fd3a7d3413d23d83f1127`；范围及工具链版本见候选 JSON。
 - 复用 `scripts/task02-state.mjs` 的 `treeSha256`：按相对路径排序，逐文件加入路径、NUL、原始字节、NUL；排除 uni-config-center 的真实秘密配置。源码范围为 src 及 package/锁文件/tsconfig/Vite 配置，构建范围为 `dist/build/mp-weixin`。
 - 最终全检退出 0，55 套件 / 694 项；`git diff --check` 通过。候选未部署、未经过微信截图或真机验收，不覆盖历史 Task06–08 记录。
+
+## 2026-11-11：微信 WXSS 编译兼容性修复
+
+- 用户在微信开发者工具 2.02.2609250 / 基础库 3.17.6 报告 `app.wxss(1:1439): error at token '*'`。根因是主题中的 `.actions > *`；此前 CLI 构建成功未覆盖微信 WXSS 编译阶段。
+- 两个使用位置为菜谱列表筛选与详情操作，子项均为 Wot 按钮，改用 `.actions > .wd-button`，保留原有伸缩、换行和最小宽度。Wot 的微信 virtualHost 根节点具有该类。
+- `check-boundaries.mjs --artifacts` 增加通配选择器检查；回归测试先确认旧检查会漏过错误，再验证修复能拒绝普通及媒体规则中的通配选择器，且不误报注释、属性匹配和声明中的星号。该检查不替代完整微信编译器。
+- 本机微信开发者工具附带的 `wcc-exec/wcsc.exe`（v0.4me_20200724_db）在修复前复现相同错误并退出 1；重新构建后以 `-lc` 检查全部 14 个 WXSS 文件，退出 0。这不是开发者工具 UI 截图或真机证据。
+- `task -d miniapp check -- --maxWorkers=2` 退出 0，55 套件 / 695 项，包含三组类型检查、lint、微信构建、边界及密钥扫描；`git diff --check` 通过。日志为忽略文件 `dist/issue20-wxss-fix-check.log`。
+- 上述交付摘要及 `issue20-ui-candidate.json` 保留为 2026-11-10 的历史快照，其摘要不代表本次修复后的包。后续设备验收须重新通过 HBuilderX 关联云空间发行，并记录实际设备候选摘要；本次未上传、部署或完成真机验收。
