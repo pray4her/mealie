@@ -4,7 +4,7 @@
 
 ## 来源与实现范围
 
-- 起点：`842a0ee114`（#8 已提交，但真实供应商、定时业务及真机缺口仍属于 #8）。实际实现提交在本文件的交付记录补入。
+- 起点：`842a0ee114`（#8 已提交，但真实供应商、定时业务及真机缺口仍属于 #8）。实际实现：本地提交 `1978ad2b532d76ec9b13266c32a2ce4aa8b2010e`，`refactor(miniapp): 按家常基线重构既有页面 (#20)`。
 - 设计：[批准基线 v1](../../docs/design/miniapp/README.md)、[来源与决策](../../docs/design/miniapp/sources.md)、[工单要求](../../docs/design/miniapp/issue-design.md)、[实施进度](../../docs/superpowers/plans/2026-11-10-miniapp-issue20.md)。使用 D-01/02/03/06/07/08/09 与 S-USER/PREVIEW/BUSINESS/CODE/WOT/UNI/A11Y。
 - 业务依据：总体业务设计第 8 节家庭权限、第 9 节 AI 恢复、第 12 节媒体；复用现有家庭、菜谱、收藏、媒体和导入控制器。未修改云对象、数据库、DTO、审核、配额或服务端权限。
 - 覆盖九页：登录，家庭引导/首页/邀请/加入/成员，菜谱列表/详情/编辑。#8 提交/状态两页仅兼容主题、原生顶部导航与返回菜谱 Tab。
@@ -54,4 +54,9 @@
 
 ## 交付记录
 
-实际实现提交、最终测试数量与独立的 UI 候选摘要由实施结束后的本地回读补充；摘要文件使用 `issue20-ui-candidate.json`，不写入历史 Task06–08 记录。
+- 实施提交：`1978ad2b532d76ec9b13266c32a2ce4aa8b2010e`，仅本地，未推送。
+- [独立候选摘要](issue20-ui-candidate.json)：114 个微信构建文件，共 453,891 字节（目录原始文件大小合计，不是上传包体积）。
+- 客户端构建 SHA-256：`19c95e686e38587d8a0cfc422a0b7288b46c5cc85bac491d22f4980bdc94d40c`。
+- 客户端源码 SHA-256：`16965210f951daf66d8f2d9171d05133a5cbeeb8c47fd3a7d3413d23d83f1127`；范围及工具链版本见候选 JSON。
+- 复用 `scripts/task02-state.mjs` 的 `treeSha256`：按相对路径排序，逐文件加入路径、NUL、原始字节、NUL；排除 uni-config-center 的真实秘密配置。源码范围为 src 及 package/锁文件/tsconfig/Vite 配置，构建范围为 `dist/build/mp-weixin`。
+- 最终全检退出 0，55 套件 / 694 项；`git diff --check` 通过。候选未部署、未经过微信截图或真机验收，不覆盖历史 Task06–08 记录。

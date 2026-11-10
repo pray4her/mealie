@@ -43,5 +43,6 @@
 
 最终运行 `task -d miniapp check -- --maxWorkers=2` 与 `git diff --check`。
 最终实测：完整检查退出 0；55 套件 / 694 项通过（基线 676 项）；装配、lint、三组类型、微信构建、严格边界和密钥扫描均通过。`git diff --check` 退出 0。
+实际实施本地提交：`1978ad2b532d76ec9b13266c32a2ce4aa8b2010e`。新 UI 候选单独保存在 `miniapp/ops/issue20-ui-candidate.json`；114 文件 / 453,891 字节；构建摘要 `19c95e686e38587d8a0cfc422a0b7288b46c5cc85bac491d22f4980bdc94d40c`。
 九页状态矩阵、设备缺口、实际实施提交及新候选包摘要见 `miniapp/ops/issue20-ui-acceptance.md`。
 不覆盖 #6–#8 历史验收；不把本地构建视为云端或真机通过。

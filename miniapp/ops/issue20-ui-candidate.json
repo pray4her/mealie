@@ -1,0 +1,83 @@
+{
+  "issue": 20,
+  "version": 1,
+  "status": "awaiting-device-acceptance",
+  "recordedAt": "2026-11-10T15:36:51.663Z",
+  "baseCommit": "842a0ee11400dc2888f5c41caf1da4a75f8acec3",
+  "implementationCommit": "1978ad2b532d76ec9b13266c32a2ce4aa8b2010e",
+  "design": {
+    "version": "v1",
+    "decisions": [
+      "D-01",
+      "D-02",
+      "D-03",
+      "D-06",
+      "D-07",
+      "D-08",
+      "D-09"
+    ],
+    "sources": [
+      "S-USER",
+      "S-PREVIEW",
+      "S-BUSINESS",
+      "S-CODE",
+      "S-WOT",
+      "S-UNI",
+      "S-A11Y"
+    ]
+  },
+  "toolchain": {
+    "node": "v22.23.3",
+    "packageManager": "pnpm@10.20.0",
+    "vue": "3.4.21",
+    "uni": "3.0.0-5030420261029002",
+    "wot": "2.4.0",
+    "sass": "1.98.0"
+  },
+  "hashKind": "sorted-relative-path-nul-original-bytes-nul-sha256",
+  "sourceScope": [
+    "src/** (uni-config-center secret config excluded)",
+    "package.json",
+    "pnpm-lock.yaml",
+    "tsconfig.json",
+    "vite.config.ts"
+  ],
+  "sourceSha256": "16965210f951daf66d8f2d9171d05133a5cbeeb8c47fd3a7d3413d23d83f1127",
+  "clientBuildSha256": "19c95e686e38587d8a0cfc422a0b7288b46c5cc85bac491d22f4980bdc94d40c",
+  "clientBuildDirectory": "dist/build/mp-weixin",
+  "clientBuildFiles": 114,
+  "clientBuildBytes": 453891,
+  "local": {
+    "status": "passed",
+    "command": "task -d miniapp check -- --maxWorkers=2",
+    "exitCode": 0,
+    "suites": 55,
+    "tests": 694,
+    "evidence": "ops/issue20-ui-acceptance.md",
+    "ignoredLog": "dist/issue20-full-check.log",
+    "diffCheck": "passed"
+  },
+  "review": {
+    "mode": "independent-read-only",
+    "critical": 0,
+    "important": 0,
+    "deferredMinor": "WeChat native Wot button accessibility semantics require device verification"
+  },
+  "device": {
+    "status": "pending",
+    "screenshotEvidence": [],
+    "toolVersion": null,
+    "baseLibraryVersion": null,
+    "widths": [
+      320,
+      375,
+      390,
+      430
+    ],
+    "reason": "CUA could enumerate WeChat Devtools but failed to activate captured window"
+  },
+  "cloudDeploymentPerformed": false,
+  "paidAiPerformed": false,
+  "historicalAcceptanceUpdated": false,
+  "issueClosed": false
+}
