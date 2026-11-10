@@ -1,3 +1,4 @@
+import { createImportsApi } from '../../src/features/imports/api';
 import { createMediaApi } from '../../src/features/media/api';
 import { createRecipesApi } from '../../src/features/recipes/api';
 // @vitest-environment jsdom
@@ -144,7 +145,7 @@ test('real_sdk_anonymous_close_preserves_card_but_explicit_logout_erases_it', as
     if (object === 'family-co' && method === 'current') return { errCode: 0, data: null };
     throw new Error('Unexpected transport operation');
   } });
-  const client = { media: createMediaApi({ boundary, invoke: cloud.invoke }), recipes: createRecipesApi({ boundary, invoke: cloud.invoke }), account: createAccountApi({ wire: cloud.account, boundary, platformLogin: async () => 'fixture-code' }), family: createFamilyApi({ boundary, invoke: cloud.invoke }) };
+  const client = { imports: createImportsApi({ boundary, invoke: cloud.invoke }), media: createMediaApi({ boundary, invoke: cloud.invoke }), recipes: createRecipesApi({ boundary, invoke: cloud.invoke }), account: createAccountApi({ wire: cloud.account, boundary, platformLogin: async () => 'fixture-code' }), family: createFamilyApi({ boundary, invoke: cloud.invoke }) };
   const page = mountPage(Join, { client, storage }); await page.load({ token: invite.token }); await page.show();
   expect(page.auth.phase.value).toBe('anonymous'); expect(page.controllers.invitations.hasLoginContinuation()).toBe(true);
   await page.auth.signOut(); expect(page.controllers.invitations.hasLoginContinuation()).toBe(false);

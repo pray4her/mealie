@@ -1,0 +1,19 @@
+{
+  "bsonType": "object", "required": ["_id", "jobId", "attempt", "lease", "currency", "reservedUsd", "costUsd", "inputTokens", "outputTokens", "providerRequestId", "settled", "buckets", "createdAt"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
+    "jobId": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "attempt": { "bsonType": "int", "minimum": 1, "maximum": 3 },
+    "lease": { "bsonType": "string" },
+    "currency": { "bsonType": "string", "enum": ["USD"] },
+    "reservedUsd": { "bsonType": "double", "minimum": 0 },
+    "costUsd": { "bsonType": ["double", "null"], "minimum": 0 },
+    "inputTokens": { "bsonType": ["long", "null"], "minimum": 0 },
+    "outputTokens": { "bsonType": ["long", "null"], "minimum": 0 },
+    "providerRequestId": { "bsonType": ["string", "null"] },
+    "settled": { "bsonType": "bool" },
+    "buckets": { "bsonType": "array", "items": { "bsonType": "string" } },
+    "createdAt": { "bsonType": "long", "minimum": 0 }
+  }
+}

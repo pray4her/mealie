@@ -1,0 +1,11 @@
+{
+  "bsonType": "object", "required": ["_id", "tasks", "heldUsd", "spentUsd", "day"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
+    "tasks": { "bsonType": "int", "minimum": 0 },
+    "heldUsd": { "bsonType": "double", "minimum": 0 },
+    "spentUsd": { "bsonType": "double", "minimum": 0 },
+    "day": { "bsonType": "int", "minimum": 0 }
+  }
+}

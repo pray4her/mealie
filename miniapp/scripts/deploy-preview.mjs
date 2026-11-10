@@ -7,7 +7,7 @@ import { doctor } from './doctor.mjs';
 
 // Offline inventory only: no cloud SDK, shell command, association, upload or DB API.
 export async function createDeployPreview({ root, ticket }) {
-  if (ticket !== undefined && !['task02', 'task03', 'task04', 'task05', 'task06', 'task07'].includes(ticket)) throw new Error('Unknown preview ticket');
+  if (ticket !== undefined && !['task02', 'task03', 'task04', 'task05', 'task06', 'task07', 'task08'].includes(ticket)) throw new Error('Unknown preview ticket');
   const target = JSON.parse(await readFile(join(root, 'ops/project-target.json'), 'utf8'));
   const readiness = await doctor({ root, ticket });
   if (readiness.blockers.includes('target-invalid')) throw new Error('Invalid project target');
@@ -75,6 +75,14 @@ export async function createDeployPreview({ root, ticket }) {
       media: { maxBytes: 1048576, maxImages: 20, mime: ['image/jpeg', 'image/png'], uploadLeaseSeconds: 300, targetUrlSeconds: 600, storagePrefix: 'task07-private', reviewDefault: 'disabled' },
       environmentVariables: ['MEDIA_REVIEW_ENABLED', 'MEDIA_REVIEW_CALLBACK_TOKEN', 'MEDIA_REVIEW_ENCODING_AES_KEY', 'MEDIA_REVIEW_WEIXIN_APP_ID'],
       preservationRequired: 'Preserve existing recipes, receipts, identity and bridge configuration; no reset or full-plugin initialization. Real ACL, callback and device acceptance remain separate from mock tests.',
+    } : {}),
+    ...(ticket === 'task08' ? {
+      sharedModuleImpact: ['account-co', 'uni-id-co', 'family-co', 'recipes-co', 'media-co', 'imports-co', 'import-worker'],
+      protectedDependencies: ['uni-id-common', 'uni-config-center', 'uni-open-bridge-common'],
+      proposedChanges: resources.filter(item => ['home-contracts', 'home-kernel', 'home-recipes', 'home-imports', 'imports-co', 'import-worker', 'import_jobs.schema.json', 'import_jobs.index.json', 'quota_buckets.schema.json', 'ai_usage.schema.json'].includes(item.name)),
+      imports: { model: 'deepseek/deepseek-v4.1-flash-1017', rawTextDays: 7, timer: '0 * * * * * *', enabledDefault: false, batchSize: 2, textBytes: 16384, responseBytes: 262144, outputTokens: 8192, providerTimeoutSeconds: 45, auditTimeoutSeconds: 5, leaseSeconds: 90, workerBudgetSeconds: 90, platformTimeoutSeconds: 120, maxAttempts: 3, taskQuotaDefault: 'unlimited', budgetDefault: 'unlimited', reservationUsd: 1 },
+      environmentVariables: ['OPENROUTER_API_KEY', 'IMPORTS_ENABLED', 'IMPORTS_RESERVE_USD', 'IMPORTS_USER_TASKS', 'IMPORTS_FAMILY_TASKS', 'IMPORTS_USER_USD', 'IMPORTS_FAMILY_USD', 'IMPORTS_GLOBAL_USD'],
+      preservationRequired: 'Reconcile remote resources and secret presence only before upload. Preserve all existing recipes, receipts and identity/bridge configuration. No reset, history backfill or plugin initialization. Timer and real pinned-model support remain needs-info until independently proven.',
     } : {}),
     compiledCloudArtifactSha256: null,
     resources: resources.sort((a, b) => a.path.localeCompare(b.path)),

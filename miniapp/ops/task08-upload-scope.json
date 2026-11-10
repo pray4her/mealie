@@ -1,0 +1,120 @@
+{
+  "ticket": "task08",
+  "authorizedBy": "User explicitly requested deployment and API key configuration instructions",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "b67dad1514a73c661f50c9659463e851ddb7062ce2031f7c0a768fc942b2cfd9",
+  "uploadAuthorized": true,
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "22b0b203aa13bb7d822aba25fbfdf6eccbe97ac024cca9eed80de28912490740",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-imports",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-imports",
+      "sha256": "d2c54249536fcee9ba7902528ccf0faf6cb085727d10716003f51ff87e8636d5",
+      "hashKind": "source-tree-sha256",
+      "existing": "absent",
+      "action": "create",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-kernel",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "sha256": "886bd4003b0aaaef917c6e430a41bbb534ce37cc3691192f564aa651819335aa",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-recipes",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-recipes",
+      "sha256": "bd1de5c59c9e9ad0618e438aac24d71a104409fb4b5668f26d895ee710cdc10b",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "cloud-object",
+      "name": "import-worker",
+      "path": "uniCloud-alipay/cloudfunctions/import-worker",
+      "sha256": "1c8f147a02e063f9526913b8ae292c0ffbe4cb61bd803656c84d4a350355747b",
+      "hashKind": "source-tree-sha256",
+      "existing": "absent",
+      "action": "create",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "cloud-object",
+      "name": "imports-co",
+      "path": "uniCloud-alipay/cloudfunctions/imports-co",
+      "sha256": "9fba5330fa6b003e2757ed343975db5ad1c73a48d40cba3d188e165f13f515be",
+      "hashKind": "source-tree-sha256",
+      "existing": "absent",
+      "action": "create",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "schema",
+      "name": "ai_usage.schema.json",
+      "path": "uniCloud-alipay/database/ai_usage.schema.json",
+      "sha256": "715dec15e215da43d58a63c50de5b88ae4ee7510d940d1925805394b99fb3f48",
+      "hashKind": "file-sha256",
+      "existing": "absent",
+      "action": "create"
+    },
+    {
+      "kind": "index",
+      "name": "import_jobs.index.json",
+      "path": "uniCloud-alipay/database/import_jobs.index.json",
+      "sha256": "cf37891adaeabf526957756aa8e674c383d2066bc002e58d0906f2bf84724d76",
+      "hashKind": "file-sha256",
+      "existing": "absent",
+      "action": "create"
+    },
+    {
+      "kind": "schema",
+      "name": "import_jobs.schema.json",
+      "path": "uniCloud-alipay/database/import_jobs.schema.json",
+      "sha256": "b160bde50862239b76889eb0dce6c5388c949146514b9212db6a707d1f7072e6",
+      "hashKind": "file-sha256",
+      "existing": "absent",
+      "action": "create"
+    },
+    {
+      "kind": "schema",
+      "name": "quota_buckets.schema.json",
+      "path": "uniCloud-alipay/database/quota_buckets.schema.json",
+      "sha256": "b0e31a5c79ea98250b561dcdeb37c2aa3796c56be6e7766b4f4fd6946654d6ca",
+      "hashKind": "file-sha256",
+      "existing": "absent",
+      "action": "create"
+    }
+  ],
+  "preservation": "Fresh cloud readbacks staged for unchanged business and identity/configuration/bridge dependencies; no initialization/reset; no key values read or printed",
+  "protectedDependencies": [
+    "uni-id-common",
+    "uni-config-center",
+    "uni-open-bridge-common",
+    "uni-cloud-s2s",
+    "uni-sec-check"
+  ]
+}

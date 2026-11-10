@@ -34,6 +34,6 @@ export function mountPage(component: Component, { client, storage = createMemory
   } }], stubs: { UniView: View, UniText: Text, UniButton: Button, UniInput: Input, UniTextarea: Textarea } } });
   const hooks = (wrapper.vm.$ as typeof wrapper.vm.$ & { uniTestHooks?: Record<string, ((value: never) => unknown)[]> }).uniTestHooks ?? {};
   async function drive(name: string, value?: unknown) { let result: unknown; for (const fn of hooks[name] ?? []) result = await fn(value as never); await flushPromises(); return result; }
-  const unmount = wrapper.unmount.bind(wrapper); wrapper.unmount = () => { if (!controllers) { context.recipes.dispose(); context.media.dispose(); context.membership.dispose(); context.family.dispose(); context.invitations.dispose(); } unmount(); };
+  const unmount = wrapper.unmount.bind(wrapper); wrapper.unmount = () => { if (!controllers) { context.imports.dispose(); context.recipes.dispose(); context.media.dispose(); context.membership.dispose(); context.family.dispose(); context.invitations.dispose(); } unmount(); };
   return { wrapper, controllers: context, auth: context.auth, family: context.family, navigation, show: () => drive('show'), hide: () => drive('hide'), unload: () => drive('unload'), load: (query: Record<string, string>) => drive('load', query), share: () => drive('share') as Promise<{ title: string; path: string; imageUrl: string }> };
 }

@@ -14,8 +14,11 @@ import { createRecipesService } from '../../uniCloud-alipay/cloudfunctions/commo
 import { requireFamily } from 'home-family';
 import type { RecipesApi } from 'home-contracts';
 import type { RecipeRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-recipes/repository';
+import { createImportsService, runImportWorker } from '../../uniCloud-alipay/cloudfunctions/common/home-imports';
+import type { ImportConfig, Job, Provider } from '../../uniCloud-alipay/cloudfunctions/common/home-imports';
+import { defaultConfig } from '../../uniCloud-alipay/cloudfunctions/common/home-imports/model';
 
-export function createHarness(options: { now?: number; content?: ContentPort; storage?: StoragePort; review?: MediaReviewPort; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
+export function createHarness(options: { now?: number; content?: ContentPort; storage?: StoragePort; review?: MediaReviewPort; importsProvider?: Provider; importsConfig?: () => ImportConfig; recentlyVisited?: () => Promise<boolean>; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
   let now = options.now ?? 1_800_000_000_000;
   const memory = createMemoryDatabase();
   const files = new Map<string, Buffer>();
@@ -86,7 +89,24 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     return { async requestUpload(input) { return (await service()).requestUpload(input); }, async upload(input) { return (await service()).upload(input); },
       async complete(input) { return (await service()).complete(input); }, async status(input) { return (await service()).status(input); }, async read(input) { return (await service()).read(input); } };
   };
+  const importsConfig = options.importsConfig ?? (() => ({ ...defaultConfig(), enabled: true }));
+  const imports = (uid: Id): import('home-contracts').ImportsApi => {
+    const service = async () => createImportsService({ database: memory.database, now: () => now, config: importsConfig,
+      async revalidateIdentity() { await guard(tokenFor(uid), clientInfo, { refresh: false }); },
+    }, await requireFamily(memory.database, await guard(tokenFor(uid), clientInfo)));
+    return { async submit(input) { return (await service()).submit(input); }, async get(id) { return (await service()).get(id); }, async cancel(input) { return (await service()).cancel(input); } };
+  };
   return {
+    async runImports() { return runImportWorker({ database: memory.database, now: () => now, newId: () => (++nextId).toString(16).padStart(32, '0'), config: importsConfig,
+      reads: {
+        async due(time) { return (await memory.rows<Job>('import_jobs')).filter(row => ['queued', 'running'].includes(row.state) && row.nextRunAt <= time).sort((a, b) => a.nextRunAt - b.nextRunAt).slice(0, 4).map(row => row._id); },
+        async expired(time) { return (await memory.rows<Job>('import_jobs')).filter(row => row.purgeAt > 0 && row.purgeAt <= time).slice(0, 20).map(row => row._id); },
+      },
+      provider: options.importsProvider ?? { async parse() { return { recipe: { title: '盐汤', description: null, baseServings: null, prepMinutes: null, cookMinutes: null,
+        ingredients: [{ raw: '盐适量', name: '盐', quantity: null, unit: null, note: null }], steps: ['加水煮开。'], tags: [] }, usage: { inputTokens: 20, outputTokens: 40, costUsd: 0.001, providerRequestId: 'fixture-request' } }; } },
+      content: () => options.content ?? { async checkText() { return 'allowed'; } },
+      activeUser: async uid => records.has(uid) && (records.get(uid)?.status === null || records.get(uid)?.status === 0), recentlyVisited: options.recentlyVisited ?? (async () => true),
+    }); },
     files, storage, get now() { return now; },
     async accountActive(uid: string, sessionHash: string) { try { await guard(tokenFor(uid), clientInfo, { refresh: false }); return sessionHash === digest(tokenFor(uid)); } catch { return false; } },
     memory, database: memory.database,
@@ -99,7 +119,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     revokeToken(uid: Id) { const row = records.get(uid); if (row) row.tokens = []; },
     closeAccount(uid: Id) { records.delete(uid); },
     client(uid: Id): AppClient {
-      return { media: media(uid), recipes: recipes(uid), family: family(uid), account: {
+      return { imports: imports(uid), media: media(uid), recipes: recipes(uid), family: family(uid), account: {
         async signInWeixin() { return guard(tokenFor(uid), clientInfo); },
         async session() { return guard(uid ? tokenFor(uid) : undefined, clientInfo); },
         async signOut() { await guard(tokenFor(uid), clientInfo, { refresh: false }); const row = records.get(uid); if (row) row.tokens = []; },
@@ -107,7 +127,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     },
     advance(ms: number) { now += ms; },
     async rows<T>(collection: string): Promise<T[]> {
-      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'recipe_favorites' || collection === 'media_files' || collection === 'media_audit_traces') return memory.rows<T>(collection);
+      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'recipe_favorites' || collection === 'media_files' || collection === 'media_audit_traces' || collection === 'import_jobs' || collection === 'quota_buckets' || collection === 'ai_usage') return memory.rows<T>(collection);
       if (collection !== 'uni-id-users') throw new Error('Unsupported fixture collection');
       return [...records].map(([uid, row]) => ({ uid, ...row })) as T[];
     },

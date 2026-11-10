@@ -4,6 +4,7 @@ import { createAccountApi } from '../features/auth/api';
 import { createFamilyApi } from '../features/family/api';
 import { createRecipesApi } from '../features/recipes/api';
 import { createMediaApi } from '../features/media/api';
+import { createImportsApi } from '../features/imports/api';
 import type { AppClient } from 'home-contracts';
 export function createProductionClient(): AppClient {
   const boundary = createSessionBoundary({
@@ -15,7 +16,7 @@ export function createProductionClient(): AppClient {
     if (!api) { api = uniCloud.importObject(object, { customUI: true }); objects.set(object, api!); }
     return api![method](input);
   } });
-  return { media: createMediaApi({ boundary, invoke: cloud.invoke }), recipes: createRecipesApi({ boundary, invoke: cloud.invoke }), family: createFamilyApi({ boundary, invoke: cloud.invoke }), account: createAccountApi({ boundary, wire: cloud.account, platformLogin: async () => {
+  return { imports: createImportsApi({ boundary, invoke: cloud.invoke }), media: createMediaApi({ boundary, invoke: cloud.invoke }), recipes: createRecipesApi({ boundary, invoke: cloud.invoke }), family: createFamilyApi({ boundary, invoke: cloud.invoke }), account: createAccountApi({ boundary, wire: cloud.account, platformLogin: async () => {
     const result = await uni.login({ provider: 'weixin' });
     if (!result.code) throw new Error('UNAVAILABLE'); return result.code;
   } }) };

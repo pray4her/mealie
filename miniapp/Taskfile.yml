@@ -61,3 +61,9 @@ tasks:
   task07:doctor:
     cmds:
       - node scripts/doctor.mjs --ticket task07
+  task08:preview:
+    cmds:
+      - node scripts/deploy-preview.mjs --ticket task08
+  task08:doctor:
+    cmds:
+      - node scripts/doctor.mjs --ticket task08

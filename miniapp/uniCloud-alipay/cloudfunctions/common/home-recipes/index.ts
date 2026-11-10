@@ -7,6 +7,9 @@ import { bindRecipeMedia } from 'home-media';
 import { auditText, exact, favoriteMutation, listInput, mutation, recipeId } from './validation';
 import { favoriteId, favoriteRecord, isFavorite, readRecipe, recipeCandidate, recipeView } from './repository';
 import type { RecipeCursor, RecipeReads, RecipeRecord } from './repository';
+import { insertRecipe } from './create';
+export { insertRecipe } from './create';
+export { recipeInput, auditText } from './validation';
 export { createRecipeReads } from './repository';
 export type { RecipeReadPlatform, RecipeReads } from './repository';
 
@@ -102,10 +105,7 @@ export function createRecipesService(deps: RecipeDeps, ctx: FamilyContext): Reci
           row = { ...current, ...input.recipe, version: current.version + 1, updatedAt: timestamp };
           await tx.replace('recipes', id, row);
         } else {
-          const prefix = [...input.recipe.title.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-')].slice(0, 80).join('') || 'recipe';
-          row = { ...input.recipe, _id: id, slug: prefix + '-' + id, familyId: ctx.familyId, createdBy: ctx.uid, version: 1,
-            createdAt: timestamp, updatedAt: timestamp, imageIds: [], source: { kind: 'manual', url: null, importJobId: null, warnings: [] } };
-          await tx.insert('recipes', id, row);
+          row = await insertRecipe(tx, ctx, input.recipe, id, timestamp);
         }
         const result = await recipeView(tx, row, ctx);
         const { isFavorite: _private, ...snapshot } = result;

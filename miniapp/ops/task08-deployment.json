@@ -1,0 +1,570 @@
+{
+  "ticket": "task08",
+  "recordedAt": "2026-11-10T08:45:52.915Z",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "status": "uploaded-and-readback-verified",
+  "uploadAuthorized": true,
+  "sourceSha256": "b67dad1514a73c661f50c9659463e851ddb7062ce2031f7c0a768fc942b2cfd9",
+  "clientBuildSha256": "c3c6d9c87bb5a7623222c4a32863af3e5d962ee1204e9774456c1ee97d547bf3",
+  "cloudBuildSha256": "1121ef8f2d623b75ec08bdb3510d5eab3968d85f96f98d128b362390b8986e45",
+  "uploadedResources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "sourceSha256": "22b0b203aa13bb7d822aba25fbfdf6eccbe97ac024cca9eed80de28912490740"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-imports",
+      "sourceSha256": "d2c54249536fcee9ba7902528ccf0faf6cb085727d10716003f51ff87e8636d5"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-kernel",
+      "sourceSha256": "886bd4003b0aaaef917c6e430a41bbb534ce37cc3691192f564aa651819335aa"
+    },
+    {
+      "kind": "common-module",
+      "name": "home-recipes",
+      "sourceSha256": "bd1de5c59c9e9ad0618e438aac24d71a104409fb4b5668f26d895ee710cdc10b"
+    },
+    {
+      "kind": "cloud-object",
+      "name": "import-worker",
+      "sourceSha256": "1c8f147a02e063f9526913b8ae292c0ffbe4cb61bd803656c84d4a350355747b"
+    },
+    {
+      "kind": "cloud-object",
+      "name": "imports-co",
+      "sourceSha256": "9fba5330fa6b003e2757ed343975db5ad1c73a48d40cba3d188e165f13f515be"
+    },
+    {
+      "kind": "schema",
+      "name": "ai_usage.schema.json",
+      "sourceSha256": "715dec15e215da43d58a63c50de5b88ae4ee7510d940d1925805394b99fb3f48"
+    },
+    {
+      "kind": "index",
+      "name": "import_jobs.index.json",
+      "sourceSha256": "cf37891adaeabf526957756aa8e674c383d2066bc002e58d0906f2bf84724d76"
+    },
+    {
+      "kind": "schema",
+      "name": "import_jobs.schema.json",
+      "sourceSha256": "b160bde50862239b76889eb0dce6c5388c949146514b9212db6a707d1f7072e6"
+    },
+    {
+      "kind": "schema",
+      "name": "quota_buckets.schema.json",
+      "sourceSha256": "b0e31a5c79ea98250b561dcdeb37c2aa3796c56be6e7766b4f4fd6946654d6ca"
+    }
+  ],
+  "officialUploadReceipts": 10,
+  "preserved": [
+    {
+      "name": "uni-id-common",
+      "files": 2,
+      "byteIdentical": true
+    },
+    {
+      "name": "uni-config-center",
+      "files": 5,
+      "byteIdentical": true
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "files": 9,
+      "byteIdentical": true
+    },
+    {
+      "name": "uni-cloud-s2s",
+      "files": 2,
+      "byteIdentical": true
+    },
+    {
+      "name": "uni-sec-check",
+      "files": 16,
+      "byteIdentical": true
+    }
+  ],
+  "schemas": [
+    {
+      "name": "import_jobs",
+      "matchesSource": true,
+      "clientDbCrudPermissions": false
+    },
+    {
+      "name": "quota_buckets",
+      "matchesSource": true,
+      "clientDbCrudPermissions": false
+    },
+    {
+      "name": "ai_usage",
+      "matchesSource": true,
+      "clientDbCrudPermissions": false
+    },
+    {
+      "name": "recipes",
+      "matchesSource": true,
+      "clientDbCrudPermissions": false
+    },
+    {
+      "name": "recipe_favorites",
+      "matchesSource": true,
+      "clientDbCrudPermissions": false
+    },
+    {
+      "name": "mutation_receipts",
+      "matchesSource": true,
+      "clientDbCrudPermissions": false
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "home-contracts",
+      "files": 6,
+      "sha256": "68a7ce40307d68cd8e81c081feb78800d81559df3e0ac620ebf35d1c97cea6ad",
+      "provenance": "Official deployed JS readback; no local recompile"
+    },
+    {
+      "name": "home-kernel",
+      "files": 11,
+      "sha256": "594c251f59e4ee785d94cc4b9668505665464db820088a81d51054b00defc564",
+      "provenance": "Official deployed JS readback; no local recompile"
+    },
+    {
+      "name": "home-recipes",
+      "files": 4,
+      "sha256": "c80d8f71d0067855d0d5e9cd9db323f5a03af944124847a87af843dbf7d495dc",
+      "provenance": "Official deployed JS readback; no local recompile"
+    },
+    {
+      "name": "home-imports",
+      "files": 6,
+      "sha256": "5af035e6c77508c80fa448265691a2d7f3d2c147c3d749d1e5ae8ba3fb589413",
+      "provenance": "Official deployed JS readback; no local recompile"
+    },
+    {
+      "name": "home-family",
+      "files": 13,
+      "sha256": "2fb2ce0bbebea4f32d1625609f9e74e5ab36eb57b4cb4ab701cd2417a2732897",
+      "provenance": "Official deployed JS readback; no local recompile"
+    },
+    {
+      "name": "home-media",
+      "files": 8,
+      "sha256": "a312a4aa0e8c490b338f0d24f2cfdbef9e82d8e5e387c2954c0700d541756714",
+      "provenance": "Official deployed JS readback; no local recompile"
+    },
+    {
+      "name": "imports-co",
+      "archiveSha256": "729841d5c44db8adda739d9389787dfc4666eee0fbe0349f429aacbaf3d044b9",
+      "compiledEntrySha256": "005dd26c29086c19e5962eaf7166467b7f8b36942459eaea6660c5ca224e85a0",
+      "provenance": "official deployed ZIP __dist__ entry; no local recompile"
+    },
+    {
+      "name": "import-worker",
+      "archiveSha256": "5683cd4f4db76acb2d95cf7dc7c924f350449448fdfeeaf1f44e27fe8e65977b",
+      "compiledEntrySha256": "bde82341657dd9cb14285dd4aaac402102c0358b45fb75fb02e198aff139518f",
+      "provenance": "official deployed ZIP __dist__ entry; no local recompile"
+    }
+  ],
+  "unchangedBusinessFunctions": 6,
+  "unchangedBusinessModules": 2,
+  "entryMethods": {
+    "imports-co": [
+      "cancel",
+      "get",
+      "submit"
+    ],
+    "import-worker": [
+      "_timing"
+    ]
+  },
+  "loadedModuleCount": 43,
+  "inventoryBefore": {
+    "functions": [
+      {
+        "name": "account-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media-review-callback",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipes-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "task07-storage-e50713853130",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-co",
+        "uniModuleId": ""
+      }
+    ],
+    "common": [
+      {
+        "name": "home-contracts",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-family",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-kernel",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-media",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-recipes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-captcha",
+        "uniModuleId": "uni-captcha"
+      },
+      {
+        "name": "uni-cloud-s2s",
+        "uniModuleId": "uni-cloud-s2s"
+      },
+      {
+        "name": "uni-config-center",
+        "uniModuleId": "uni-config-center"
+      },
+      {
+        "name": "uni-id-common",
+        "uniModuleId": "uni-id-common"
+      },
+      {
+        "name": "uni-open-bridge-common",
+        "uniModuleId": "uni-open-bridge-common"
+      },
+      {
+        "name": "uni-sec-check",
+        "uniModuleId": "uni-sec-check"
+      }
+    ],
+    "schemas": [
+      {
+        "name": "media_audit_traces",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media_files",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipe_favorites",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family_invitations",
+        "uniModuleId": ""
+      },
+      {
+        "name": "request_limits",
+        "uniModuleId": ""
+      },
+      {
+        "name": "mutation_receipts",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family_members",
+        "uniModuleId": ""
+      },
+      {
+        "name": "families",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-users",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-roles",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-permissions",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-log",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-device",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-verify-codes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-tempdata",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-open-data",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-frv-logs",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-device",
+        "uniModuleId": ""
+      }
+    ]
+  },
+  "inventoryAfter": {
+    "functions": [
+      {
+        "name": "account-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "import-worker",
+        "uniModuleId": ""
+      },
+      {
+        "name": "imports-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media-review-callback",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipes-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "task07-storage-e50713853130",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-co",
+        "uniModuleId": ""
+      }
+    ],
+    "common": [
+      {
+        "name": "home-contracts",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-family",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-imports",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-kernel",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-media",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-recipes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-captcha",
+        "uniModuleId": "uni-captcha"
+      },
+      {
+        "name": "uni-cloud-s2s",
+        "uniModuleId": "uni-cloud-s2s"
+      },
+      {
+        "name": "uni-config-center",
+        "uniModuleId": "uni-config-center"
+      },
+      {
+        "name": "uni-id-common",
+        "uniModuleId": "uni-id-common"
+      },
+      {
+        "name": "uni-open-bridge-common",
+        "uniModuleId": "uni-open-bridge-common"
+      },
+      {
+        "name": "uni-sec-check",
+        "uniModuleId": "uni-sec-check"
+      }
+    ],
+    "schemas": [
+      {
+        "name": "ai_usage",
+        "uniModuleId": ""
+      },
+      {
+        "name": "quota_buckets",
+        "uniModuleId": ""
+      },
+      {
+        "name": "import_jobs",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media_audit_traces",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media_files",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipe_favorites",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family_invitations",
+        "uniModuleId": ""
+      },
+      {
+        "name": "request_limits",
+        "uniModuleId": ""
+      },
+      {
+        "name": "mutation_receipts",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family_members",
+        "uniModuleId": ""
+      },
+      {
+        "name": "families",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-users",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-roles",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-permissions",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-log",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-device",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-verify-codes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-tempdata",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-open-data",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-frv-logs",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-device",
+        "uniModuleId": ""
+      }
+    ]
+  },
+  "environment": [
+    {
+      "name": "imports-co",
+      "remoteSupported": true,
+      "variableNames": [],
+      "apiKeyConfigured": false,
+      "importsEnabled": false,
+      "valuesRead": false
+    },
+    {
+      "name": "import-worker",
+      "remoteSupported": true,
+      "variableNames": [],
+      "apiKeyConfigured": false,
+      "importsEnabled": false,
+      "valuesRead": false
+    }
+  ],
+  "workerUploadedConfig": {
+    "keepRunningAfterReturn": false,
+    "timeout": 120,
+    "triggers": [
+      {
+        "name": "import-every-minute",
+        "type": "timer",
+        "config": "0 * * * * * *"
+      }
+    ]
+  },
+  "timerExecutionVerified": false,
+  "paidProviderCalled": false,
+  "deviceVerified": false,
+  "localVerification": {
+    "command": "task -d miniapp check -- --maxWorkers=2",
+    "suites": 54,
+    "tests": 676,
+    "exitCode": 0,
+    "log": "dist/task08-deploy-check.log"
+  },
+  "businessDataReset": false,
+  "privateConfigValuesPrinted": false,
+  "artifactTreeSha256": "d241e4ca32eee1851afae1526706885dc5b4fdfb30491746114f862371b61bce"
+}

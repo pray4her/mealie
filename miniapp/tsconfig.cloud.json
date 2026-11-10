@@ -8,8 +8,9 @@
       "home-kernel": ["uniCloud-alipay/cloudfunctions/common/home-kernel/index.ts"],
       "home-family": ["uniCloud-alipay/cloudfunctions/common/home-family/index.ts"],
       "home-recipes": ["uniCloud-alipay/cloudfunctions/common/home-recipes/index.ts"],
-      "home-media": ["uniCloud-alipay/cloudfunctions/common/home-media/index.ts"]
+      "home-media": ["uniCloud-alipay/cloudfunctions/common/home-media/index.ts"],
+      "home-imports": ["uniCloud-alipay/cloudfunctions/common/home-imports/index.ts"]
     }
   },
-  "include": ["uniCloud-alipay/cloudfunctions/account-co/**/*.ts", "uniCloud-alipay/cloudfunctions/family-co/**/*.ts", "uniCloud-alipay/cloudfunctions/recipes-co/**/*.ts", "uniCloud-alipay/cloudfunctions/common/home-*/**/*.ts", "cloud-policies/*.cjs", "uniCloud-alipay/cloudfunctions/media-co/**/*.ts", "uniCloud-alipay/cloudfunctions/media-review-callback/**/*.ts"]
+  "include": ["uniCloud-alipay/cloudfunctions/account-co/**/*.ts", "uniCloud-alipay/cloudfunctions/family-co/**/*.ts", "uniCloud-alipay/cloudfunctions/recipes-co/**/*.ts", "uniCloud-alipay/cloudfunctions/common/home-*/**/*.ts", "cloud-policies/*.cjs", "uniCloud-alipay/cloudfunctions/media-co/**/*.ts", "uniCloud-alipay/cloudfunctions/media-review-callback/**/*.ts", "uniCloud-alipay/cloudfunctions/imports-co/**/*.ts", "uniCloud-alipay/cloudfunctions/import-worker/**/*.ts"]
 }

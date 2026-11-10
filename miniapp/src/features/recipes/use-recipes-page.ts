@@ -49,7 +49,7 @@ export function useRecipesPage(load: () => Promise<void>) {
   }
   function conceal() {
     const wasActive = active; active = false; visibility++; epoch++; confirmed.value = false; busy.value = false;
-    if (wasActive) { app.recipes.clear(); app.media.clear(); }
+    if (wasActive) { app.recipes.clear(); app.media.clear(); app.imports.clear(); }
   }
   onShow(check); onHide(conceal); onUnload(() => { disposed = true; conceal(); finishResumes(false); stop(); });
   return { ...app, confirmed, busy, message, check, act, isCurrent: () => active && confirmed.value, back: () => uni.reLaunch({ url: '/pages/family/home' }) };

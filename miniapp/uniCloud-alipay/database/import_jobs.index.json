@@ -1,0 +1,4 @@
+[
+  { "IndexName": "state_next_id", "MgoKeySchema": { "MgoIndexKeys": [{ "Name": "state", "Direction": "1" }, { "Name": "nextRunAt", "Direction": "1" }, { "Name": "_id", "Direction": "1" }], "MgoIsUnique": false } },
+  { "IndexName": "purge_id", "MgoKeySchema": { "MgoIndexKeys": [{ "Name": "purgeAt", "Direction": "1" }, { "Name": "_id", "Direction": "1" }], "MgoIsUnique": false } }
+]

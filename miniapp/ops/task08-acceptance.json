@@ -1,0 +1,174 @@
+{
+  "ticket": "task08",
+  "version": 1,
+  "status": "needs-info",
+  "recordedAt": "2026-11-10T08:45:52.915Z",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "b67dad1514a73c661f50c9659463e851ddb7062ce2031f7c0a768fc942b2cfd9",
+  "local": {
+    "status": "passed",
+    "mode": "automated",
+    "evidenceFile": "ops/task08-test-evidence.md",
+    "buildSha256": "c3c6d9c87bb5a7623222c4a32863af3e5d962ee1204e9774456c1ee97d547bf3",
+    "suites": 54,
+    "tests": 676,
+    "scenarios": {
+      "full-check": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      },
+      "idempotency-quota": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      },
+      "cancel-lease-membership": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      },
+      "retry-budget-disable": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      },
+      "commit-unknown": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      },
+      "hostile-output": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      },
+      "cold-start-replay": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      },
+      "polling-session-isolation": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task08-test-evidence.md"
+      }
+    }
+  },
+  "provider": {
+    "status": "needs-info",
+    "mode": "real",
+    "evidenceFile": null,
+    "buildSha256": null,
+    "scenarios": {
+      "pinned-model-schema": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "real-token-cost-request-id": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "safe-errors-no-secret-logs": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      }
+    }
+  },
+  "cloud": {
+    "status": "needs-info",
+    "mode": "real",
+    "evidenceFile": null,
+    "buildSha256": "1121ef8f2d623b75ec08bdb3510d5eab3968d85f96f98d128b362390b8986e45",
+    "scenarios": {
+      "resource-diff": {
+        "status": "passed",
+        "mode": "real",
+        "evidenceFile": "ops/task08-deployment.md"
+      },
+      "secret-presence-only": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "private-minute-timer": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "closed-page-completion": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "atomic-save": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "text-retention-cleanup": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      }
+    }
+  },
+  "device": {
+    "status": "needs-info",
+    "mode": "real",
+    "evidenceFile": null,
+    "buildSha256": null,
+    "scenarios": {
+      "paste-submit": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "close-reopen-status": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "weak-network-replay": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "hidden-poll-stop": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "cancel": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "open-edit-saved": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "account-generation-isolation": {
+        "status": "needs-info",
+        "mode": "real",
+        "evidenceFile": null
+      }
+    }
+  },
+  "deployment": {
+    "status": "uploaded-and-readback-verified",
+    "evidenceFile": "ops/task08-deployment.md",
+    "cloudBuildSha256": "1121ef8f2d623b75ec08bdb3510d5eab3968d85f96f98d128b362390b8986e45"
+  }
+}

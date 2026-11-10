@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-11-10T08:43:30.257Z",
+  "mode": "real-network-empty-session",
+  "businessSession": "empty; no uni-id token",
+  "source": "Installed official SDK and linked public client config",
+  "businessRowsWritten": false,
+  "results": [
+    {
+      "name": "imports-co",
+      "method": "submit",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "imports-co",
+      "method": "get",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "imports-co",
+      "method": "cancel",
+      "errorCode": "AUTH_REQUIRED"
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    }
+  ]
+}

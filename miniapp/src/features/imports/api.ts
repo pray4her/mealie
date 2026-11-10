@@ -1,0 +1,48 @@
+import type { ImportError, ImportsApi, ImportSubmit, JobView } from 'home-contracts';
+import type { Invoke } from '../family/api';
+import type { SessionBoundary } from '../../shared/session-boundary';
+import { AppError, errorCode } from '../../shared/errors';
+import { object, validId } from '../recipes/validation';
+import { membershipInput } from '../family/membership-validation';
+
+export const importErrors: Record<ImportError, string> = {
+  UNRECOGNIZED: '未能识别一道完整菜谱，请补充食材和做法后重新导入。', MULTIPLE_RECIPES: '文本包含多道菜，请每次只导入一道菜。',
+  INVALID_OUTPUT: 'AI 返回的菜谱格式不符合要求，请调整原文后重新导入。', TRUNCATED: 'AI 结果过长被截断，请缩短原文后重新导入。',
+  PROVIDER_UNAVAILABLE: 'AI 服务暂时不可用，请稍后重新导入。', AUDIT_REJECTED: '菜谱未通过内容审核，请修改原文后重新导入。',
+  AUDIT_UNAVAILABLE: '内容审核暂时不可用，请重新打开小程序后重新导入。', AUDIT_VISIT_REQUIRED: '微信审核需要近两小时访问过小程序，请现在重新导入。',
+  MEMBERSHIP_CHANGED: '家庭成员身份已变化，任务无法继续，请确认家庭后重新导入。', BUDGET_EXCEEDED: 'AI 预算已用尽，请稍后重新导入。', INPUT_EXPIRED: '任务原文已到七天保留上限，请重新导入。',
+};
+export function textInput(value: unknown): string {
+  // eslint-disable-next-line no-control-regex -- Same explicit control ranges as recipe forms, compatible with mini-programs.
+  if (typeof value !== 'string' || !value.trim() || /[\u0000-\u001F\u007F-\u009F]/.test(value.replace(/[\n\r\t]/g, '')) || /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/u.test(value)) throw new AppError('INVALID_INPUT');
+  if (encodeURIComponent(value).replace(/%[A-F0-9]{2}|./g, 'x').length > 16384) throw new AppError('INVALID_INPUT'); return value;
+}
+export function submitInput(raw: unknown): ImportSubmit {
+  const row = object(raw, ['requestId', 'familyId', 'generation', 'source']); const { source, ...scope } = row;
+  const checked = membershipInput('leave', scope);
+  if (source && typeof source === 'object' && 'kind' in source && ['image', 'url'].includes(String(source.kind))) throw new AppError('UNAVAILABLE');
+  const input = object(source, ['kind', 'text']);
+  if (input.kind !== 'text') throw new AppError('UNAVAILABLE');
+  return { ...checked, source: { kind: 'text', text: textInput(input.text) } };
+}
+export function parseJob(raw: unknown): JobView {
+  try {
+    const row = object(raw, ['id', 'state', 'attempts', 'recipeId', 'createdAt', 'updatedAt', 'error']); validId(row.id);
+    if (!['queued', 'running', 'succeeded', 'failed', 'cancelled'].includes(String(row.state)) || !Number.isSafeInteger(row.attempts) || (row.attempts as number) < 0 || (row.attempts as number) > 3) throw new Error();
+    for (const key of ['createdAt', 'updatedAt']) if (!Number.isSafeInteger(row[key]) || (row[key] as number) < 0) throw new Error();
+    if ((row.updatedAt as number) < (row.createdAt as number)) throw new Error();
+    if (row.state === 'succeeded') validId(row.recipeId); else if (row.recipeId !== null) throw new Error();
+    if (row.state === 'failed') { if (typeof row.error !== 'string' || !Object.hasOwn(importErrors, row.error)) throw new Error(); }
+    else if (row.error !== null) throw new Error();
+    return row as JobView;
+  } catch { throw new AppError('UNAVAILABLE'); }
+}
+export function createImportsApi({ invoke, boundary }: { invoke: Invoke; boundary: SessionBoundary }): ImportsApi {
+  async function call(method: string, input: unknown) {
+    try { return parseJob(await invoke('imports-co', method, input)); }
+    catch (error) { if (errorCode(error) === 'AUTH_REQUIRED') await boundary.close(async () => {}).catch(() => {}); throw new AppError(errorCode(error)); }
+  }
+  return { submit(input) { return call('submit', submitInput(input)); }, get(id) { return call('get', validId(id)); }, cancel(input) {
+    const { id, ...scope } = object(input, ['requestId', 'familyId', 'generation', 'id']); return call('cancel', { ...membershipInput('leave', scope), id: validId(id) });
+  } };
+}

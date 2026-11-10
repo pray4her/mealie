@@ -1,6 +1,7 @@
 import type { FamilyApi } from './family';
 import type { RecipesApi } from './recipes';
 import type { MediaApi } from './media';
+import type { ImportsApi } from './imports';
 
 export type Id = string;
 export type TokenPair = { token: string; tokenExpired: number };
@@ -10,7 +11,7 @@ export interface AccountApi {
   session(): Promise<Identity>;
   signOut(): Promise<void>;
 }
-export interface AppClient { account: AccountApi; family: FamilyApi; recipes: RecipesApi; media: MediaApi }
+export interface AppClient { account: AccountApi; family: FamilyApi; recipes: RecipesApi; media: MediaApi; imports: ImportsApi }
 export type CloudSuccess<T> = { errCode: 0; data: T; newToken?: TokenPair };
 export type ClientInfo = { appId: string; uniPlatform: string; deviceId?: string; clientIP?: string; locale?: string };
 export type VerifiedToken = { uid: Id; issuedAtSeconds: number; expiresAtSeconds: number };

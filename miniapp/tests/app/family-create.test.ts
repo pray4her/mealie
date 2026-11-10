@@ -126,7 +126,7 @@ test('create_authentication_rejection_returns_to_login_and_hides_form', async ()
 test('same_page_new_account_does_not_inherit_draft_or_validation_error', async () => {
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' }); await h.seedIdentity({ uid: 'bob' });
   let selected = h.client('alice');
-  const client: AppClient = { media: selected.media, recipes: selected.recipes, account: {
+  const client: AppClient = { imports: selected.imports, media: selected.media, recipes: selected.recipes, account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(), signOut: () => selected.account.signOut(),
   }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };
   const page = mountPage(Onboarding, { client }); await page.show(); await page.wrapper.find('input').setValue('Alice未提交的名字');
@@ -166,7 +166,7 @@ test('old_account_create_cannot_navigate_or_overwrite_new_account_on_same_page',
   const gate = deferCall(); const h = createHarness(); await h.seedIdentity({ uid: 'alice' }); await h.seedIdentity({ uid: 'bob' });
   const alice = h.client('alice'); const bob = h.client('bob'); const create = alice.family.create;
   vi.spyOn(alice.family, 'create').mockImplementationOnce(async input => { const result = await create(input); await gate.promise; return result; });
-  let selected = alice; const client: AppClient = { media: selected.media, recipes: selected.recipes, account: {
+  let selected = alice; const client: AppClient = { imports: selected.imports, media: selected.media, recipes: selected.recipes, account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(), signOut: () => selected.account.signOut(),
   }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };
   const page = mountPage(Onboarding, { client }); await page.show(); await page.wrapper.find('input').setValue('Alice家');
@@ -201,7 +201,7 @@ test('old_create_auth_rejection_cannot_navigate_after_uid_changed_during_logout'
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' }); await h.seedIdentity({ uid: 'bob' });
   const alice = h.client('alice'); const bob = h.client('bob'); const gate = deferCall(); let selected = alice;
   vi.spyOn(alice.family, 'create').mockRejectedValue(new AppError('AUTH_REQUIRED'));
-  const client: AppClient = { media: selected.media, recipes: selected.recipes, account: {
+  const client: AppClient = { imports: selected.imports, media: selected.media, recipes: selected.recipes, account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(),
     async signOut() { const account = selected.account; await gate.promise; await account.signOut(); },
   }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };

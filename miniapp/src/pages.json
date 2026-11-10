@@ -8,7 +8,9 @@
     { "path": "pages/family/members", "style": { "navigationStyle": "custom" } },
     { "path": "pages/recipes/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/recipes/detail", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/recipes/edit", "style": { "navigationStyle": "custom" } }
+    { "path": "pages/recipes/edit", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/imports/submit", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/imports/status", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": { "backgroundColor": "#f6f5ef" }
 }

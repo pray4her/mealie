@@ -1,0 +1,189 @@
+{
+  "recordedAt": "2026-11-10T08:43:35.717Z",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "functions": [
+    {
+      "name": "account-co",
+      "uniModuleId": ""
+    },
+    {
+      "name": "family-co",
+      "uniModuleId": ""
+    },
+    {
+      "name": "import-worker",
+      "uniModuleId": ""
+    },
+    {
+      "name": "imports-co",
+      "uniModuleId": ""
+    },
+    {
+      "name": "media-co",
+      "uniModuleId": ""
+    },
+    {
+      "name": "media-review-callback",
+      "uniModuleId": ""
+    },
+    {
+      "name": "recipes-co",
+      "uniModuleId": ""
+    },
+    {
+      "name": "task07-storage-e50713853130",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-co",
+      "uniModuleId": ""
+    }
+  ],
+  "common": [
+    {
+      "name": "home-contracts",
+      "uniModuleId": ""
+    },
+    {
+      "name": "home-family",
+      "uniModuleId": ""
+    },
+    {
+      "name": "home-imports",
+      "uniModuleId": ""
+    },
+    {
+      "name": "home-kernel",
+      "uniModuleId": ""
+    },
+    {
+      "name": "home-media",
+      "uniModuleId": ""
+    },
+    {
+      "name": "home-recipes",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-captcha",
+      "uniModuleId": "uni-captcha"
+    },
+    {
+      "name": "uni-cloud-s2s",
+      "uniModuleId": "uni-cloud-s2s"
+    },
+    {
+      "name": "uni-config-center",
+      "uniModuleId": "uni-config-center"
+    },
+    {
+      "name": "uni-id-common",
+      "uniModuleId": "uni-id-common"
+    },
+    {
+      "name": "uni-open-bridge-common",
+      "uniModuleId": "uni-open-bridge-common"
+    },
+    {
+      "name": "uni-sec-check",
+      "uniModuleId": "uni-sec-check"
+    }
+  ],
+  "schemas": [
+    {
+      "name": "ai_usage",
+      "uniModuleId": ""
+    },
+    {
+      "name": "quota_buckets",
+      "uniModuleId": ""
+    },
+    {
+      "name": "import_jobs",
+      "uniModuleId": ""
+    },
+    {
+      "name": "media_audit_traces",
+      "uniModuleId": ""
+    },
+    {
+      "name": "media_files",
+      "uniModuleId": ""
+    },
+    {
+      "name": "recipe_favorites",
+      "uniModuleId": ""
+    },
+    {
+      "name": "recipes",
+      "uniModuleId": ""
+    },
+    {
+      "name": "family_invitations",
+      "uniModuleId": ""
+    },
+    {
+      "name": "request_limits",
+      "uniModuleId": ""
+    },
+    {
+      "name": "mutation_receipts",
+      "uniModuleId": ""
+    },
+    {
+      "name": "family_members",
+      "uniModuleId": ""
+    },
+    {
+      "name": "families",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-users",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-roles",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-permissions",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-log",
+      "uniModuleId": ""
+    },
+    {
+      "name": "uni-id-device",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-verify-codes",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-tempdata",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-open-data",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-frv-logs",
+      "uniModuleId": ""
+    },
+    {
+      "name": "opendb-device",
+      "uniModuleId": ""
+    }
+  ]
+}

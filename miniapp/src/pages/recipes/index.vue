@@ -6,8 +6,10 @@ const query = ref(''); const tag = ref('');
 const page = useRecipesPage(async () => {
   query.value = page.recipes.filters.value.query; tag.value = page.recipes.filters.value.tag;
   await page.recipes.list();
+  page.imports.restore();
 });
-const { confirmed, busy, message, recipes } = page;
+const { confirmed, busy, message, recipes, imports } = page;
+const { recovery } = imports;
 const { items, pending, nextCursor, filters, pendingFavorite } = recipes;
 function search(favoritesOnly = filters.value.favoritesOnly) {
   void page.act(async () => {
@@ -19,6 +21,8 @@ function search(favoritesOnly = filters.value.favoritesOnly) {
 const open = (id: string) => uni.navigateTo({ url: '/pages/recipes/detail?id=' + id });
 const create = () => uni.navigateTo({ url: '/pages/recipes/edit' });
 function resume() { const intent = pending.value; if (intent) uni.navigateTo({ url: '/pages/recipes/edit' + (intent.kind === 'update' ? '?id=' + intent.input.id : '') }); }
+function resumeImport() { const saved = recovery.value; if (saved) uni.navigateTo({ url: saved.kind === 'pending' ? '/pages/imports/submit' : '/pages/imports/status?id=' + saved.id }); }
+const importText = () => uni.navigateTo({ url: '/pages/imports/submit' });
 </script>
 <template>
   <view class="page">
@@ -29,6 +33,19 @@ function resume() { const intent = pending.value; if (intent) uni.navigateTo({ u
       <text class="title">
         {{ copy.recipes }}
       </text>
+      <button
+        data-import
+        @tap="importText"
+      >
+        AI 文本导入
+      </button>
+      <button
+        v-if="recovery"
+        data-import-resume
+        @tap="resumeImport"
+      >
+        恢复最近导入任务
+      </button>
       <view class="filters">
         <button
           data-all

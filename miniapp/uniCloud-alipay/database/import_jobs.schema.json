@@ -1,0 +1,28 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "uid", "familyId", "generation", "requestId", "payloadHash", "state", "attempts", "recipeId", "error", "createdAt", "updatedAt", "sourceText", "purgeAt", "nextRunAt", "lease", "leaseUntil", "candidate", "usageId", "taskBuckets", "visitedAt"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "uid": { "bsonType": "string", "minLength": 1 },
+    "familyId": { "bsonType": "string", "minLength": 1 },
+    "generation": { "bsonType": "string", "minLength": 1 },
+    "requestId": { "bsonType": "string", "minLength": 16, "maxLength": 128 },
+    "payloadHash": { "bsonType": "string", "pattern": "^[a-f0-9]{64}$" },
+    "state": { "bsonType": "string", "enum": ["queued", "running", "succeeded", "failed", "cancelled"] },
+    "attempts": { "bsonType": "int", "minimum": 0, "maximum": 3 },
+    "recipeId": { "bsonType": ["string", "null"] },
+    "error": { "bsonType": ["string", "null"], "enum": [null, "UNRECOGNIZED", "MULTIPLE_RECIPES", "INVALID_OUTPUT", "TRUNCATED", "PROVIDER_UNAVAILABLE", "AUDIT_REJECTED", "AUDIT_UNAVAILABLE", "AUDIT_VISIT_REQUIRED", "MEMBERSHIP_CHANGED", "BUDGET_EXCEEDED", "INPUT_EXPIRED"] },
+    "createdAt": { "bsonType": "long", "minimum": 0 },
+    "updatedAt": { "bsonType": "long", "minimum": 0 },
+    "sourceText": { "bsonType": ["string", "null"], "maxLength": 16384 },
+    "purgeAt": { "bsonType": "long", "minimum": 0 },
+    "nextRunAt": { "bsonType": "long", "minimum": 0 },
+    "lease": { "bsonType": ["string", "null"] },
+    "leaseUntil": { "bsonType": "long", "minimum": 0 },
+    "candidate": { "bsonType": ["object", "null"] },
+    "usageId": { "bsonType": ["string", "null"] },
+    "taskBuckets": { "bsonType": "array", "items": { "bsonType": "string" } },
+    "visitedAt": { "bsonType": "long", "minimum": 0 }
+  }
+}
