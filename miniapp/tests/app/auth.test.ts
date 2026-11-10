@@ -13,14 +13,14 @@ import { createMemoryStorage, deferCall } from '../support/sdk-transport';
 import type { AppClient } from 'home-contracts';
 import { copy } from '../../src/shared/copy';
 const navigation: string[] = [];
-beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
+beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
 test('calls_weixin_then_server_session', async () => {
   const order: string[] = []; const boundary = createSessionBoundary(createMemoryStorage());
   const client = { ...createHarness().client('alice'), account: createAccountApi({ boundary, platformLogin: async () => { order.push('weixin'); return 'short-code'; }, wire: {
     async loginByWeixin(code) { expect(code).toBe('short-code'); order.push('login'); }, async session() { order.push('session'); return { uid: 'alice' }; }, async logout() {},
   } }) };
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click'); await flushPromises();
-  expect(order.slice(-3)).toEqual(['weixin', 'login', 'session']); expect(navigation.at(-1)).toContain('family/onboarding');
+  expect(order.slice(-3)).toEqual(['weixin', 'login', 'session']); expect(navigation.at(-1)).toContain('recipes/index');
 });
 test('redirects_on_expired_login', async () => {
   const page = mountPage(Onboarding, { client: createHarness().client('forged') }); await page.show();
@@ -67,7 +67,7 @@ test('login_announces_busy_state_and_prevents_another_click_until_the_attempt_fi
   expect(page.wrapper.get('[role="status"]').attributes('aria-busy')).toBe('true');
   expect(page.wrapper.get('[role="status"]').text()).toContain('正在微信登录');
   expect(button.attributes('disabled')).toBeDefined(); await button.trigger('click'); expect(calls).toBe(1);
-  gate.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/family/onboarding']); page.wrapper.unmount();
+  gate.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test('login_failure_is_announced_inline_and_retry_clears_it_before_success', async () => {
@@ -82,7 +82,7 @@ test('login_failure_is_announced_inline_and_retry_clears_it_before_success', asy
   expect(page.wrapper.text()).not.toContain('private transport detail');
   expect(page.wrapper.findAll('button')).toHaveLength(1); expect(page.wrapper.find('input').exists()).toBe(false);
   await page.wrapper.get('[data-sign-in]').trigger('click'); expect(page.wrapper.find('[role="alert"]').exists()).toBe(false);
-  gate.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/family/onboarding']); page.wrapper.unmount();
+  gate.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 test('mounted_pages_share_the_application_auth_and_family_controller', async () => {
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' });
@@ -102,7 +102,7 @@ test('login_hidden_then_shown_does_not_run_the_previous_show_navigation', async 
   const gate = deferCall(); const session = client.account.session;
   client.account.session = async () => { await gate.promise; return session(); };
   const page = mountPage(Login, { client }); const first = page.show(); await page.hide(); const second = page.show();
-  gate.resolve(null); await Promise.all([first, second]); expect(navigation).toEqual(['/pages/family/onboarding']); page.wrapper.unmount();
+  gate.resolve(null); await Promise.all([first, second]); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test('current_login_show_finishes_pending_sign_in_once_after_repeated_hide_and_show', async () => {
@@ -115,7 +115,7 @@ test('current_login_show_finishes_pending_sign_in_once_after_repeated_hide_and_s
   const second = page.show(); const overlapping = page.show(); await flushPromises();
   expect(navigation).toEqual([]); gate.resolve(null); await Promise.all([first, second, overlapping]); await flushPromises();
   expect(page.auth.identity.value?.uid).toBe('alice'); expect(signIn).toHaveBeenCalledTimes(1);
-  expect(navigation).toEqual(['/pages/family/onboarding']); page.wrapper.unmount();
+  expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test.each(['hide', 'unload'] as const)('pending_sign_in_cannot_navigate_after_current_show_%s', async lifecycle => {
@@ -140,7 +140,7 @@ test.each(['AUTH_REQUIRED', 'UNAVAILABLE'])('pending_sign_in_failure_after_new_s
   const button = page.wrapper.find('[data-sign-in]'); expect(button.attributes('disabled')).toBeUndefined();
   expect(button.text()).toBe(copy.retrySignIn); expect(navigation).toEqual([]);
   await button.trigger('click'); await flushPromises();
-  expect(signIn).toHaveBeenCalledTimes(2); expect(navigation).toEqual(['/pages/family/onboarding']); page.wrapper.unmount();
+  expect(signIn).toHaveBeenCalledTimes(2); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test('pending_sign_in_for_previous_uid_cannot_route_current_show', async () => {

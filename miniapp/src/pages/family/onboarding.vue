@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { resetPage } from '../../shared/navigation';
 import { ref, watch } from 'vue';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { copy } from '../../shared/copy';
@@ -26,9 +27,9 @@ async function check() {
   if (logoutAttempt) {
     await logoutAttempt.catch(() => {});
     if (!active || current !== generation || uid !== lastUid) return;
-    if (auth.phase.value === 'anonymous') { uni.reLaunch({ url: '/pages/account/login' }); return; }
+    if (auth.phase.value === 'anonymous') { resetPage('/pages/account/login'); return; }
   }
-  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family, membership, () => active && current === generation);
+  const guard = createRouteGuard(auth, url => { if (active && current === generation) resetPage(url); }, family, membership, () => active && current === generation);
   const allowed = await guard.ensureFamily('onboarding');
   if (active && current === generation) confirmed.value = allowed;
 }
@@ -40,12 +41,12 @@ async function submit() {
   message.value = ''; submitting.value = true;
   try {
     await (pending.value ? family.retry() : family.submit(normalized));
-    if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) uni.reLaunch({ url: '/pages/family/home' });
+    if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) resetPage('/pages/recipes/index');
   } catch (error) {
     if (!active || current !== generation) return;
     const code = errorCode(error);
     if (code === 'AUTH_REQUIRED') {
-      if (uid === lastUid && auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
+      if (uid === lastUid && auth.phase.value === 'anonymous') resetPage('/pages/account/login');
     } else if (auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) {
       if (code === 'INVALID_INPUT' && pending.value) message.value = copy.pendingFamily;
       else if (code === 'UNAVAILABLE' && !pending.value) message.value = copy.familyPreparationUnavailable;
@@ -59,7 +60,7 @@ async function signOut() {
   const attempt = logoutAttempt = auth.signOut();
   try { await attempt; } catch { /* Local logout remains final. */ }
   finally { if (logoutAttempt === attempt) logoutAttempt = null; }
-  if (active && current === generation && uid === lastUid && auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
+  if (active && current === generation && uid === lastUid && auth.phase.value === 'anonymous') resetPage('/pages/account/login');
 }
 function conceal() { const wasActive = active; generation++; active = false; resetLocal(); if (wasActive) membership.conceal(); }
 onShow(check); onHide(conceal); onUnload(conceal);

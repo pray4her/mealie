@@ -14,7 +14,7 @@ import { AppError } from '../../src/shared/errors';
 const navigation: string[] = [];
 let accept = true;
 beforeEach(() => { accept = true; navigation.length = 0; vi.stubGlobal('uni', {
-  reLaunch: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url),
+  switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url),
   redirectTo: ({ url }: { url: string }) => navigation.push(url),
   showModal: async () => ({ confirm: accept, cancel: !accept }),
 }); });

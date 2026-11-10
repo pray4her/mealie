@@ -1,3 +1,4 @@
+import { resetPage, backPage } from '../../shared/navigation';
 import { ref, watch } from 'vue';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { useAppClient } from '../../shared/app-client';
@@ -17,21 +18,21 @@ export function useFamilyPage(kind: 'invite' | 'join' | 'members') {
     try {
       await app.family.load();
       if (!active || current !== generation) return;
-      if (app.auth.phase.value === 'anonymous') { uni.reLaunch({ url: '/pages/account/login' }); return; }
+      if (app.auth.phase.value === 'anonymous') { resetPage('/pages/account/login'); return; }
       if (app.auth.phase.value !== 'authenticated' || app.family.phase.value !== 'ready') throw new AppError('UNAVAILABLE');
       if (await app.membership.resume()) await app.family.load();
       if (!active || current !== generation) return;
       if (app.auth.phase.value !== 'authenticated' || app.family.phase.value !== 'ready') throw new AppError('UNAVAILABLE');
       const view = app.family.view.value;
-      if (kind !== 'join' && !view) { uni.reLaunch({ url: '/pages/family/onboarding' }); return; }
-      if (kind === 'invite' && view?.role !== 'owner') { uni.reLaunch({ url: '/pages/family/home' }); return; }
+      if (kind !== 'join' && !view) { resetPage('/pages/family/onboarding'); return; }
+      if (kind === 'invite' && view?.role !== 'owner') { resetPage('/pages/family/home'); return; }
       if (kind === 'invite') await app.invitations.list();
       if (kind === 'members') await app.invitations.loadMembers();
       if (kind === 'join') app.invitations.restoreJoin();
       if (active && current === generation && app.auth.phase.value === 'authenticated') confirmed.value = true;
     } catch (error) {
       if (!active || current !== generation) return;
-      if (app.auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
+      if (app.auth.phase.value === 'anonymous') resetPage('/pages/account/login');
       else {
         if (['FAMILY_REQUIRED', 'FORBIDDEN', 'CONFLICT'].includes(errorCode(error))) {
           app.invitations.conceal();
@@ -39,8 +40,8 @@ export function useFamilyPage(kind: 'invite' | 'join' | 'members') {
             await app.family.load();
             if (!active || current !== generation) return;
             if (app.auth.phase.value === 'authenticated' && app.family.phase.value === 'ready') {
-              if (!app.family.view.value) { uni.reLaunch({ url: '/pages/family/onboarding' }); return; }
-              if (kind === 'invite' && app.family.view.value.role !== 'owner') { uni.reLaunch({ url: '/pages/family/home' }); return; }
+              if (!app.family.view.value) { resetPage('/pages/family/onboarding'); return; }
+              if (kind === 'invite' && app.family.view.value.role !== 'owner') { resetPage('/pages/family/home'); return; }
             }
           } catch { /* Failed reconciliation cannot confirm absence. */ }
         }
@@ -54,10 +55,10 @@ export function useFamilyPage(kind: 'invite' | 'join' | 'members') {
     try {
       const destination = await action(() => active && current === generation && app.auth.phase.value === 'authenticated' && app.auth.identity.value?.uid === uid);
       if (!active || current !== generation || app.auth.phase.value !== 'authenticated' || app.auth.identity.value?.uid !== uid) return;
-      if (destination) uni.reLaunch({ url: destination });
+      if (destination) resetPage(destination);
     } catch (error) {
       if (!active || current !== generation) return;
-      if (app.auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
+      if (app.auth.phase.value === 'anonymous') resetPage('/pages/account/login');
       else if (app.auth.identity.value?.uid === uid) {
         if (['FAMILY_REQUIRED', 'FORBIDDEN', 'CONFLICT', 'NOT_FOUND'].includes(errorCode(error))) await check();
         else if (kind === 'members') confirmed.value = false;
@@ -68,12 +69,12 @@ export function useFamilyPage(kind: 'invite' | 'join' | 'members') {
   async function signOut() {
     const current = ++generation; confirmed.value = false; message.value = '';
     await app.auth.signOut().catch(() => {});
-    if (active && current === generation && app.auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
+    if (active && current === generation && app.auth.phase.value === 'anonymous') resetPage('/pages/account/login');
   }
   function conceal() {
     const wasActive = active; active = false; generation++; confirmed.value = false; busy.value = false; message.value = '';
     if (wasActive) { app.invitations.conceal(); app.membership.conceal(); }
   }
   onShow(check); onHide(conceal); onUnload(() => { conceal(); stop(); });
-  return { ...app, confirmed, busy, message, check, act, signOut, showError, backHome: () => uni.reLaunch({ url: '/pages/family/home' }) };
+  return { ...app, confirmed, busy, message, check, act, signOut, showError, backHome: () => backPage('/pages/family/home') };
 }

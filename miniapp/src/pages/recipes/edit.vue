@@ -380,7 +380,7 @@ const imageState = { requested: '尚未上传，请移除后重新选择', uploa
       {{ copy.retry }}
     </button>
     <button @tap="page.back">
-      {{ copy.backHome }}
+      {{ copy.back }}
     </button>
   </view>
 </template>

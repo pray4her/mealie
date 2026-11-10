@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRecipesPage } from '../../features/recipes/use-recipes-page';
 import { copy } from '../../shared/copy';
+import { resetPage } from '../../shared/navigation';
 const query = ref(''); const tag = ref('');
 const page = useRecipesPage(async () => {
   query.value = page.recipes.filters.value.query; tag.value = page.recipes.filters.value.tag;
@@ -23,6 +24,7 @@ const create = () => uni.navigateTo({ url: '/pages/recipes/edit' });
 function resume() { const intent = pending.value; if (intent) uni.navigateTo({ url: '/pages/recipes/edit' + (intent.kind === 'update' ? '?id=' + intent.input.id : '') }); }
 function resumeImport() { const saved = recovery.value; if (saved) uni.navigateTo({ url: saved.kind === 'pending' ? '/pages/imports/submit' : '/pages/imports/status?id=' + saved.id }); }
 const importText = () => uni.navigateTo({ url: '/pages/imports/submit' });
+const backHome = () => resetPage('/pages/family/home');
 </script>
 <template>
   <view class="page">
@@ -177,7 +179,7 @@ const importText = () => uni.navigateTo({ url: '/pages/imports/submit' });
     >
       {{ copy.retry }}
     </button>
-    <button @tap="page.back">
+    <button @tap="backHome">
       {{ copy.backHome }}
     </button>
   </view>

@@ -21,7 +21,7 @@ async function join() {
     await family.load();
     const current = family.view.value;
     if (!current || current.uid !== result.uid || current.familyId !== result.familyId || current.generation !== result.generation) throw new AppError('CONFLICT');
-    return '/pages/family/home';
+    return '/pages/recipes/index';
   });
 }
 </script>
@@ -40,7 +40,7 @@ async function join() {
           data-home
           @tap="backHome"
         >
-          {{ copy.backHome }}
+          {{ copy.back }}
         </button>
       </view>
       <view v-else>

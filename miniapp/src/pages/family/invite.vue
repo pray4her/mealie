@@ -83,7 +83,7 @@ onShareAppMessage(() => ({
         {{ copy.loadMore }}
       </button>
       <button @tap="backHome">
-        {{ copy.backHome }}
+        {{ copy.back }}
       </button>
     </view>
     <text

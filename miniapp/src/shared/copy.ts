@@ -40,7 +40,7 @@ export const copy = {
   inviteMembers: '邀请家庭成员', familyMembers: '家庭成员列表', joinFamily: '加入家庭', me: '（我）',
   invitationExplanation: '每份邀请24小时有效，只能成功使用一次。可以生成多份独立邀请。',
   generateInvitation: '生成一次性邀请', shareInvitation: '邀请你加入家庭菜谱', copyInvitation: '复制邀请码', revokeInvitation: '撤销邀请',
-  expiresAt: '到期时间：', noInvitations: '暂无邀请', loadMore: '加载更多', backHome: '返回家庭',
+  expiresAt: '到期时间：', noInvitations: '暂无邀请', loadMore: '加载更多', back: '返回', backHome: '返回家庭',
   invitationStatuses: { pending: '待使用', used: '已使用', revoked: '已撤销', expired: '已过期' },
   alreadyHasFamily: '你已加入家庭：', confirmJoinExplanation: '接受邀请后，你将作为普通成员加入对应家庭。同一时间只能属于一个家庭。',
   invitationReceived: '已收到邀请，请确认后加入。', invitationCode: '邀请码', invitationPlaceholder: '请粘贴家庭所有者提供的邀请码',

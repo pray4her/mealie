@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { resetPage } from '../../shared/navigation';
 import { ref, watch } from 'vue';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { copy } from '../../shared/copy';
@@ -9,7 +10,7 @@ const { phase } = auth; const { view } = family;
 const { phase: familyPhase } = family;
 const openInvite = () => uni.navigateTo({ url: '/pages/family/invite' });
 const openMembers = () => uni.navigateTo({ url: '/pages/family/members' });
-const openRecipes = () => uni.navigateTo({ url: '/pages/recipes/index' });
+const openRecipes = () => resetPage('/pages/recipes/index');
 const confirmed = ref(false);
 let generation = 0; let active = false;
 let logoutAttempt: Promise<void> | null = null;
@@ -24,9 +25,9 @@ async function check() {
   if (logoutAttempt) {
     await logoutAttempt.catch(() => {});
     if (!active || current !== generation || uid !== lastUid) return;
-    if (auth.phase.value === 'anonymous') { uni.reLaunch({ url: '/pages/account/login' }); return; }
+    if (auth.phase.value === 'anonymous') { resetPage('/pages/account/login'); return; }
   }
-  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family, membership, () => active && current === generation);
+  const guard = createRouteGuard(auth, url => { if (active && current === generation) resetPage(url); }, family, membership, () => active && current === generation);
   const allowed = await guard.ensureFamily('home');
   if (active && current === generation) confirmed.value = allowed;
 }
@@ -35,7 +36,7 @@ async function signOut() {
   const attempt = logoutAttempt = auth.signOut();
   try { await attempt; } catch { /* Local logout remains final. */ }
   finally { if (logoutAttempt === attempt) logoutAttempt = null; }
-  if (active && current === generation && uid === lastUid && auth.phase.value === 'anonymous') uni.reLaunch({ url: '/pages/account/login' });
+  if (active && current === generation && uid === lastUid && auth.phase.value === 'anonymous') resetPage('/pages/account/login');
 }
 function conceal() { const wasActive = active; generation++; active = false; confirmed.value = false; if (wasActive) membership.conceal(); }
 onShow(check); onHide(conceal); onUnload(conceal);

@@ -1,3 +1,4 @@
+import { resetPage, backPage } from '../../shared/navigation';
 import { ref, watch } from 'vue';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { useAppClient } from '../../shared/app-client';
@@ -15,7 +16,7 @@ export function useRecipesPage(load: () => Promise<void>) {
     if (disposed) return;
     active = true; checking = true; confirmed.value = false; message.value = ''; busy.value = false;
     const showing = ++visibility; const visible = () => active && showing === visibility;
-    const guard = createRouteGuard(app.auth, url => { if (visible()) uni.reLaunch({ url }); }, app.family, app.membership, visible);
+    const guard = createRouteGuard(app.auth, url => { if (visible()) resetPage(url); }, app.family, app.membership, visible);
     try {
       if (!await guard.ensureFamily('home') || !visible()) { if (visible()) message.value = copy.familyUnavailable; return; }
       const current = epoch;
@@ -26,10 +27,10 @@ export function useRecipesPage(load: () => Promise<void>) {
     } finally { if (visible()) { checking = false; finishResumes(confirmed.value); } }
   }
   async function reconcile(error: unknown) {
-    if (errorCode(error) === 'AUTH_REQUIRED') { await app.auth.signOut().catch(() => {}); if (active) uni.reLaunch({ url: '/pages/account/login' }); }
+    if (errorCode(error) === 'AUTH_REQUIRED') { await app.auth.signOut().catch(() => {}); if (active) resetPage('/pages/account/login'); }
     else if (['FAMILY_REQUIRED', 'FORBIDDEN'].includes(errorCode(error))) {
       confirmed.value = false; await app.family.load().catch(() => {});
-      if (active && app.family.phase.value === 'ready' && !app.family.view.value) uni.reLaunch({ url: '/pages/family/onboarding' });
+      if (active && app.family.phase.value === 'ready' && !app.family.view.value) resetPage('/pages/family/onboarding');
     }
   }
   async function act(action: (isCurrent: () => boolean, resume: () => Promise<boolean>) => Promise<void>, replace = false) {
@@ -52,5 +53,5 @@ export function useRecipesPage(load: () => Promise<void>) {
     if (wasActive) { app.recipes.clear(); app.media.clear(); app.imports.clear(); }
   }
   onShow(check); onHide(conceal); onUnload(() => { disposed = true; conceal(); finishResumes(false); stop(); });
-  return { ...app, confirmed, busy, message, check, act, isCurrent: () => active && confirmed.value, back: () => uni.reLaunch({ url: '/pages/family/home' }) };
+  return { ...app, confirmed, busy, message, check, act, isCurrent: () => active && confirmed.value, back: () => backPage('/pages/recipes/index') };
 }

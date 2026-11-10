@@ -147,7 +147,7 @@ const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edi
       {{ copy.retry }}
     </button>
     <button @tap="page.back">
-      {{ copy.backHome }}
+      {{ copy.back }}
     </button>
   </view>
 </template>

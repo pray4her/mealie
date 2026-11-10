@@ -11,7 +11,7 @@ import { AppError } from '../../src/shared/errors';
 
 const navigation: string[] = []; let confirm = true;
 beforeEach(() => { navigation.length = 0; confirm = true; vi.stubGlobal('uni', {
-  reLaunch: ({ url }: { url: string }) => navigation.push(url),
+  switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => navigation.push(url),
   showModal: vi.fn(async () => ({ confirm, cancel: !confirm })),
 }); });
 afterEach(() => { vi.unstubAllGlobals(); });
@@ -108,6 +108,6 @@ test.each([Home, Onboarding])('a_terminal_stale_intent_refreshes_a_later_family_
   expect(page.family.phase.value).toBe('ready'); expect(page.family.view.value).toEqual(next);
   expect(storage.get('home.family.membership.v1:member')).toBeUndefined();
   if (component === Home) expect(page.wrapper.find('[data-protected]').exists()).toBe(true);
-  else expect(navigation.at(-1)).toBe('/pages/family/home');
+  else expect(navigation.at(-1)).toBe('/pages/recipes/index');
   page.wrapper.unmount();
 });

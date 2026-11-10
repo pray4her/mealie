@@ -12,6 +12,26 @@ export function registerHook(name: string, callback: (value: never) => unknown) 
   const context = instance as typeof instance & { uniTestHooks?: Record<string, ((value: never) => unknown)[]> };
   const hooks = context.uniTestHooks ??= {}; (hooks[name] ??= []).push(callback);
 }
+export function nativeNavigation(initial: string[] = ['/pages/account/login']) {
+  const stack = [...initial]; const events: { kind: string; url: string }[] = [];
+  const tabs = ['/pages/recipes/index', '/pages/family/home'];
+  function move(kind: string, url: string) {
+    events.push({ kind, url });
+    if (kind === 'switchTab' ? !tabs.includes(url) : tabs.includes(url)) return;
+    if (kind === 'navigateTo') stack.push(url);
+    else if (kind === 'redirectTo') stack.splice(-1, 1, url);
+    else stack.splice(0, stack.length, url);
+  }
+  return { stack, events, getCurrentPages: () => stack.map(url => ({ route: url.slice(1).split('?')[0] })),
+    uni: {
+      navigateTo: ({ url }: { url: string }) => move('navigateTo', url),
+      redirectTo: ({ url }: { url: string }) => move('redirectTo', url),
+      reLaunch: ({ url }: { url: string }) => move('reLaunch', url),
+      switchTab: ({ url }: { url: string }) => move('switchTab', url),
+      navigateBack: ({ fail }: { fail?: () => void } = {}) => { if (stack.length < 2) { fail?.(); return; } stack.pop(); events.push({ kind: 'navigateBack', url: stack.at(-1)! }); },
+    },
+  };
+}
 const View = defineComponent({ setup(_, { slots }) { return () => h('div', {}, slots.default?.()); } });
 const Text = defineComponent({ setup(_, { slots }) { return () => h('span', {}, slots.default?.()); } });
 const Button = defineComponent({ props: { disabled: Boolean, loading: Boolean }, emits: ['tap'], setup(props, { slots, emit }) {

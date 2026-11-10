@@ -21,7 +21,7 @@ export function createRouteGuard(auth: AuthController, navigate: (url: string) =
     if (auth.phase.value === 'anonymous') navigate('/pages/account/login');
     if (auth.phase.value !== 'authenticated' || family.phase.value !== 'ready') return false;
     const actual = family.view.value ? 'home' : 'onboarding';
-    if (actual !== destination) { navigate(`/pages/family/${actual}`); return false; }
+    if (actual !== destination) { navigate(actual === 'home' ? '/pages/recipes/index' : '/pages/family/onboarding'); return false; }
     return true;
   } };
 }

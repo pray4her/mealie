@@ -80,7 +80,7 @@ async function change(action: MembershipAction, target?: MemberView) {
         {{ message }}
       </text>
       <button @tap="backHome">
-        {{ copy.backHome }}
+        {{ copy.back }}
       </button>
     </view>
     <text

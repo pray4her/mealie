@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { resetPage } from '../../shared/navigation';
 import { copy } from '../../shared/copy';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { useAppClient } from '../../shared/app-client';
@@ -10,7 +11,7 @@ let active = false; let generation = 0;
 let signInAttempt: Promise<Identity> | null = null;
 const failed = ref(false);
 function finishSignIn(current: number, uid: string) {
-  if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) uni.reLaunch({ url: invitations.hasLoginContinuation() ? '/pages/family/join' : '/pages/family/onboarding' });
+  if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) resetPage(invitations.hasLoginContinuation() ? '/pages/family/join' : '/pages/recipes/index');
 }
 async function signIn() {
   const current = generation;
@@ -25,7 +26,7 @@ onShow(async () => {
   if (signInAttempt) {
     try { const identity = await signInAttempt; finishSignIn(current, identity.uid); }
     catch { if (active && current === generation) failed.value = true; }
-  } else if (await auth.restore() && active && current === generation) uni.reLaunch({ url: invitations.hasLoginContinuation() ? '/pages/family/join' : '/pages/family/onboarding' });
+  } else if (await auth.restore() && active && current === generation) resetPage(invitations.hasLoginContinuation() ? '/pages/family/join' : '/pages/recipes/index');
 });
 function conceal() { active = false; generation++; failed.value = false; }
 onHide(conceal); onUnload(conceal);
@@ -80,7 +81,7 @@ onHide(conceal); onUnload(conceal);
   </view>
 </template>
 <style scoped>
-.login-page { min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 48px; padding: calc(48px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom)); background: var(--app-surface); }
+.login-page { min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 48px; padding: 48px 20px calc(32px + env(safe-area-inset-bottom)); background: var(--app-surface); }
 .login-intro, .login-actions { display: flex; flex-direction: column; gap: 16px; width: 100%; min-width: 0; }
 .brand { color: var(--app-primary); font-size: 18px; font-weight: 600; }
 .title { font-size: 24px; font-weight: 600; line-height: 1.5; }

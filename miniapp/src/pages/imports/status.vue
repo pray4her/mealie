@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { backPage } from '../../shared/navigation';
 import { computed, onBeforeUnmount, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useRecipesPage } from '../../features/recipes/use-recipes-page';
@@ -29,7 +30,7 @@ watch([confirmed, () => job.value?.state], schedule, { flush: 'sync' });
 onBeforeUnmount(stop);
 const open = (edit = false) => { if (job.value?.recipeId) uni.navigateTo({ url: '/pages/recipes/' + (edit ? 'edit' : 'detail') + '?id=' + job.value.recipeId }); };
 const start = () => uni.redirectTo({ url: '/pages/imports/submit' });
-const back = () => uni.reLaunch({ url: '/pages/recipes/index' });
+const back = () => backPage('/pages/recipes/index');
 </script>
 <template>
   <view class="page">
