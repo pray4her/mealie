@@ -1,0 +1,14 @@
+---
+description: 家常微信小程序 UI 设计与工单必须引用已认可基线及事实来源。
+globs: "miniapp/**,docs/design/miniapp/**,.github/ISSUE_TEMPLATE/miniapp-ui.yaml"
+alwaysApply: false
+---
+
+# 小程序设计事实入口
+
+- 做 `miniapp/` 页面设计、UI 改造或对应 issue 时，先读 `docs/design/miniapp/README.md`、`sources.md`、`issue-design.md`。
+- 复用已认可的 v1 方向与来源职责；每票引用具体 D-ID/S-ID、相关业务规则及固定代码提交。
+- Refero 负责研究与参考锁定；Vue/uni-app/Context7 负责技术核对。Skill 不是运行或业务验收证据。
+- HTML 是视觉目标；样例数据、模拟 AI、购物去重、假评分和浏览器专用技术不得搬成生产业务。
+- 新功能仍归原功能票；无真实缺失依赖的 UI 重构写 `Blocked by: None`，回读 GitHub 原生依赖；不擅自移除真实 blocker。
+- 生产验收包含状态矩阵、手机宽度与大字号、可访问性、业务回归、微信构建和实际渲染证据。

@@ -1,0 +1,63 @@
+name: 小程序界面与交互
+description: 基于已认可的家常设计基线，提交小程序页面或 UI 重构工单。
+title: "refactor(miniapp): "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先阅读目标实施分支的 `docs/design/miniapp/README.md`、`sources.md` 和 `issue-design.md`。
+        使用固定提交链接，明确已有业务与原型演示的差别。相关工单不自动构成阻塞。
+        此表单不自动添加 ready-for-agent；确认来源、范围和真实依赖后再标记。
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What to build
+      description: 谁在什么页面完成什么操作，以及改造后的可见结果。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Design evidence
+      description: 基线版本、固定提交链接、D-ID/S-ID、业务规则与当前代码；不能只引用聊天。
+      placeholder: |
+        - 基线与预览：固定提交链接，D-01 / S-PREVIEW。
+        - 业务规则：对应设计章节或已交付 issue。
+        - 当前代码：实际基准提交、页面与契约。
+        - 原型适配：采用哪些特征，不采用哪些演示行为。
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and boundaries
+      description: 页面、导航/调用方、组件、文案、测试及非目标；不要用 UI 重构悄悄扩展云契约。
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Blocked by
+      description: 无依赖填 None 并说明可立即开始的事实。真实阻塞另设 GitHub 原生关系。
+      placeholder: None — 依赖均已在基准提交中交付，本票使用既有接口及本地 fixture 即可开始。
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria and evidence
+      description: 对照设计基线填写状态矩阵、手机尺寸、大字号、可访问性、回归与实际渲染证据。
+      value: |
+        - [ ] 正常、加载、空、失败、权限失效和适用的恢复/冲突/媒体状态均可验收。
+        - [ ] 320/375/390/430px、大字号、安全区及键盘场景无溢出或遮挡。
+        - [ ] 主题、点击区域、标签与对比度符合基线，附真实渲染截图及差异记录。
+        - [ ] 现有业务回归与 task -d miniapp check 通过。
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Execution constraints
+      description: 写明是否涉及云资源/费用、契约、部署或数据迁移，以及本票授权边界。
+    validations:
+      required: true

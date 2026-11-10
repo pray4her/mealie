@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#216840">
+  <title>家常 · 家庭菜谱设计预览</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23216840'/%3E%3Cpath d='M12 23c-1-9 9-11 17-12 0 9-4 18-13 15m-5 4 12-13' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f7f8f7; --surface: #fff; --ink: #202923; --muted: #667269;
+      --line: #e5eae6; --green: #216840; --green-dark: #184e30;
+      --green-soft: #eaf3ed; --amber: #9b6a1a; --danger: #b33f38;
+      --phone-width: 390px;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      font-size: 16px; color: var(--ink); font-synthesis: none;
+      -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #edf0ec; }
+    button, input, textarea, select { font: inherit; }
+    button, a, input, textarea, select { touch-action: manipulation; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { color: inherit; border: 0; cursor: pointer; background: none; }
+    button:disabled { cursor: default; opacity: .45; }
+    a { color: inherit; text-decoration: none; }
+    button, a, input, textarea, select { outline-offset: 4px; }
+    :focus-visible { outline: 2px solid var(--green); }
+    button:not(:disabled):active, a:active { opacity: .75; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { text-wrap: balance; }
+    img { display: block; width: 100%; object-fit: cover; }
+    [hidden] { display: none !important; }
+    .icon { width: 22px; height: 22px; display: inline-block; vertical-align: middle; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .stage { min-height: 100dvh; display: grid; place-items: center; padding: 28px 16px; }
+    .review-note { position: fixed; left: max(32px, calc(50vw - 510px)); top: 50%; width: 215px; transform: translateY(-50%); }
+    .review-note .review-brand { display: flex; align-items: center; gap: 10px; font-size: 28px; font-weight: 650; color: var(--green); }
+    .review-note .review-brand .icon { width: 31px; height: 31px; }
+    .review-note > p { font-size: 14px; line-height: 1.9; color: var(--muted); margin-top: 18px; }
+    .review-divider { width: 28px; height: 1px; background: #bfcabe; margin: 28px 0; }
+    .review-note label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .review-note select { border: 1px solid #cbd4ca; border-radius: 8px; background: transparent; color: #425045; padding: 9px 12px; width: 180px; font-size: 13px; }
+    .review-footnote { font-size: 11px !important; line-height: 1.8 !important; margin-top: 24px !important; }
+    .app { width: min(var(--phone-width), 100%); height: min(844px, calc(100dvh - 56px)); min-height: 420px; border: 1px solid #dce2dc; border-radius: 24px; background: var(--surface); display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 18px 70px #2438250c; container: phone / inline-size; }
+    .app-main { overflow-y: auto; overflow-x: hidden; flex: 1; min-height: 0; overscroll-behavior-y: contain; scrollbar-width: none; background: var(--surface); }
+    .app-main::-webkit-scrollbar { display: none; }
+    .page { padding: 22px 20px 24px; min-height: 100%; }
+    .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 25px; }
+    .wordmark { display: flex; align-items: center; gap: 7px; font-size: 21px; font-weight: 650; letter-spacing: .06em; color: var(--green); }
+    .wordmark .icon { width: 25px; height: 25px; stroke-width: 1.8; }
+    .family-link { display: inline-flex; gap: 6px; align-items: center; color: #617065; font-size: 12px; min-height: 44px; padding: 0; }
+    .family-link .icon { width: 16px; height: 16px; }
+    .greeting { font-size: 27px; font-weight: 650; line-height: 1.45; letter-spacing: -.04em; }
+    .subtitle { color: var(--muted); font-size: 13px; line-height: 1.65; margin-top: 6px; }
+    .search-row { display: flex; gap: 10px; margin-top: 23px; align-items: stretch; }
+    .search-box { display: flex; align-items: center; gap: 9px; min-width: 0; flex: 1; padding: 0 13px; background: #f2f5f2; border: 1px solid transparent; border-radius: 10px; height: 46px; color: #738078; }
+    .search-box:focus-within { border-color: #91b19a; background: #fff; }
+    .search-box .icon { width: 19px; height: 19px; }
+    .search-box input { width: 100%; min-width: 0; color: var(--ink); padding: 0; background: transparent; border: 0; outline: none; font-size: 14px; height: 44px; }
+    .search-box input::placeholder { color: #78817b; opacity: 1; }
+    .search-box input::-webkit-search-cancel-button { cursor: pointer; }
+    .add-button { display: flex; align-items: center; justify-content: center; gap: 4px; min-width: 72px; padding: 0 12px; border-radius: 10px; background: var(--green); color: #fff; font-size: 14px; font-weight: 500; }
+    .add-button .icon { width: 18px; height: 18px; }
+    .tabs { display: flex; align-items: center; gap: 24px; border-bottom: 1px solid var(--line); margin-top: 22px; }
+    .tab { font-size: 16px; color: var(--muted); min-height: 48px; padding: 0 0 13px; position: relative; }
+    .tab[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+    .tab[aria-pressed="true"]::after { position: absolute; content: ''; bottom: -1px; left: 0; width: 26px; height: 3px; background: var(--green); border-radius: 2px; }
+    .tab-count { font-size: 11px; font-weight: 500; color: var(--muted); margin-left: 4px; }
+    .chips { display: flex; gap: 8px; padding: 16px 0 18px; overflow-x: auto; scrollbar-width: none; }
+    .chip { flex: none; border-radius: 7px; min-height: 34px; padding: 7px 13px; font-size: 12px; background: #f5f6f4; color: #667167; border: 1px solid transparent; }
+    .chip[aria-pressed="true"] { background: var(--green-soft); color: var(--green); border-color: #d8e8dc; font-weight: 500; }
+    .results-line { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; margin-bottom: 13px; }
+    .results-line button { min-height: 32px; display: inline-flex; align-items: center; gap: 3px; padding: 0; font-size: 11px; }
+    .results-line .icon { width: 13px; height: 13px; }
+    .recipe-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 13px; }
+    .recipe-card { position: relative; min-width: 0; }
+    .recipe-photo { width: 100%; aspect-ratio: 4/3; border-radius: 11px; background: #eff2ef; overflow: hidden; }
+    .recipe-photo img { height: 100%; transition: transform 180ms ease; }
+    .recipe-open { display: block; }
+    .recipe-title { font-size: 15px; font-weight: 600; line-height: 1.6; margin-top: 9px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .recipe-meta { display: flex; gap: 5px; align-items: center; font-size: 11px; line-height: 1.5; color: var(--muted); margin-top: 4px; flex-wrap: wrap; }
+    .recipe-meta .icon { width: 12px; height: 12px; stroke-width: 1.6; }
+    .meta-dot { font-size: 9px; color: #a9b1aa; }
+    .favorite { position: absolute; right: 0; top: 0; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border-radius: 12px; }
+    .favorite::before { content: ''; background: #fffffff0; position: absolute; width: 30px; height: 30px; border-radius: 50%; }
+    .favorite .icon { width: 17px; height: 17px; position: relative; color: #53645a; }
+    .favorite[aria-pressed="true"] .icon { color: var(--green); fill: var(--green); stroke-width: 1.4; }
+    .end-note { text-align: center; font-size: 11px; color: #727e74; padding: 28px 0 8px; }
+    .end-note .icon { width: 13px; height: 13px; margin-right: 4px; }
+    .empty { text-align: center; padding: 50px 12px; color: var(--muted); }
+    .empty > .icon { width: 34px; height: 34px; color: #8a9a8e; margin-bottom: 14px; }
+    .empty h3 { font-size: 16px; color: #405147; margin-bottom: 8px; font-weight: 500; }
+    .empty p { font-size: 13px; line-height: 1.7; }
+    .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); background: #fff; padding: 7px 8px calc(8px + env(safe-area-inset-bottom, 0px)); flex: none; position: relative; z-index: 4; }
+    .nav-link { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; color: #778078; font-size: 10px; min-height: 49px; border-radius: 8px; }
+    .nav-link .icon { width: 23px; height: 23px; }
+    .nav-link[aria-current="page"] { color: var(--green); font-weight: 600; }
+    .nav-link[aria-current="page"] .icon { stroke-width: 2; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin: 8px 0 26px; }
+    .page-header h1 { font-size: 25px; font-weight: 650; line-height: 1.4; letter-spacing: -.03em; }
+    .eyebrow { font-size: 12px; color: var(--green); font-weight: 500; margin-bottom: 7px; }
+    .icon-button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 10px; padding: 0; flex: none; }
+    .icon-button.soft { background: #f2f5f2; }
+    .primary, .secondary { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; font-size: 15px; font-weight: 500; border-radius: 10px; line-height: 1.5; }
+    .primary { background: var(--green); color: #fff; }
+    .primary:hover { background: var(--green-dark); }
+    .secondary { background: #f1f5f1; color: var(--green); }
+    .full { width: 100%; }
+    .text-action { min-height: 44px; font-size: 13px; color: var(--green); display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px; }
+    .text-action .icon { width: 17px; height: 17px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 26px 0 14px; }
+    .section-head h2 { font-size: 18px; font-weight: 600; }
+    .section-head span { font-size: 12px; color: var(--muted); }
+    .detail-top { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; position: sticky; top: 0; z-index: 3; background: #ffffffed; backdrop-filter: blur(12px); border-bottom: 1px solid #f0f3f0; }
+    .detail-top > span { font-size: 14px; font-weight: 500; }
+    .detail-top .top-actions { display: flex; }
+    .detail-top [aria-pressed="true"] { color: var(--green); }
+    .detail-top [aria-pressed="true"] .icon { fill: var(--green); }
+    .detail-cover { aspect-ratio: 4/3; background: #eef2ed; }
+    .detail-cover img { height: 100%; }
+    .detail-body { padding: 22px 20px 28px; }
+    .detail-tags { display: flex; gap: 6px; margin-bottom: 11px; }
+    .detail-tag { color: var(--green); background: #eff5ef; font-size: 11px; padding: 4px 8px; border-radius: 5px; }
+    .detail-title { font-size: 25px; font-weight: 650; line-height: 1.45; letter-spacing: -.03em; }
+    .author-row { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); margin-top: 12px; }
+    .avatar { display: inline-flex; justify-content: center; align-items: center; flex: none; width: 29px; height: 29px; border-radius: 50%; font-size: 12px; background: #e8ede1; color: #566b44; font-weight: 500; }
+    .avatar.orange { background: #f3e8dc; color: #8c6241; }
+    .avatar.blue { background: #e5edf0; color: #527385; }
+    .avatar.rose { background: #efe5e5; color: #946363; }
+    .author-row .rating { margin-left: auto; font-size: 12px; color: #735c31; display: flex; align-items: center; gap: 4px; }
+    .rating .icon { width: 14px; height: 14px; fill: #b58b42; stroke: #b58b42; }
+    .description { margin-top: 17px; font-size: 14px; color: #5d6b60; line-height: 1.85; }
+    .recipe-facts { display: grid; grid-template-columns: repeat(3, 1fr); margin: 22px 0 6px; padding: 17px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .fact { text-align: center; border-right: 1px solid var(--line); }
+    .fact:last-child { border: 0; }
+    .fact span { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .fact strong { font-size: 16px; font-weight: 600; }
+    .fact small { font-size: 11px; font-weight: 400; margin-left: 2px; }
+    .stepper { display: inline-flex; align-items: center; gap: 13px; border: 1px solid var(--line); border-radius: 8px; height: 38px; }
+    .stepper button { min-width: 38px; min-height: 44px; padding: 0; color: var(--green); font-size: 20px; }
+    .stepper span { min-width: 24px; text-align: center; font-size: 13px; color: var(--ink); }
+    .ingredient-row { display: flex; align-items: center; gap: 10px; min-height: 52px; border-bottom: 1px solid #eef1ed; font-size: 15px; cursor: pointer; }
+    .ingredient-row .quantity { margin-left: auto; color: #4f6155; white-space: nowrap; padding-left: 12px; font-size: 14px; }
+    .check { appearance: none; -webkit-appearance: none; width: 21px; height: 21px; border: 1.5px solid #b9c5bb; border-radius: 6px; display: inline-grid; place-items: center; flex: none; margin: 0; background: #fff; cursor: pointer; }
+    .check:checked { background: var(--green); border-color: var(--green); }
+    .check:checked::after { content: ''; display: block; width: 8px; height: 4px; border: solid #fff; border-width: 0 0 2px 2px; transform: rotate(-45deg) translate(1px, -1px); }
+    .ingredient-row:has(input:checked) .ingredient-name { color: #7d897f; text-decoration: line-through; }
+    .helper { font-size: 11px; color: var(--muted); margin-top: 11px; line-height: 1.7; }
+    .step { display: flex; gap: 13px; padding: 17px 0; border-bottom: 1px solid #eef1ed; }
+    .step-number { width: 25px; height: 25px; background: var(--green-soft); border-radius: 50%; display: grid; place-items: center; color: var(--green); font-size: 12px; font-weight: 600; flex: none; margin-top: 2px; }
+    .step p { font-size: 16px; line-height: 1.85; }
+    .review-entry { display: flex; gap: 10px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .review-entry strong { display: block; font-size: 13px; font-weight: 500; }
+    .review-entry p { font-size: 13px; line-height: 1.8; color: var(--muted); margin-top: 5px; }
+    .review-entry time { font-size: 10px; color: var(--muted); margin-left: auto; white-space: nowrap; }
+    .stars { display: flex; gap: 3px; margin: 13px 0 20px; }
+    .stars button { width: 44px; height: 44px; padding: 8px; color: #c4cec4; }
+    .stars button[aria-pressed="true"] { color: #ad822e; }
+    .stars button[aria-pressed="true"] .icon { fill: #ad822e; }
+    .stars .icon { width: 25px; height: 25px; }
+    .detail-actions { padding: 10px 16px; background: #fff; border-top: 1px solid var(--line); display: flex; gap: 10px; flex: none; }
+    .detail-actions .primary { flex: 1; }
+    .detail-actions .secondary { width: 50px; padding: 10px; }
+    .week-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 16px; }
+    .week-head p { font-size: 13px; font-weight: 500; }
+    .week-head > span { font-size: 11px; color: var(--muted); }
+    .week-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    .day { min-width: 0; padding: 10px 0 9px; border-radius: 10px; display: flex; align-items: center; flex-direction: column; gap: 8px; }
+    .day span { font-size: 10px; color: var(--muted); }
+    .day strong { font-size: 16px; font-weight: 500; }
+    .day i { width: 4px; height: 4px; border-radius: 50%; background: #b3c8b6; }
+    .day[aria-pressed="true"] { background: var(--green); color: #fff; }
+    .day[aria-pressed="true"] span { color: #e3eee5; }
+    .day[aria-pressed="true"] i { background: #fff; }
+    .meal-head { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 10px; }
+    .meal-head h2 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+    .meal-head h2 .icon { width: 16px; height: 16px; color: #7a897b; }
+    .meal-head span { font-size: 11px; color: var(--muted); }
+    .meal-row { display: flex; gap: 13px; padding: 13px 0; align-items: center; border-bottom: 1px solid #eef1ed; }
+    .meal-photo { width: 68px; height: 65px; border-radius: 9px; flex: none; }
+    .meal-info { flex: 1; min-width: 0; }
+    .meal-info h3 { font-size: 14px; font-weight: 500; line-height: 1.6; }
+    .meal-info p { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .meal-row > .icon { width: 15px; height: 15px; color: #a3ada3; }
+    .empty-meal { display: flex; width: 100%; gap: 8px; min-height: 62px; align-items: center; justify-content: center; border: 1px dashed #cbd8cb; border-radius: 10px; color: #718273; font-size: 13px; background: #fafcf9; }
+    .empty-meal .icon { width: 17px; height: 17px; }
+    .plan-bottom { margin-top: 24px; }
+    .plan-note { text-align: center; font-size: 11px; color: var(--muted); margin-top: 11px; }
+    .shopping-title { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; }
+    .shopping-title .icon { width: 17px; height: 17px; color: #6b806e; }
+    .shopping-progress { display: flex; gap: 12px; align-items: center; margin: 15px 0 25px; }
+    .progress-track { flex: 1; height: 5px; border-radius: 9px; background: #edf1eb; overflow: hidden; }
+    .progress-fill { height: 100%; background: #64986c; border-radius: inherit; transition: width 160ms ease; }
+    .shopping-progress p { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .shopping-group { margin-bottom: 23px; }
+    .shopping-group h2 { font-size: 12px; color: #617567; font-weight: 500; letter-spacing: .03em; padding: 8px 0; }
+    .shopping-row { display: flex; align-items: center; gap: 12px; min-height: 57px; border-bottom: 1px solid #eef1ed; cursor: pointer; padding: 8px 0; }
+    .shopping-name { font-size: 15px; flex: 1; min-width: 0; overflow-wrap: anywhere; line-height: 1.6; }
+    .shopping-amount { font-size: 13px; color: #68776b; max-width: 38%; text-align: right; overflow-wrap: anywhere; }
+    .shopping-row.is-checked .shopping-name { color: #819084; text-decoration: line-through; }
+    .shopping-row.is-checked .shopping-amount { color: #819084; }
+    .bought { margin-top: 26px; }
+    .bought summary { cursor: pointer; color: #6d7a6e; font-size: 13px; padding: 12px 0; min-height: 44px; }
+    .shopping-source { display: flex; gap: 7px; align-items: flex-start; background: #f4f7f2; color: #657861; border-radius: 8px; padding: 12px; font-size: 11px; line-height: 1.8; margin-top: 20px; }
+    .shopping-source .icon { width: 15px; height: 15px; margin-top: 2px; }
+    .family-hero { padding: 10px 0 23px; border-bottom: 1px solid var(--line); }
+    .family-badge { width: 58px; height: 58px; display: grid; place-items: center; background: var(--green-soft); color: var(--green); border-radius: 17px; margin-bottom: 16px; }
+    .family-badge .icon { width: 29px; height: 29px; stroke-width: 1.5; }
+    .family-hero h1 { font-size: 25px; font-weight: 650; line-height: 1.5; }
+    .family-hero p { font-size: 13px; line-height: 1.8; color: var(--muted); margin-top: 6px; }
+    .family-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+    .family-stats strong { display: block; font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .family-stats span { font-size: 11px; color: var(--muted); }
+    .member-row { display: flex; gap: 11px; align-items: center; min-height: 61px; border-bottom: 1px solid #eef1ed; }
+    .member-row .avatar { width: 35px; height: 35px; font-size: 13px; }
+    .member-name { flex: 1; font-size: 14px; }
+    .member-role { font-size: 11px; color: var(--muted); }
+    .member-role.owner { background: var(--green-soft); color: var(--green); padding: 4px 7px; border-radius: 5px; }
+    .settings { margin-top: 24px; border-top: 1px solid var(--line); }
+    .settings button { width: 100%; display: flex; gap: 11px; align-items: center; text-align: left; min-height: 59px; border-bottom: 1px solid #eef1ed; padding: 9px 0; font-size: 14px; }
+    .settings button > .icon:first-child { width: 19px; height: 19px; color: #718675; }
+    .settings button > .icon:last-child { margin-left: auto; width: 15px; height: 15px; color: #9caa9e; }
+    .family-footer { text-align: center; font-size: 11px; color: var(--muted); padding-top: 25px; line-height: 1.9; }
+    .toast { position: absolute; bottom: 91px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 38px); padding: 11px 16px; border-radius: 9px; color: #fff; background: #293b2ef2; font-size: 12px; line-height: 1.65; text-align: center; z-index: 20; box-shadow: 0 5px 20px #26362913; pointer-events: none; }
+    dialog { padding: 0; border: 0; border-radius: 22px 22px 0 0; width: min(var(--phone-width), 100vw); max-width: 100vw; max-height: 85dvh; margin: auto auto 0; background: #fff; color: var(--ink); box-shadow: 0 -10px 50px #192f1920; overflow-y: auto; overscroll-behavior: contain; }
+    dialog::backdrop { background: #18251d55; backdrop-filter: blur(2px); }
+    .sheet-grip { width: 32px; height: 4px; border-radius: 5px; background: #dbe3da; margin: 10px auto 0; }
+    .sheet-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 18px 0 22px; }
+    .sheet-heading h2 { font-size: 20px; line-height: 1.6; font-weight: 600; }
+    .sheet-heading .icon { width: 19px; height: 19px; }
+    .sheet-content { padding: 8px 22px calc(24px + env(safe-area-inset-bottom, 0px)); }
+    .sheet-description { font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 20px; }
+    .action-option { display: flex; gap: 14px; align-items: center; width: 100%; min-height: 82px; text-align: left; padding: 15px 0; border-bottom: 1px solid var(--line); }
+    .option-icon { width: 43px; height: 43px; background: var(--green-soft); border-radius: 12px; display: grid; place-items: center; color: var(--green); flex: none; }
+    .action-option strong { display: block; font-size: 15px; font-weight: 500; }
+    .action-option small { display: block; font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 5px; }
+    .action-option > .icon { width: 15px; height: 15px; margin-left: auto; color: #97a698; }
+    .field { display: block; margin: 16px 0; }
+    .field > span { display: block; font-size: 13px; color: #506354; margin-bottom: 9px; }
+    .field input, .field textarea, .field select { width: 100%; border: 1px solid #dce5da; border-radius: 9px; padding: 12px; background: #fafcf9; color: var(--ink); font-size: 16px; min-height: 47px; }
+    .field textarea { resize: vertical; min-height: 148px; line-height: 1.8; }
+    .field input::placeholder, .field textarea::placeholder { color: #7b877c; font-size: 13px; }
+    .consent { display: flex; align-items: flex-start; gap: 9px; font-size: 11px; line-height: 1.8; color: #6a776b; margin: 18px 0; cursor: pointer; }
+    .consent input { margin-top: 2px; width: 19px; height: 19px; }
+    .sheet-note { padding: 11px 13px; background: #f5f7f2; color: #6c785f; font-size: 11px; line-height: 1.8; border-radius: 8px; margin: 12px 0; }
+    .segmented { display: flex; border: 1px solid var(--line); border-radius: 9px; padding: 4px; gap: 4px; margin: 14px 0; }
+    .segmented button { flex: 1; min-height: 39px; border-radius: 6px; font-size: 13px; }
+    .segmented button[aria-pressed="true"] { background: var(--green-soft); color: var(--green); font-weight: 500; }
+    .status-visual { width: 68px; height: 68px; border-radius: 50%; background: var(--green-soft); color: var(--green); display: grid; place-items: center; margin: 18px auto; }
+    .status-visual .icon { width: 30px; height: 30px; }
+    .status-center { text-align: center; }
+    .status-center h3 { font-size: 19px; font-weight: 600; margin: 14px 0 9px; }
+    .status-center p { font-size: 13px; line-height: 1.8; color: var(--muted); }
+    .status-center .primary { margin-top: 24px; }
+    .status-center .text-action { margin-top: 7px; }
+    .spinner { width: 26px; height: 26px; border: 2px solid #bfd5c1; border-top-color: var(--green); border-radius: 50%; animation: spin 800ms linear infinite; }
+    .picker-list { max-height: 42dvh; overflow-y: auto; }
+    .picker-list .meal-row { width: 100%; text-align: left; }
+    .picker-list .meal-row .icon { color: var(--green); }
+    .mini-recipe { display: flex; align-items: center; gap: 12px; margin: 12px 0 20px; padding: 12px; border-radius: 10px; background: #f4f7f2; }
+    .mini-recipe img { width: 52px; height: 52px; border-radius: 8px; }
+    .mini-recipe strong { font-size: 14px; font-weight: 500; }
+    .mini-recipe p { font-size: 11px; color: var(--muted); margin-top: 5px; }
+    .privacy-list { font-size: 13px; color: var(--muted); line-height: 1.9; padding-left: 20px; }
+    .privacy-list li { margin: 10px 0; }
+    .sample-badge { display: inline-flex; font-size: 10px; color: #6b7b6d; border: 1px solid #d7e2d5; padding: 3px 7px; border-radius: 4px; margin-bottom: 15px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (hover: hover) { .recipe-open:hover .recipe-photo img { transform: scale(1.035); } .nav-link:hover { background: #f7faf6; } }
+    @media (max-width: 1000px) { .review-note { display: none; } }
+    @media (max-width: 520px) {
+      body { background: #fff; }
+      .stage { display: block; padding: 0; }
+      .app { width: 100%; height: 100dvh; min-height: 0; border: 0; border-radius: 0; box-shadow: none; }
+      dialog { width: 100vw; }
+      .page { padding-top: max(20px, env(safe-area-inset-top, 0px)); }
+    }
+    @container phone (max-width: 350px) {
+      .page, .detail-body { padding-left: 16px; padding-right: 16px; }
+      .greeting { font-size: 24px; }
+      .family-link { font-size: 11px; }
+      .recipe-grid { gap: 20px 11px; }
+      .recipe-title { font-size: 14px; }
+      .recipe-meta { font-size: 10px; gap: 3px; }
+      .search-box { padding: 0 10px; }
+      .search-box input { font-size: 13px; }
+      .add-button { min-width: 64px; padding: 0 9px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+    @media (min-width: 521px) {
+      dialog { margin-bottom: max(28px, calc((100dvh - 844px) / 2)); border-radius: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 15C3 7 12 4 21 3c0 9-3 18-12 15M3 22 15 10"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.7a5.5 5.5 0 0 0-7.8 0L12 5.8l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.5a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5v16M12 5C9 3 5 3 2 4v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Z"/><path d="M6 8h2M6 12h2M16 8h2M16 12h2"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4M17 3v4M3 11h18m-13 5h2m4 0h2"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="18" rx="3"/><path d="M9 4V2h6v2M8 11l1 1 2-2M8 17l1 1 2-2M14 11h3M14 17h3"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5v1"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7M7 12h13"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 7h14l2 14H3L5 7ZM8 8V6a4 4 0 0 1 8 0v2"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 4 5 5M4 20l5-1L21 7a2 2 0 0 0-5-5L4 14ZM13 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4ZM20 2v4m-2-2h4"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 13a9 9 0 1 1-10-10 7 7 0 0 0 10 10Z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6ZM8 12l3 3 5-6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.1"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M8 4v16m-4-4 4 4 4-4M16 20V4m-4 4 4-4 4 4"/></symbol>
+  </svg>
+
+  <div class="stage">
+    <aside class="review-note" aria-label="预览说明">
+      <div class="review-brand"><svg class="icon"><use href="#i-leaf"/></svg>家常</div>
+      <p>一家人的菜谱，<br>一日三餐的好味道。</p>
+      <div class="review-divider"></div>
+      <label for="preview-width">查看不同手机宽度</label>
+      <select id="preview-width">
+        <option value="320">320px · 小屏手机</option>
+        <option value="375">375px · 标准手机</option>
+        <option value="390" selected>390px · 默认预览</option>
+        <option value="430">430px · 大屏手机</option>
+      </select>
+      <p class="review-footnote">移动端设计预览 · 01<br>可以点击菜谱和底部导航。<br>示例内容仅用于审阅，刷新后重置。</p>
+    </aside>
+
+    <div class="app" id="app">
+      <main class="app-main" id="app-main">
+        <section class="page" id="recipes-page" aria-label="家庭菜谱">
+          <div class="brand-row">
+            <a class="wordmark" href="#recipes" aria-label="家常首页"><svg class="icon"><use href="#i-leaf"/></svg>家常</a>
+            <a class="family-link" href="#family"><svg class="icon"><use href="#i-home"/></svg><span data-family-name>林家的厨房</span></a>
+          </div>
+          <h1 class="greeting">今天，想吃什么？</h1>
+          <p class="subtitle">一家人的拿手菜，都在这里。</p>
+          <div class="search-row">
+            <label class="search-box" for="recipe-search"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">搜索菜谱名称或标签</span><input id="recipe-search" type="search" placeholder="搜索家里的菜谱" autocomplete="off" maxlength="120"></label>
+            <button class="add-button" data-action="add-recipe"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>添加</button>
+          </div>
+          <div class="tabs" aria-label="菜谱范围">
+            <button class="tab" data-action="filter" data-value="all" aria-pressed="true">全部菜谱<span class="tab-count" id="all-count">6</span></button>
+            <button class="tab" data-action="filter" data-value="favorites" aria-pressed="false">我的收藏<span class="tab-count" id="favorites-count">2</span></button>
+          </div>
+          <div class="chips" aria-label="按标签筛选">
+            <button class="chip" data-action="tag" data-value="全部" aria-pressed="true">全部</button>
+            <button class="chip" data-action="tag" data-value="快手菜" aria-pressed="false">快手菜</button>
+            <button class="chip" data-action="tag" data-value="一人食" aria-pressed="false">一人食</button>
+            <button class="chip" data-action="tag" data-value="清爽" aria-pressed="false">清爽</button>
+            <button class="chip" data-action="tag" data-value="汤面" aria-pressed="false">汤面</button>
+          </div>
+          <div class="results-line"><span id="results-count" aria-live="polite">6 道家的味道</span><button data-action="sort" aria-label="切换菜谱排序"><svg class="icon" aria-hidden="true"><use href="#i-sort"/></svg><span id="sort-label">最近添加</span></button></div>
+          <div id="recipe-results"></div>
+          <p class="end-note"><svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg>好好吃饭，慢慢收藏。</p>
+        </section>
+
+        <section id="detail-page" hidden aria-label="菜谱详情"></section>
+
+        <section class="page" id="plan-page" hidden aria-label="膳食计划">
+          <header class="page-header"><div><p class="eyebrow">好好安排，好好吃饭</p><h1>这一周，吃什么</h1><p class="subtitle">把想吃的菜，放进每一天。</p></div><button class="icon-button soft" data-action="choose-meal" aria-label="添加膳食计划"><svg class="icon"><use href="#i-plus"/></svg></button></header>
+          <div class="week-head"><p>2026 年 11 月</p><span>9 日 – 15 日</span></div>
+          <div class="week-days" id="week-days" aria-label="选择日期"></div>
+          <div id="plan-content"></div>
+        </section>
+
+        <section class="page" id="shopping-page" hidden aria-label="家庭购物清单">
+          <header class="page-header"><div><p class="eyebrow">为下一顿，准备一点新鲜</p><h1>一起买齐</h1><p class="subtitle">家里缺什么，顺手记下来。</p></div><button class="icon-button soft" data-action="add-item" aria-label="添加购物条目"><svg class="icon"><use href="#i-plus"/></svg></button></header>
+          <div class="shopping-title"><svg class="icon" aria-hidden="true"><use href="#i-bag"/></svg>这周的采购单</div>
+          <div id="shopping-content"></div>
+        </section>
+
+        <section class="page" id="family-page" hidden aria-label="家庭管理">
+          <div class="family-hero"><div class="family-badge"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg></div><h1 data-family-name>林家的厨房</h1><p>有人做饭，有人买菜，一起把日子过好。</p></div>
+          <div class="family-stats"><div><strong id="family-recipes-count">6</strong><span>道家庭菜谱</span></div><div><strong>4</strong><span>位家庭成员</span></div><div><strong id="family-plan-count">3</strong><span>道本周计划</span></div></div>
+          <div class="section-head"><h2>一起吃饭的人</h2><button class="text-action" data-action="invite"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>邀请家人</button></div>
+          <div class="member-row"><span class="avatar">林</span><span class="member-name">阿林 <span class="helper">（我）</span></span><span class="member-role owner">家庭所有者</span></div>
+          <div class="member-row"><span class="avatar orange">满</span><span class="member-name">小满</span><span class="member-role">家庭成员</span></div>
+          <div class="member-row"><span class="avatar blue">爸</span><span class="member-name">爸爸</span><span class="member-role">家庭成员</span></div>
+          <div class="member-row"><span class="avatar rose">妈</span><span class="member-name">妈妈</span><span class="member-role">家庭成员</span></div>
+          <div class="settings">
+            <button data-action="family-settings"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg>家庭资料<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+            <button data-action="my-favorites"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg>我的收藏<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+            <button data-action="privacy"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>家庭与隐私<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+            <button data-action="about"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>关于这份预览<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+          </div>
+          <p class="family-footer">家常 · 一家人的厨房<br>设计预览 / 示例家庭</p>
+        </section>
+      </main>
+
+      <div class="detail-actions" id="detail-actions" hidden><button class="secondary" data-action="shop-recipe" aria-label="将食材加入购物清单"><svg class="icon"><use href="#i-bag"/></svg></button><button class="primary" data-action="plan-recipe"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>安排到一餐</button></div>
+      <nav class="bottom-nav" aria-label="主导航">
+        <a class="nav-link" href="#recipes" data-nav="recipes" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span>菜谱</span></a>
+        <a class="nav-link" href="#plan" data-nav="plan"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>计划</span></a>
+        <a class="nav-link" href="#shopping" data-nav="shopping"><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg><span>清单</span></a>
+        <a class="nav-link" href="#family" data-nav="family"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>家庭</span></a>
+      </nav>
+      <div class="toast" id="toast" role="status" hidden></div>
+    </div>
+  </div>
+
+  <dialog id="sheet" aria-labelledby="sheet-title"><div class="sheet-grip" aria-hidden="true"></div><div class="sheet-heading"><h2 id="sheet-title"></h2><button class="icon-button" data-action="close-sheet" aria-label="关闭弹窗"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="sheet-content" id="sheet-body"></div></dialog>
+
+  <script>
+    // shortcut: This review prototype stores sample interactions in memory; replace with cloud services when implementing the approved uni-app screens.
+    const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    const recipes = [
+      { id: 1, title: '鲜虾溏心蛋汤面', image: 'noodles', author: '阿林', avatar: '林', minutes: 20, prep: 8, cook: 12, servings: 2, tags: ['快手菜', '汤面'], favorite: true, rating: '4.8', description: '汤热热的，面滑滑的。下班回家煮上一碗，忙碌的一天也有了温柔的收尾。', ingredients: [['鲜虾', 200, 'g'], ['面条', 200, 'g'], ['鸡蛋', 2, '个'], ['荷兰豆', 80, 'g'], ['高汤', 600, 'ml'], ['盐', null, '适量']], steps: ['鲜虾去虾线，荷兰豆洗净。鸡蛋冷水下锅，水开后煮约 6 分钟，放入冷水备用。', '锅中加少量油，放入鲜虾煎至两面变色。倒入高汤，煮开后放入荷兰豆。', '另起一锅将面条煮熟，捞入碗中。加入虾和热汤，放上对半切开的鸡蛋，按口味加盐。'] },
+      { id: 2, title: '柠檬香煎鸡胸肉', image: 'chicken', author: '小满', avatar: '满', minutes: 25, prep: 15, cook: 10, servings: 2, tags: ['快手菜', '一人食'], favorite: true, rating: '5.0', description: '柠檬的清香，配一点黑胡椒。煎得刚刚好的鸡肉，和喜欢的蔬菜一起上桌。', ingredients: [['鸡胸肉', 300, 'g'], ['柠檬', 1, '个'], ['胡萝卜', 1, '根'], ['彩椒', 1, '个'], ['橄榄油', 10, 'ml'], ['黑胡椒', null, '适量']], steps: ['鸡胸肉切成厚度均匀的片，用柠檬汁、少许盐和黑胡椒腌约 15 分钟。', '锅中加橄榄油，中火将鸡肉每面煎约 4–5 分钟，至中心完全熟透。', '将切好的蔬菜煎熟，与鸡肉一起装盘，配上柠檬片即可。'] },
+      { id: 3, title: '柠香鲜虾焖饭', image: 'rice', author: '爸爸', avatar: '爸', minutes: 35, prep: 10, cook: 25, servings: 2, tags: ['一人食'], favorite: false, rating: '4.5', description: '一锅有饭，也有菜。虾的鲜和柠檬的香气，全部留在米粒里。', ingredients: [['大米', 200, 'g'], ['鲜虾', 200, 'g'], ['柠檬', 1, '个'], ['洋葱', 0.5, '个'], ['彩椒', 1, '个'], ['高汤', 350, 'ml']], steps: ['大米洗净沥干，鲜虾处理干净，洋葱和彩椒切丁。', '锅中将洋葱炒香，加入彩椒和大米翻炒，倒入高汤，盖盖小火焖煮约 20 分钟。', '铺上鲜虾继续焖至米饭和虾都熟透，出锅前挤入柠檬汁。'] },
+      { id: 4, title: '牛油果缤纷沙拉', image: 'salad', author: '妈妈', avatar: '妈', minutes: 15, prep: 15, cook: 0, servings: 2, tags: ['快手菜', '清爽'], favorite: false, rating: '4.8', description: '把当季的新鲜，装进同一只碗。清爽又有饱腹感，适合想吃轻一点的日子。', ingredients: [['牛油果', 1, '个'], ['生菜', 1, '棵'], ['小番茄', 150, 'g'], ['熟鹰嘴豆', 100, 'g'], ['紫甘蓝', 80, 'g'], ['沙拉酱', null, '适量']], steps: ['蔬菜洗净沥干。牛油果去皮切片，小番茄对半切开，紫甘蓝切细丝。', '将生菜铺在碗底，放上牛油果、小番茄、鹰嘴豆和紫甘蓝。', '淋上喜欢的沙拉酱，吃之前再拌匀，保持蔬菜清脆。'] },
+      { id: 5, title: '香煎三文鱼杂粮饭', image: 'soup', author: '小满', avatar: '满', minutes: 30, prep: 10, cook: 20, servings: 2, tags: ['一人食', '清爽'], favorite: false, rating: '4.5', description: '一块香煎鱼，一点新鲜蔬菜，一碗热饭。认真吃一顿，也不用很复杂。', ingredients: [['三文鱼', 250, 'g'], ['杂粮米', 150, 'g'], ['四季豆', 160, 'g'], ['小番茄', 100, 'g'], ['橄榄油', 10, 'ml'], ['盐', null, '适量']], steps: ['杂粮米提前浸泡并煮熟。三文鱼擦干表面，撒少许盐腌 5 分钟。', '平底锅放油，鱼皮朝下煎至定型，再翻面煎至完全熟透。四季豆另锅煮熟。', '将杂粮饭、三文鱼和蔬菜盛入碗中，加入小番茄即可。'] },
+      { id: 6, title: '香煎豆腐蔬菜碗', image: 'vegetables', author: '阿林', avatar: '林', minutes: 20, prep: 10, cook: 10, servings: 2, tags: ['快手菜', '清爽'], favorite: false, rating: '4.8', description: '外面焦香、里面柔软的豆腐，遇上满碗清脆。简单调味，也有好滋味。', ingredients: [['老豆腐', 250, 'g'], ['玉米粒', 100, 'g'], ['毛豆', 80, 'g'], ['黄瓜', 1, '根'], ['小番茄', 100, 'g'], ['生抽', 10, 'ml']], steps: ['豆腐切块擦干，黄瓜切丁，小番茄对半切开，玉米粒和毛豆煮熟。', '平底锅放油，将豆腐块煎至几面金黄，淋上生抽轻轻拌匀。', '蔬菜铺在碗底，加入玉米、毛豆和香煎豆腐，按口味调味。'] },
+    ];
+    const state = {
+      filter: 'all', tag: '全部', sort: 'recent', query: '', currentRecipe: 1, servings: 2, day: 10,
+      planMeal: '晚餐', planDay: 10, pickingMeal: '晚餐', rating: 0, importTimer: null, toastTimer: null,
+      familyName: '林家的厨房',
+      plans: { 10: { 早餐: [], 午餐: [5], 晚餐: [2, 4] }, 11: { 早餐: [], 午餐: [3], 晚餐: [] } },
+      shopping: [
+        { id: 1, name: '小番茄', amount: '200 g', group: '蔬菜水果', checked: false },
+        { id: 2, name: '黄瓜', amount: '1 根', group: '蔬菜水果', checked: false },
+        { id: 3, name: '生菜', amount: '1 棵', group: '蔬菜水果', checked: false },
+        { id: 4, name: '鸡胸肉', amount: '300 g', group: '肉蛋海鲜', checked: false },
+        { id: 5, name: '鲜虾', amount: '200 g', group: '肉蛋海鲜', checked: false },
+        { id: 6, name: '鸡蛋', amount: '2 个', group: '肉蛋海鲜', checked: true },
+        { id: 7, name: '面条', amount: '200 g', group: '主食调味', checked: false },
+        { id: 8, name: '盐', amount: '适量', group: '主食调味', checked: true },
+      ],
+    };
+    const $ = selector => document.querySelector(selector);
+    const sheet = $('#sheet');
+    const imagePath = recipe => recipe.image ? `assets/${recipe.image}.jpg` : '';
+    const recipeById = id => recipes.find(recipe => recipe.id === Number(id));
+    const routeTo = hash => { if (location.hash === '#' + hash) route(); else location.hash = hash; };
+
+    function notify(message) {
+      clearTimeout(state.toastTimer);
+      $('#toast').textContent = message;
+      $('#toast').hidden = false;
+      state.toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 2600);
+    }
+
+    function photo(recipe, className = '', loading = 'lazy') {
+      return recipe.image ? `<img class="${className}" src="${imagePath(recipe)}" alt="${escapeHTML(recipe.title)}，示例菜图" width="800" height="600" loading="${loading}">` : `<div class="${className}" role="img" aria-label="暂无菜图" style="display:grid;place-items:center;background:#edf3eb;color:#869b84">${icon('book')}</div>`;
+    }
+
+    function renderRecipes() {
+      const query = state.query.trim().toLocaleLowerCase('zh-CN');
+      const visible = recipes.filter(recipe => (state.filter !== 'favorites' || recipe.favorite) && (state.tag === '全部' || recipe.tags.includes(state.tag)) && (!query || [recipe.title, ...recipe.tags].join(' ').toLocaleLowerCase('zh-CN').includes(query)));
+      if (state.sort === 'name') visible.sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
+      $('#recipe-results').innerHTML = visible.length ? `<div class="recipe-grid">${visible.map((recipe, index) => `<article class="recipe-card"><a class="recipe-open" href="#detail/${recipe.id}"><div class="recipe-photo">${photo(recipe, '', index < 4 ? 'eager' : 'lazy')}</div><h2 class="recipe-title">${escapeHTML(recipe.title)}</h2><p class="recipe-meta">${icon('clock')}<span>${recipe.minutes} 分钟</span><span class="meta-dot">·</span><span>${escapeHTML(recipe.author)}</span></p></a><button class="favorite" data-action="favorite" data-id="${recipe.id}" aria-pressed="${recipe.favorite}" aria-label="${recipe.favorite ? '取消收藏' : '收藏'}${escapeHTML(recipe.title)}">${icon('heart')}</button></article>`).join('')}</div>` : `<div class="empty">${icon(state.filter === 'favorites' && !query ? 'heart' : 'search')}<h3>${query || state.tag !== '全部' ? '还没找到这道菜' : '把喜欢的味道收在这里'}</h3><p>${query || state.tag !== '全部' ? '试试其他菜名或标签。' : '点击菜图上的爱心，就能收藏。'}</p><button class="text-action" data-action="reset-filters">查看全部菜谱</button></div>`;
+      $('#results-count').textContent = `${visible.length} 道${query || state.tag !== '全部' ? '符合条件的菜谱' : '家的味道'}`;
+      $('#all-count').textContent = recipes.length;
+      $('#favorites-count').textContent = recipes.filter(recipe => recipe.favorite).length;
+      document.querySelectorAll('[data-action="filter"]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.value === state.filter)));
+      document.querySelectorAll('[data-action="tag"]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.value === state.tag)));
+      $('#sort-label').textContent = state.sort === 'recent' ? '最近添加' : '按菜名';
+    }
+
+    function quantity(ingredient) {
+      const [, amount, unit] = ingredient;
+      return amount === null ? unit : `${Math.round(amount * state.servings / recipeById(state.currentRecipe).servings * 10) / 10} ${unit}`;
+    }
+
+    function renderDetail() {
+      const recipe = recipeById(state.currentRecipe);
+      if (!recipe) { routeTo('recipes'); return; }
+      $('#detail-page').innerHTML = `<div class="detail-top"><a href="#recipes" class="icon-button" aria-label="返回菜谱">${icon('back')}</a><span>家里的拿手菜</span><div class="top-actions"><button class="icon-button" data-action="favorite" data-id="${recipe.id}" aria-pressed="${recipe.favorite}" aria-label="${recipe.favorite ? '取消收藏' : '收藏'}">${icon('heart')}</button><button class="icon-button" data-action="edit-recipe" aria-label="编辑菜谱">${icon('edit')}</button></div></div><div class="detail-cover">${photo(recipe, '', 'eager')}</div><div class="detail-body"><div class="detail-tags">${recipe.tags.map(tag => `<span class="detail-tag">${escapeHTML(tag)}</span>`).join('')}</div><h1 class="detail-title" id="detail-title">${escapeHTML(recipe.title)}</h1><div class="author-row"><span class="avatar">${escapeHTML(recipe.avatar)}</span><span>${escapeHTML(recipe.author)}的拿手菜</span>${recipe.rating ? `<span class="rating">${icon('star')}${recipe.rating}<span style="color:#718075;font-size:10px"> · 家人评分</span></span>` : ''}</div><p class="description">${escapeHTML(recipe.description)}</p><div class="recipe-facts"><div class="fact"><span>准备</span><strong>${recipe.prep}<small>分钟</small></strong></div><div class="fact"><span>烹饪</span><strong>${recipe.cook}<small>分钟</small></strong></div><div class="fact"><span>原始份量</span><strong>${recipe.servings}<small>人份</small></strong></div></div><div class="section-head"><h2>准备食材</h2><div class="stepper" aria-label="调整份数"><button data-action="servings" data-value="-1" aria-label="减少一人份" ${state.servings <= 1 ? 'disabled' : ''}>−</button><span><strong id="servings-count" style="font-weight:500">${state.servings}</strong> 人份</span><button data-action="servings" data-value="1" aria-label="增加一人份" ${state.servings >= 12 ? 'disabled' : ''}>+</button></div></div><div id="ingredient-list">${recipe.ingredients.map((ingredient, index) => `<label class="ingredient-row"><input class="check" type="checkbox" aria-label="已准备${escapeHTML(ingredient[0])}" data-ingredient="${index}"><span class="ingredient-name">${escapeHTML(ingredient[0])}</span><span class="quantity">${escapeHTML(quantity(ingredient))}</span></label>`).join('')}</div><p class="helper">按人数调整用量；“适量”调味，请按口味添加。</p><div class="section-head"><h2>开始做吧</h2><span>${recipe.steps.length} 个步骤</span></div>${recipe.steps.map((step, index) => `<div class="step"><span class="step-number">${String(index + 1).padStart(2, '0')}</span><p>${escapeHTML(step)}</p></div>`).join('')}<div class="section-head"><h2>家人的小心得</h2><span>一起越做越好吃</span></div><p class="helper">这道菜，你会打几分？</p><div class="stars" aria-label="我的评分">${[1,2,3,4,5].map(value => `<button data-action="rate" data-value="${value}" aria-pressed="${value <= state.rating}" aria-label="评 ${value} 星">${icon('star')}</button>`).join('')}</div><div class="review-entry"><span class="avatar orange">满</span><div><strong>小满</strong><p>喜欢这样简单又热乎的一餐。下次我们一起做。</p></div><time datetime="2026-11-09">11 月 9 日</time></div></div>`;
+    }
+
+    function mealRow(recipe) {
+      return `<a class="meal-row" href="#detail/${recipe.id}">${photo(recipe, 'meal-photo')}<div class="meal-info"><h3>${escapeHTML(recipe.title)}</h3><p>${recipe.servings} 人份 · ${recipe.minutes} 分钟</p></div>${icon('chevron')}</a>`;
+    }
+
+    function renderPlan() {
+      $('#week-days').innerHTML = ['一','二','三','四','五','六','日'].map((weekday, index) => { const day = index + 9; const hasPlan = Object.values(state.plans[day] || {}).some(ids => ids.length); return `<button class="day" data-action="day" data-value="${day}" aria-pressed="${state.day === day}" aria-label="11月${day}日，星期${weekday}"><span>${weekday}</span><strong>${day}</strong><i style="visibility:${hasPlan ? 'visible' : 'hidden'}"></i></button>`; }).join('');
+      const plans = state.plans[state.day] || {};
+      const count = Object.values(plans).reduce((sum, ids) => sum + ids.length, 0);
+      $('#plan-content').innerHTML = ['早餐','午餐','晚餐'].map((meal, index) => `<section><div class="meal-head"><h2>${icon(index === 2 ? 'moon' : 'sun')}${meal}</h2><span>${(plans[meal] || []).length ? (plans[meal] || []).length + ' 道菜' : '还没安排'}</span></div>${(plans[meal] || []).map(id => mealRow(recipeById(id))).join('') || `<button class="empty-meal" data-action="pick-recipe" data-meal="${meal}">${icon('plus')}安排${meal}</button>`}</section>`).join('') + `<div class="plan-bottom"><button class="secondary full" data-action="shop-plan" ${count ? '' : 'disabled'}>${icon('bag')}把这一天的食材加入清单</button><p class="plan-note">由你决定什么时候采购，不自动改动清单。</p></div>`;
+      renderFamilyCounts();
+    }
+
+    function shoppingRow(item) {
+      return `<label class="shopping-row ${item.checked ? 'is-checked' : ''}"><input class="check" type="checkbox" data-shopping="${item.id}" ${item.checked ? 'checked' : ''} aria-label="${item.checked ? '取消已购' : '标记已购'}${escapeHTML(item.name)}"><span class="shopping-name">${escapeHTML(item.name)}</span><span class="shopping-amount">${escapeHTML(item.amount)}</span></label>`;
+    }
+
+    function renderShopping() {
+      const checked = state.shopping.filter(item => item.checked);
+      const groups = [...new Set(state.shopping.filter(item => !item.checked).map(item => item.group))];
+      const boughtOpen = $('#bought-items')?.open || false;
+      $('#shopping-content').innerHTML = `<div class="shopping-progress"><div class="progress-track" role="progressbar" aria-label="采购进度" aria-valuemin="0" aria-valuemax="${state.shopping.length || 1}" aria-valuenow="${checked.length}"><div class="progress-fill" style="width:${state.shopping.length ? checked.length / state.shopping.length * 100 : 0}%"></div></div><p aria-live="polite">已买 ${checked.length} / ${state.shopping.length}</p></div>${groups.map(group => `<section class="shopping-group"><h2>${escapeHTML(group)}</h2>${state.shopping.filter(item => !item.checked && item.group === group).map(shoppingRow).join('')}</section>`).join('')}${!groups.length ? `<div class="empty">${icon('check')}<h3>这一顿，都备齐了</h3><p>好好做饭，好好吃饭。</p></div>` : ''}<button class="text-action" data-action="add-item">${icon('plus')}再加一件</button>${checked.length ? `<details class="bought" id="bought-items" ${boughtOpen ? 'open' : ''}><summary>已经买好了 · ${checked.length} 件</summary>${checked.map(shoppingRow).join('')}</details>` : ''}<div class="shopping-source">${icon('users')}<span>这份清单由家人一起维护。买好一件，轻点一下。</span></div>`;
+    }
+
+    function renderFamilyCounts() {
+      $('#family-recipes-count').textContent = recipes.length;
+      $('#family-plan-count').textContent = Object.values(state.plans).reduce((sum, meals) => sum + Object.values(meals).reduce((count, ids) => count + ids.length, 0), 0);
+    }
+
+    function route() {
+      const [requested, id] = (location.hash.slice(1) || 'recipes').split('/');
+      const page = ['recipes','detail','plan','shopping','family'].includes(requested) ? requested : 'recipes';
+      if (page === 'detail' && !recipeById(id)) { routeTo('recipes'); return; }
+      document.querySelectorAll('main > section').forEach(section => { section.hidden = section.id !== page + '-page'; });
+      document.querySelectorAll('[data-nav]').forEach(link => { if (link.dataset.nav === (page === 'detail' ? 'recipes' : page)) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
+      $('#detail-actions').hidden = page !== 'detail';
+      if (page === 'detail') { state.currentRecipe = Number(id); state.servings = recipeById(id).servings; state.rating = recipeById(id).myRating || 0; renderDetail(); }
+      if (page === 'recipes') renderRecipes();
+      if (page === 'plan') renderPlan();
+      if (page === 'shopping') renderShopping();
+      renderFamilyCounts();
+      $('#app-main').scrollTo({ top: 0, behavior: 'instant' });
+      document.title = (page === 'detail' ? recipeById(id).title : { recipes: '家庭菜谱', plan: '一周计划', shopping: '购物清单', family: '我的家庭' }[page]) + ' · 家常预览';
+    }
+
+    function openSheet(title, content) {
+      $('#sheet-title').textContent = title;
+      $('#sheet-body').innerHTML = content;
+      if (!sheet.open) sheet.showModal();
+    }
+
+    function addRecipeSheet() {
+      openSheet('留下一道拿手菜', `<p class="sheet-description">从今天起，把喜欢的味道慢慢攒起来。</p><button class="action-option" data-action="manual-recipe"><span class="option-icon">${icon('edit')}</span><span><strong>自己写一道</strong><small>记下食材和步骤，留给家人</small></span>${icon('chevron')}</button><button class="action-option" data-action="open-import"><span class="option-icon">${icon('spark')}</span><span><strong>AI 整理菜谱</strong><small>粘贴一道菜的文字，帮你整理好</small></span>${icon('chevron')}</button><p class="helper" style="margin-top:18px">文字导入可预览；照片和网址入口暂不展示。</p>`);
+    }
+
+    function importSheet() {
+      openSheet('把文字整理成菜谱', `<span class="sample-badge">本地交互演示</span><p class="sheet-description">粘贴一道菜的名称、食材和做法。</p><label class="field"><span>菜谱原文</span><textarea id="import-text" maxlength="4000" placeholder="例如：家常蒸蛋\n鸡蛋 2 个，温水适量……"></textarea></label><label class="consent"><input type="checkbox" class="check" id="import-consent"><span>正式导入会将原文交给第三方 AI 处理，请勿输入隐私内容。此预览只模拟状态，不发送数据。</span></label><button class="primary full" data-action="submit-import" disabled>${icon('spark')}同意并开始整理</button><p class="helper">正式流程解析成功后自动保存，随后可以核对并编辑。</p>`);
+    }
+
+    function runImport() {
+      if (!$('#import-text')?.value.trim() || !$('#import-consent')?.checked) return;
+      const title = $('#import-text').value.trim().split('\n')[0].slice(0, 36);
+      openSheet('正在整理菜谱', `<div class="status-center"><span class="sample-badge">模拟流程 · 不调用 AI</span><div class="status-visual"><span class="spinner" aria-label="正在处理"></span></div><h3>给好味道，一点时间</h3><p>正在整理食材与做法。<br>完成后会自动保存到家庭菜谱。</p><button class="text-action full" data-action="cancel-import">取消本次整理</button></div>`);
+      clearTimeout(state.importTimer);
+      state.importTimer = setTimeout(() => {
+        state.importTimer = null;
+        const recipe = { ...recipes[0], id: Date.now(), title: title || '新整理的菜谱', image: null, author: '阿林', avatar: '林', favorite: false, rating: null, description: '这是用于审阅页面流程的本地演示结果，未调用 AI，食材和做法为占位示例。', tags: ['快手菜'] };
+        recipes.unshift(recipe);
+        state.importResult = recipe.id;
+        renderRecipes(); renderFamilyCounts();
+        if (sheet.open) openSheet('已保存到家庭菜谱', `<div class="status-center"><span class="sample-badge">本地演示结果</span><div class="status-visual">${icon('check')}</div><h3>又留住一道好味道</h3><p>${escapeHTML(recipe.title)}<br>已添加到本次预览，记得核对并编辑。</p><button class="primary full" data-action="view-import">查看菜谱</button><button class="text-action full" data-action="edit-import">核对并编辑</button></div>`);
+        else notify('整理完成，已添加到本地演示菜谱');
+      }, 1200);
+    }
+
+    function cancelImport() {
+      clearTimeout(state.importTimer); state.importTimer = null;
+      openSheet('已取消整理', `<div class="status-center"><div class="status-visual">${icon('close')}</div><h3>本次整理已取消</h3><p>没有添加新菜谱，原有菜谱不受影响。</p><button class="primary full" data-action="open-import">重新粘贴文字</button></div>`);
+    }
+
+    function editSheet(isNew = false) {
+      const recipe = isNew ? null : recipeById(state.currentRecipe);
+      openSheet(isNew ? '写下一道拿手菜' : '核对并编辑', `<span class="sample-badge">本地演示表单</span><form id="recipe-form" data-id="${recipe ? recipe.id : ''}"><label class="field"><span>菜谱名称</span><input id="edit-title" maxlength="36" required value="${escapeHTML(recipe?.title || '')}" placeholder="这道菜叫什么？"></label><label class="field"><span>食材 · 每行一种</span><textarea id="edit-ingredients" maxlength="2000" required placeholder="鸡蛋 2 个\n温水 适量">${escapeHTML(recipe ? recipe.ingredients.map(ingredient => ingredient[0] + ' ' + (ingredient[1] === null ? '' : ingredient[1] + ' ') + ingredient[2]).join('\n') : '')}</textarea></label><label class="field"><span>做法 · 每行一步</span><textarea id="edit-steps" maxlength="4000" required placeholder="记下做饭的小窍门……">${escapeHTML(recipe?.steps.join('\n') || '')}</textarea></label><button class="primary full" type="submit">${icon('check')}保存到本地预览</button></form><p class="helper">刷新页面后恢复示例内容，不会写入真实家庭。</p>`);
+    }
+
+    function planRecipeSheet() {
+      const recipe = recipeById(state.currentRecipe);
+      state.planMeal = '晚餐'; state.planDay = state.day;
+      openSheet('安排到哪一餐？', `<div class="mini-recipe">${photo(recipe)}<div><strong>${escapeHTML(recipe.title)}</strong><p>${state.servings} 人份 · 一起好好吃饭</p></div></div><label class="field"><span>用餐日期</span><select id="plan-date">${[9,10,11,12,13,14,15].map(day => `<option value="${day}" ${day === state.day ? 'selected' : ''}>11 月 ${day} 日${day === 10 ? ' · 周二' : ''}</option>`).join('')}</select></label><div class="segmented" aria-label="选择餐次">${['早餐','午餐','晚餐'].map(meal => `<button data-action="select-meal" data-value="${meal}" aria-pressed="${meal === '晚餐'}">${meal}</button>`).join('')}</div><button class="primary full" data-action="confirm-plan">${icon('calendar')}加入用餐计划</button>`);
+    }
+
+    function addToPlan(id, day, meal) {
+      if (!state.plans[day]) state.plans[day] = { 早餐: [], 午餐: [], 晚餐: [] };
+      if (!state.plans[day][meal]) state.plans[day][meal] = [];
+      if (state.plans[day][meal].includes(id)) { notify('这一餐已经安排了这道菜'); return false; }
+      state.plans[day][meal].push(id); renderPlan();
+      return true;
+    }
+
+    function pickerSheet(meal) {
+      state.pickingMeal = meal;
+      openSheet(`11 月 ${state.day} 日 · ${meal}`, `<p class="sheet-description">挑一道家里的拿手菜。</p><div class="picker-list">${recipes.map(recipe => `<button class="meal-row" data-action="pick-plan-recipe" data-id="${recipe.id}">${photo(recipe, 'meal-photo')}<span class="meal-info"><h3>${escapeHTML(recipe.title)}</h3><p>${recipe.minutes} 分钟 · ${recipe.servings} 人份</p></span>${icon('plus')}</button>`).join('')}</div>`);
+    }
+
+    function ingredientsToShopping(ids) {
+      const unique = [...new Set(ids)];
+      const additions = [];
+      unique.forEach(id => recipeById(id).ingredients.forEach(([name, amount, unit]) => {
+        if (!state.shopping.some(item => item.name === name) && !additions.some(item => item.name === name)) additions.push({ id: Date.now() + additions.length, name, amount: amount === null ? unit : amount + ' ' + unit, group: '来自菜谱', checked: false });
+      }));
+      state.shopping.push(...additions); renderShopping();
+      notify(additions.length ? `已添加 ${additions.length} 项，已有食材请核对用量` : '清单中已有这些食材，请核对采购数量');
+    }
+
+    const actions = {
+      'add-recipe': addRecipeSheet,
+      'close-sheet': () => sheet.close(),
+      'open-import': importSheet,
+      'submit-import': runImport,
+      'cancel-import': cancelImport,
+      'view-import': () => { sheet.close(); routeTo('detail/' + state.importResult); },
+      'edit-import': () => { state.currentRecipe = state.importResult; editSheet(); },
+      'manual-recipe': () => editSheet(true),
+      'edit-recipe': () => editSheet(),
+      favorite: button => {
+        const recipe = recipeById(button.dataset.id); if (!recipe) return;
+        recipe.favorite = !recipe.favorite;
+        button.setAttribute('aria-pressed', String(recipe.favorite));
+        button.setAttribute('aria-label', recipe.favorite ? '取消收藏' : '收藏');
+        renderRecipes(); notify(recipe.favorite ? '已收进我的收藏' : '已取消收藏');
+      },
+      filter: button => { state.filter = button.dataset.value; renderRecipes(); },
+      tag: button => { state.tag = button.dataset.value; renderRecipes(); },
+      sort: () => { state.sort = state.sort === 'recent' ? 'name' : 'recent'; renderRecipes(); },
+      'reset-filters': () => { state.filter = 'all'; state.tag = '全部'; state.query = ''; $('#recipe-search').value = ''; renderRecipes(); },
+      servings: button => {
+        state.servings = Math.min(12, Math.max(1, state.servings + Number(button.dataset.value)));
+        $('#servings-count').textContent = state.servings;
+        document.querySelectorAll('[data-action="servings"]').forEach(control => { control.disabled = Number(control.dataset.value) < 0 ? state.servings <= 1 : state.servings >= 12; });
+        document.querySelectorAll('#ingredient-list .quantity').forEach((element, index) => { element.textContent = quantity(recipeById(state.currentRecipe).ingredients[index]); });
+      },
+      rate: button => {
+        state.rating = Number(button.dataset.value); recipeById(state.currentRecipe).myRating = state.rating;
+        document.querySelectorAll('[data-action="rate"]').forEach(control => control.setAttribute('aria-pressed', String(Number(control.dataset.value) <= state.rating)));
+        notify(`已记下你的 ${state.rating} 星评分 · 本地演示`);
+      },
+      'plan-recipe': planRecipeSheet,
+      'select-meal': button => { state.planMeal = button.dataset.value; document.querySelectorAll('[data-action="select-meal"]').forEach(control => control.setAttribute('aria-pressed', String(control === button))); },
+      'confirm-plan': () => { state.planDay = Number($('#plan-date').value); const added = addToPlan(state.currentRecipe, state.planDay, state.planMeal); sheet.close(); if (added) notify(`已安排到 11 月 ${state.planDay} 日${state.planMeal}`); },
+      day: button => { state.day = Number(button.dataset.value); renderPlan(); },
+      'choose-meal': () => pickerSheet('晚餐'),
+      'pick-recipe': button => pickerSheet(button.dataset.meal),
+      'pick-plan-recipe': button => { const added = addToPlan(Number(button.dataset.id), state.day, state.pickingMeal); sheet.close(); if (added) notify(`已安排到${state.pickingMeal}`); },
+      'shop-recipe': () => ingredientsToShopping([state.currentRecipe]),
+      'shop-plan': () => ingredientsToShopping(Object.values(state.plans[state.day] || {}).flat()),
+      'add-item': () => openSheet('顺手记一件', `<p class="sheet-description">买菜时，一起带回来。</p><form id="item-form"><label class="field"><span>要买什么</span><input id="new-item" maxlength="60" required placeholder="比如：牛奶、番茄、洗洁精" autocomplete="off"></label><label class="field"><span>数量或备注 · 选填</span><input id="new-item-amount" maxlength="40" placeholder="比如：1 瓶，选低糖的" autocomplete="off"></label><button class="primary full" type="submit">${icon('plus')}加入采购单</button></form>`),
+      invite: () => openSheet('邀请家人，一起开饭', `<div class="status-center"><div class="status-visual">${icon('users')}</div><h3>家的味道，一起收藏</h3><p>邀请家人共同维护菜谱、用餐计划和采购单。</p></div><div class="sheet-note" style="margin-top:24px">当前为设计演示，不生成真实邀请码，也不会向他人发送消息。</div><button class="secondary full" data-action="close-sheet">知道了</button>`),
+      'family-settings': () => openSheet('家庭资料', `<form id="family-form"><label class="field"><span>家庭名称</span><input id="family-name-input" required maxlength="20" value="${escapeHTML(state.familyName)}"></label><button class="primary full" type="submit">保存到本地预览</button></form>`),
+      'my-favorites': () => { state.filter = 'favorites'; state.tag = '全部'; state.query = ''; $('#recipe-search').value = ''; routeTo('recipes'); },
+      privacy: () => openSheet('只属于家里的分享', `<div class="status-visual">${icon('shield')}</div><ul class="privacy-list"><li>菜谱、用餐计划和购物清单，仅供当前家庭成员使用。</li><li>收藏和评分属于个人；家人一起维护共享内容。</li><li>这份 HTML 预览只使用示例数据，不连接账户、云端或 AI，不会上传你输入的内容。</li></ul>`),
+      about: () => openSheet('关于这份预览', `<p class="sheet-description">家常 · 家庭厨房移动端设计预览</p><ul class="privacy-list"><li>审阅重点：菜图比例、文字层次、绿色主操作、底部导航及各模块排版。</li><li>可以体验搜索、收藏、份数调整、计划、清单和文字导入模拟。</li><li>所有照片和家庭信息都是示例，操作仅保存在当前页面，刷新后重置。</li><li>样例照片来自 Unsplash；正式菜谱使用家庭自己的图片。</li></ul>`),
+    };
+
+    document.addEventListener('click', event => {
+      const button = event.target.closest('[data-action]');
+      if (button && !button.disabled && actions[button.dataset.action]) actions[button.dataset.action](button);
+    });
+    document.addEventListener('input', event => {
+      if (event.target.id === 'recipe-search') { state.query = event.target.value; renderRecipes(); }
+      if (event.target.id === 'import-text') { const submit = $('[data-action="submit-import"]'); if (submit) submit.disabled = !event.target.value.trim() || !$('#import-consent').checked; }
+    });
+    document.addEventListener('change', event => {
+      if (event.target.id === 'import-consent') $('[data-action="submit-import"]').disabled = !event.target.checked || !$('#import-text').value.trim();
+      if (event.target.dataset.shopping) { const item = state.shopping.find(item => item.id === Number(event.target.dataset.shopping)); if (item) { item.checked = event.target.checked; renderShopping(); } }
+      if (event.target.id === 'preview-width') document.documentElement.style.setProperty('--phone-width', event.target.value + 'px');
+    });
+    document.addEventListener('submit', event => {
+      if (!['item-form','recipe-form','family-form'].includes(event.target.id)) return;
+      event.preventDefault();
+      if (event.target.id === 'item-form') {
+        const name = $('#new-item').value.trim(); if (!name) return;
+        state.shopping.push({ id: Date.now(), name, amount: $('#new-item-amount').value.trim(), group: '顺手带上', checked: false });
+        sheet.close(); renderShopping(); notify('已加入采购单');
+      }
+      if (event.target.id === 'family-form') {
+        const name = $('#family-name-input').value.trim(); if (!name) return;
+        state.familyName = name; document.querySelectorAll('[data-family-name]').forEach(element => { element.textContent = name; });
+        sheet.close(); notify('已更新本地演示的家庭名称');
+      }
+      if (event.target.id === 'recipe-form') {
+        const title = $('#edit-title').value.trim();
+        const ingredients = $('#edit-ingredients').value.split('\n').map(line => line.trim()).filter(Boolean);
+        const steps = $('#edit-steps').value.split('\n').map(line => line.trim()).filter(Boolean);
+        if (!title || !ingredients.length || !steps.length) return;
+        let recipe = recipeById(event.target.dataset.id);
+        if (!recipe) { recipe = { id: Date.now(), image: null, author: '阿林', avatar: '林', minutes: 20, prep: 10, cook: 10, servings: 2, tags: ['快手菜'], favorite: false, rating: null, description: '自己记下的拿手菜，留给家里人。' }; recipes.unshift(recipe); }
+        recipe.title = title; recipe.ingredients = ingredients.map(line => [line, null, '']); recipe.steps = steps;
+        sheet.close(); renderRecipes(); routeTo('detail/' + recipe.id); notify('已保存到本地预览');
+      }
+    });
+    sheet.addEventListener('click', event => { if (event.target === sheet) { const box = sheet.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) sheet.close(); } });
+    window.addEventListener('hashchange', route);
+    renderRecipes(); renderPlan(); renderShopping(); route();
+  </script>
+</body>
+</html>

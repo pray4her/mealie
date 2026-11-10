@@ -1,5 +1,15 @@
 # Mealie Development Guide for AI Agents
 
+## Family Miniapp Design and UI Issues
+
+For the independent `miniapp/` WeChat client, read [the approved design baseline](docs/design/miniapp/README.md), [sources and decisions](docs/design/miniapp/sources.md), and [UI issue requirements](docs/design/miniapp/issue-design.md) before designing pages, refactoring UI, or creating UI issues. The Nuxt/Vuetify guidance below describes the original web application.
+
+- Use the approved v1 preview as the visual target; cite specific D-ID/S-ID decisions, business rules, and the actual implementation commit in each UI issue.
+- Use Refero for design research and reference locking; Vue/uni-app skills and current official documentation for implementation. Do not treat skills or mock data as runtime evidence.
+- Preserve real authentication, family isolation, private media, recovery, and concurrency behavior. Prototype-only features do not become approved business requirements.
+- Add only genuine missing prerequisites as GitHub blockers. Existing-page UI refactors can start using delivered APIs and fixtures; future business modules are separate scope.
+- Use `.github/ISSUE_TEMPLATE/miniapp-ui.yaml`; require mobile/state/accessibility evidence and the miniapp's own validation commands before completion.
+
 ## Project Overview
 
 Mealie is a self-hosted recipe manager, meal planner, and shopping list application with a FastAPI backend (Python 3.14) and Nuxt 4 frontend (Vue 3 + TypeScript). It uses SQLAlchemy ORM with support for SQLite and PostgreSQL databases.
