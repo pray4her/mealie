@@ -11,10 +11,11 @@ type UploadIntent = { input: MediaUploadRequest; mediaId: string | null };
 type Draft = { familyId: string; generation: string; recipeId: string; imageIds: string[]; requests: UploadIntent[]; pending: RecipeImagesMutation | null };
 export function createMediaController(options: { api: MediaApi; recipes: RecipesApi; auth: AuthController; family: ReturnType<typeof createFamilyController>; storage: SessionStorage; newRequestId(): Promise<string> }) {
   const items = ref<MediaView[]>([]); const links = ref<Record<string, MediaLink>>({}); const pending = ref<RecipeImagesMutation | null>(null);
+  const linkErrors = ref<Record<string, 'error' | 'expired'>>({});
   let draft: Draft | null = null; let epoch = 0; let visible = false; let disposed = false; let owner = options.auth.identity.value?.uid;
-  let timer: ReturnType<typeof setTimeout> | undefined; let binding: Promise<Recipe> | null = null;
+  let timer: ReturnType<typeof setTimeout> | undefined; let expiryTimer: ReturnType<typeof setTimeout> | undefined; let binding: Promise<Recipe> | null = null;
   const key = (uid: string) => 'home.media.pending.v1:' + encodeURIComponent(uid);
-  function conceal() { epoch++; visible = false; items.value = []; links.value = {}; pending.value = null; draft = null; binding = null; if (timer) clearTimeout(timer); }
+  function conceal() { epoch++; visible = false; items.value = []; links.value = {}; linkErrors.value = {}; pending.value = null; draft = null; binding = null; if (timer) clearTimeout(timer); if (expiryTimer) clearTimeout(expiryTimer); }
   function forget() { conceal(); if (owner) { try { options.storage.remove(key(owner)); } catch { /* Keep protected state hidden when storage fails. */ } } }
   let lastScope = '';
   const stop = watch([options.auth.phase, () => options.auth.identity.value?.uid, options.family.phase, options.family.view], ([phase, uid, familyPhase, view]) => {
@@ -77,15 +78,37 @@ export function createMediaController(options: { api: MediaApi; recipes: Recipes
   async function refresh() {
     const ctx = current(); if (!draft) return;
     const ids = [...draft.imageIds];
-    const result = ids.length ? await options.api.status({ familyId: ctx.familyId, generation: ctx.generation, mediaIds: ids }) : [];
+    let result: MediaView[];
+    try { result = ids.length ? await options.api.status({ familyId: ctx.familyId, generation: ctx.generation, mediaIds: ids }) : []; }
+    catch (error) {
+      if (['AUTH_REQUIRED', 'FAMILY_REQUIRED', 'FORBIDDEN'].includes(errorCode(error))) throw error;
+      if (active(ctx)) for (const id of ids) failLink(id);
+      return;
+    }
     if (!active(ctx) || !draft || JSON.stringify(ids) !== JSON.stringify(draft.imageIds)) return;
     items.value = result; const values: Record<string, MediaLink> = {};
+    for (const item of result) if (item.state !== 'ready') { delete links.value[item.mediaId]; delete linkErrors.value[item.mediaId]; }
     await Promise.all(result.filter(item => item.state === 'ready').map(async item => {
-      const old = links.value[item.mediaId]; values[item.mediaId] = old && old.expiresAt > Date.now() + 10_000 ? old : await options.api.read({ familyId: ctx.familyId, generation: ctx.generation, mediaId: item.mediaId });
+      try {
+        const old = links.value[item.mediaId]; const link = old && old.expiresAt > Date.now() + 10_000 ? old : await options.api.read({ familyId: ctx.familyId, generation: ctx.generation, mediaId: item.mediaId });
+        if (active(ctx)) { values[item.mediaId] = link; delete linkErrors.value[item.mediaId]; }
+      } catch (error) {
+        if (['AUTH_REQUIRED', 'FAMILY_REQUIRED', 'FORBIDDEN'].includes(errorCode(error))) throw error;
+        if (active(ctx)) failLink(item.mediaId);
+      }
     }));
-    if (!active(ctx)) return; links.value = values;
+    if (!active(ctx) || !draft || JSON.stringify(ids) !== JSON.stringify(draft.imageIds)) return; links.value = values; scheduleExpiry();
     if (timer) clearTimeout(timer);
     if (items.value.some(item => ['uploading', 'checking', 'pending'].includes(item.state))) timer = setTimeout(() => { if (active(ctx)) void refresh().catch(() => {}); }, 3000);
+  }
+  function failLink(id: string) { delete links.value[id]; linkErrors.value[id] = 'error'; }
+  function scheduleExpiry() {
+    if (expiryTimer) clearTimeout(expiryTimer);
+    const expiry = Object.values(links.value).map(link => link.expiresAt); if (!expiry.length) return;
+    expiryTimer = setTimeout(() => {
+      for (const [id, link] of Object.entries(links.value)) if (link.expiresAt <= Date.now()) { delete links.value[id]; linkErrors.value[id] = 'expired'; }
+      scheduleExpiry();
+    }, Math.min(2_147_483_647, Math.max(1, Math.min(...expiry) - Date.now())));
   }
   async function choose(isCurrent: () => boolean, resume: () => Promise<boolean>) {
     let ctx = current(); if (!draft || draft.pending || draft.imageIds.length + draft.requests.filter(request => request.mediaId === null).length >= 20) throw new AppError('CONFLICT');
@@ -123,7 +146,7 @@ export function createMediaController(options: { api: MediaApi; recipes: Recipes
   function remove(id: string) {
     const ctx = current(); if (!draft || draft.pending) throw new AppError('CONFLICT');
     draft.imageIds = draft.imageIds.filter(value => value !== id); draft.requests = draft.requests.filter(value => value.mediaId !== id);
-    items.value = items.value.filter(value => value.mediaId !== id); delete links.value[id]; persist(ctx);
+    items.value = items.value.filter(value => value.mediaId !== id); delete links.value[id]; delete linkErrors.value[id]; persist(ctx);
   }
   async function retry(id: string) {
     const ctx = current(); await options.api.complete({ familyId: ctx.familyId, generation: ctx.generation, mediaId: validId(id) });
@@ -157,9 +180,9 @@ export function createMediaController(options: { api: MediaApi; recipes: Recipes
   async function preview(id: string) {
     const ctx = current(); const ref = { familyId: ctx.familyId, generation: ctx.generation, mediaId: validId(id) };
     const link = await options.api.read(ref); if (!active(ctx)) return;
-    links.value[id] = link;
+    links.value[id] = link; delete linkErrors.value[id]; scheduleExpiry();
     await uni.previewImage({ current: link.url, urls: [link.url] });
   }
-  return { items: readonly(items), links: readonly(links), pending: readonly(pending), canSave: computed(() => !!draft && (pending.value !== null || items.value.length === draft.imageIds.length && items.value.every(item => item.state === 'ready'))),
-    initialize, refresh, choose, remove, retry, save, preview, clear: conceal, dispose() { disposed = true; stop(); conceal(); } };
+  return { items: readonly(items), links: readonly(links), linkErrors: readonly(linkErrors), pending: readonly(pending), canSave: computed(() => !!draft && (pending.value !== null || items.value.length === draft.imageIds.length && items.value.every(item => item.state === 'ready'))),
+    initialize, refresh, choose, remove, retry, save, preview, failLink, clear: conceal, dispose() { disposed = true; stop(); conceal(); } };
 }

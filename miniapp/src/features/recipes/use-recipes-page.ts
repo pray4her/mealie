@@ -27,6 +27,7 @@ export function useRecipesPage(load: () => Promise<void>) {
     } finally { if (visible()) { checking = false; finishResumes(confirmed.value); } }
   }
   async function reconcile(error: unknown) {
+    if (active) message.value = copy.recipeErrors[errorCode(error)];
     if (errorCode(error) === 'AUTH_REQUIRED') { await app.auth.signOut().catch(() => {}); if (active) resetPage('/pages/account/login'); }
     else if (['FAMILY_REQUIRED', 'FORBIDDEN'].includes(errorCode(error))) {
       confirmed.value = false; await app.family.load().catch(() => {});
@@ -53,5 +54,5 @@ export function useRecipesPage(load: () => Promise<void>) {
     if (wasActive) { app.recipes.clear(); app.media.clear(); app.imports.clear(); }
   }
   onShow(check); onHide(conceal); onUnload(() => { disposed = true; conceal(); finishResumes(false); stop(); });
-  return { ...app, confirmed, busy, message, check, act, isCurrent: () => active && confirmed.value, back: () => backPage('/pages/recipes/index') };
+  return { ...app, confirmed, busy, message, check, act, reconcile, isCurrent: () => active && confirmed.value, back: () => backPage('/pages/recipes/index') };
 }

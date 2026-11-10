@@ -30,8 +30,8 @@ test('image_save_is_independent_and_preserves_unsaved_text_and_version', async (
   expect(await f.owner.recipes.get(recipe.id)).toMatchObject({ title: '尚未保存的文字', version: 3, imageIds: [expect.any(String)] });
   expect(JSON.stringify(storage.get('home.media.pending.v1:owner') ?? null)).not.toContain('https://'); page.wrapper.unmount();
   const detail = mountPage(Detail, { client: f.member }); await detail.load({ id: recipe.id }); await detail.show();
-  expect(detail.wrapper.find('[data-recipe-image]').exists()).toBe(true);
-  await detail.wrapper.find('[data-recipe-image]').trigger('tap'); await flushPromises(); expect(preview).toHaveBeenCalledOnce(); detail.wrapper.unmount();
+  expect(detail.wrapper.find('[data-private-image]').exists()).toBe(true);
+  await detail.wrapper.find('[data-private-image]').trigger('tap'); await flushPromises(); expect(preview).toHaveBeenCalledOnce(); detail.wrapper.unmount();
 });
 test('new_recipe_explains_text_first_and_chooser_cancel_does_not_allocate', async () => {
   const f = await mediaFixture(); const page = mountPage(Edit, { client: f.owner }); await page.load({}); await page.show();

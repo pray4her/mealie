@@ -59,6 +59,7 @@ test('family_to_recipes_switches_tabs_and_child_pages_use_the_native_stack', asy
   expect(native.events.at(-1)).toEqual({ kind: 'switchTab', url: '/pages/recipes/index' }); await home.hide();
   const recipes = mountPage(List, { client, controllers: home.controllers }); await recipes.show();
   await recipes.wrapper.get('[data-create]').trigger('click');
+  await recipes.wrapper.get('[data-action="0"]').trigger('click');
   expect(native.events.at(-1)).toEqual({ kind: 'navigateTo', url: '/pages/recipes/edit' });
   expect(native.stack).toEqual(['/pages/recipes/index', '/pages/recipes/edit']); recipes.wrapper.unmount(); home.wrapper.unmount();
 });
