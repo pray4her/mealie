@@ -6,6 +6,5 @@ onLaunch(() => { void auth.restore(); });
 onShow(() => { void auth.restore(); });
 </script>
 <style>
-page { background: #f6f5ef; color: #233529; }
-button { background: #216840; color: #fff; border-radius: 20rpx; }
+@import './styles/theme.css';
 </style>

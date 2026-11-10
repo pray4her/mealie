@@ -100,7 +100,7 @@ async function chooseImage() {
 const imageState = { requested: '尚未上传，请移除后重新选择', uploading: '正在上传', uploaded: '上传完成，点击重试校验', checking: '正在校验', pending: '等待审核，可刷新状态', ready: '可保存', rejected: '审核未通过，请移除并更换图片', 'review-error': '审核异常或超时，可重试', failed: '上传失败，请移除后重新选择' };
 </script>
 <template>
-  <view class="page">
+  <view class="page editor-page">
     <view
       v-if="confirmed"
       data-protected
@@ -113,58 +113,70 @@ const imageState = { requested: '尚未上传，请移除后重新选择', uploa
         role="status"
       >
         <text>{{ copy.pendingRecipe }}</text>
-        <button
+        <wd-button
+          type="primary"
           data-resume
           :disabled="busy || !!pendingImages"
+          :aria-disabled="busy || !!pendingImages"
           :loading="busy"
-          @tap="save(true)"
+          :aria-busy="busy"
+          @click="save(true)"
         >
           {{ copy.resumeRecipe }}
-        </button>
+        </wd-button>
       </view>
       <view class="form">
         <text>{{ copy.recipeTitle }}</text>
-        <input
+        <wd-input
+          :cursor-spacing="32"
           data-title
-          :value="draft.title"
+          :model-value="draft.title"
           :maxlength="240"
           :disabled="busy || !!pending"
           :placeholder="copy.recipeTitle"
-          @input="draft.title = $event.detail.value"
-        >
+          @update:model-value="draft.title = $event"
+        />
         <text>{{ copy.recipeDescription }}</text>
-        <textarea
+        <wd-textarea
+          auto-height
+          :cursor-spacing="32"
           data-description
-          :value="draft.description"
+          :model-value="draft.description"
           :maxlength="4000"
           :disabled="busy || !!pending"
           :placeholder="copy.recipeDescription"
-          @input="draft.description = $event.detail.value"
+          @update:model-value="draft.description = $event"
         />
         <text>{{ copy.servings }}</text>
-        <input
+        <wd-input
+          :cursor-spacing="32"
           data-servings
+          :placeholder="copy.servings + '，可留空'"
           type="digit"
-          :value="draft.baseServings"
+          :model-value="draft.baseServings"
           :disabled="busy || !!pending"
-          @input="draft.baseServings = $event.detail.value"
-        >
+          @update:model-value="draft.baseServings = $event"
+        />
         <text>{{ copy.prepMinutes }}</text>
-        <input
+        <wd-input
+          :cursor-spacing="32"
           data-prep
+          :placeholder="copy.prepMinutes + '，可留空'"
           type="digit"
-          :value="draft.prepMinutes"
+          :model-value="draft.prepMinutes"
           :disabled="busy || !!pending"
-          @input="draft.prepMinutes = $event.detail.value"
-        >
+          @update:model-value="draft.prepMinutes = $event"
+        />
         <text>{{ copy.cookMinutes }}</text>
-        <input
+        <wd-input
+          :cursor-spacing="32"
           data-cook
+          :placeholder="copy.cookMinutes + '，可留空'"
           type="digit"
-          :value="draft.cookMinutes"
+          :model-value="draft.cookMinutes"
           :disabled="busy || !!pending"
-          @input="draft.cookMinutes = $event.detail.value"
-        >
+          @update:model-value="draft.cookMinutes = $event"
+        />
         <text class="section">
           {{ copy.ingredients }}
         </text>
@@ -175,61 +187,85 @@ const imageState = { requested: '尚未上传，请移除后重新选择', uploa
           data-ingredient
         >
           <text>{{ copy.ingredients }} {{ index + 1 }}</text>
-          <input
+          <text class="field-label">
+            {{ copy.ingredientRaw }}
+          </text>
+          <wd-input
+            :cursor-spacing="32"
             data-raw
-            :value="row.raw"
+            :model-value="row.raw"
             :maxlength="1000"
             :disabled="busy || !!pending"
             :placeholder="copy.ingredientRaw"
-            @input="row.raw = $event.detail.value"
-          >
-          <input
+            @update:model-value="row.raw = $event"
+          />
+          <text class="field-label">
+            {{ copy.ingredientName }}
+          </text>
+          <wd-input
+            :cursor-spacing="32"
             data-name
-            :value="row.name"
+            :model-value="row.name"
             :maxlength="200"
             :disabled="busy || !!pending"
             :placeholder="copy.ingredientName"
-            @input="row.name = $event.detail.value"
-          >
-          <input
+            @update:model-value="row.name = $event"
+          />
+          <text class="field-label">
+            {{ copy.quantity }}（留空表示未注明）
+          </text>
+          <wd-input
+            :cursor-spacing="32"
             data-quantity
             type="digit"
-            :value="row.quantity"
+            :model-value="row.quantity"
             :disabled="busy || !!pending"
             :placeholder="copy.quantity"
-            @input="row.quantity = $event.detail.value"
-          >
-          <input
+            @update:model-value="row.quantity = $event"
+          />
+          <text class="field-label">
+            {{ copy.unit }}
+          </text>
+          <wd-input
+            :cursor-spacing="32"
             data-unit
-            :value="row.unit"
+            :model-value="row.unit"
             :maxlength="80"
             :disabled="busy || !!pending"
             :placeholder="copy.unit"
-            @input="row.unit = $event.detail.value"
-          >
-          <textarea
+            @update:model-value="row.unit = $event"
+          />
+          <text class="field-label">
+            {{ copy.note }}
+          </text>
+          <wd-textarea
+            auto-height
+            :cursor-spacing="32"
             data-note
-            :value="row.note"
+            :model-value="row.note"
             :maxlength="1000"
             :disabled="busy || !!pending"
             :placeholder="copy.note"
-            @input="row.note = $event.detail.value"
+            @update:model-value="row.note = $event"
           />
-          <button
+          <wd-button
+            type="info"
             data-remove-ingredient
             :disabled="busy || !!pending || draft.ingredients.length === 1"
-            @tap="draft.ingredients.splice(index, 1)"
+            :aria-disabled="busy || !!pending || draft.ingredients.length === 1"
+            @click="draft.ingredients.splice(index, 1)"
           >
             {{ copy.removeRow }}
-          </button>
+          </wd-button>
         </view>
-        <button
+        <wd-button
+          type="info"
           data-add-ingredient
           :disabled="busy || !!pending || draft.ingredients.length >= 100"
-          @tap="draft.ingredients.push(ingredient())"
+          @click="draft.ingredients.push(ingredient())"
         >
           {{ copy.addIngredient }}
-        </button>
+        </wd-button>
         <text class="section">
           {{ copy.steps }}
         </text>
@@ -239,55 +275,66 @@ const imageState = { requested: '尚未上传，请移除后重新选择', uploa
           class="row"
         >
           <text>{{ copy.steps }} {{ index + 1 }}</text>
-          <textarea
+          <wd-textarea
+            auto-height
+            :cursor-spacing="32"
             data-step
-            :value="row.text"
+            :model-value="row.text"
             :maxlength="4000"
             :disabled="busy || !!pending"
             :placeholder="copy.step"
-            @input="row.text = $event.detail.value"
+            @update:model-value="row.text = $event"
           />
-          <button
+          <wd-button
+            type="info"
             data-remove-step
             :disabled="busy || !!pending || draft.steps.length === 1"
-            @tap="draft.steps.splice(index, 1)"
+            :aria-disabled="busy || !!pending || draft.steps.length === 1"
+            @click="draft.steps.splice(index, 1)"
           >
             {{ copy.removeRow }}
-          </button>
+          </wd-button>
         </view>
-        <button
+        <wd-button
+          type="info"
           data-add-step
           :disabled="busy || !!pending || draft.steps.length >= 50"
-          @tap="draft.steps.push(step())"
+          @click="draft.steps.push(step())"
         >
           {{ copy.addStep }}
-        </button>
+        </wd-button>
         <text>{{ copy.tags }}</text>
-        <input
+        <wd-input
+          :cursor-spacing="32"
           data-tags
-          :value="draft.tags"
+          :model-value="draft.tags"
           :maxlength="1640"
           :disabled="busy || !!pending"
           :placeholder="copy.tags"
-          @input="draft.tags = $event.detail.value"
-        >
-        <button
+          @update:model-value="draft.tags = $event"
+        />
+        <wd-button
           v-if="!pending"
+          type="primary"
           data-save
           :disabled="busy || !!pendingImages"
+          :aria-disabled="busy || !!pendingImages"
           :loading="busy"
-          @tap="save()"
+          :aria-busy="busy"
+          @click="save()"
         >
           {{ copy.saveRecipe }}
-        </button>
-        <button
+        </wd-button>
+        <wd-button
           v-if="id && !pending"
+          type="info"
           data-reload
           :disabled="busy"
-          @tap="reload"
+          :aria-disabled="busy"
+          @click="reload"
         >
           {{ copy.reloadRecipe }}
-        </button>
+        </wd-button>
       </view>
       <view data-images>
         <text class="section">
@@ -314,43 +361,52 @@ const imageState = { requested: '尚未上传，请移除后重新选择', uploa
             <text role="status">
               {{ imageState[image.state] }}{{ image.review === 'mock' ? '（模拟审核）' : '' }}
             </text>
-            <button
+            <wd-button
               v-if="image.retryable"
+              type="info"
               data-retry-image
               :disabled="busy || !!pendingImages"
-              @tap="page.act(async () => { await media.retry(image.mediaId); })"
+              :aria-disabled="busy || !!pendingImages"
+              @click="page.act(async () => { await media.retry(image.mediaId); })"
             >
               重试图片处理
-            </button>
-            <button
+            </wd-button>
+            <wd-button
+              type="info"
               data-remove-image
               :disabled="busy || !!pendingImages"
-              @tap="media.remove(image.mediaId)"
+              :aria-disabled="busy || !!pendingImages"
+              @click="media.remove(image.mediaId)"
             >
               移除图片
-            </button>
+            </wd-button>
           </view>
-          <button
+          <wd-button
+            type="info"
             data-choose-image
             :disabled="busy || !!pending || !!pendingImages || images.length >= 20"
-            @tap="chooseImage"
+            @click="chooseImage"
           >
             选择图片
-          </button>
-          <button
+          </wd-button>
+          <wd-button
+            type="info"
             data-refresh-images
             :disabled="busy"
-            @tap="page.act(async () => { await media.refresh(); })"
+            :aria-disabled="busy"
+            @click="page.act(async () => { await media.refresh(); })"
           >
             刷新图片状态
-          </button>
-          <button
+          </wd-button>
+          <wd-button
+            type="info"
             data-save-images
             :disabled="busy || !!pending || !canSaveImages"
-            @tap="saveImages"
+            :aria-disabled="busy || !!pending || !canSaveImages"
+            @click="saveImages"
           >
             {{ pendingImages ? '恢复原图片保存请求' : '保存图片' }}
-          </button>
+          </wd-button>
           <text
             v-if="pendingImages"
             role="status"
@@ -372,25 +428,19 @@ const imageState = { requested: '尚未上传，请移除后重新选择', uploa
     >
       {{ message }}
     </text>
-    <button
+    <wd-button
       v-if="message"
+      type="info"
       data-check
-      @tap="page.check"
+      @click="page.check"
     >
       {{ copy.retry }}
-    </button>
-    <button @tap="page.back">
-      {{ copy.backHome }}
-    </button>
+    </wd-button>
+    <wd-button
+      type="info"
+      @click="page.back"
+    >
+      返回菜谱
+    </wd-button>
   </view>
 </template>
-<style scoped>
-.page { padding: 40rpx; }
-.title { display: block; font-size: 40rpx; margin-bottom: 24rpx; }
-.form > text, .section { display: block; margin-top: 24rpx; }
-.row { margin-top: 24rpx; padding: 24rpx; background: white; border-radius: 16rpx; }
-input, textarea { box-sizing: border-box; width: 100%; min-height: 80rpx; margin-top: 16rpx; padding: 16rpx; background: white; border: 1rpx solid #76766d; border-radius: 8rpx; }
-textarea { height: 180rpx; }
-button { margin-top: 24rpx; }
-.recipe-image { width: 100%; height: 320rpx; }
-</style>

@@ -10,10 +10,10 @@ const { confirmed, busy, message, imports } = page; const { recovery } = imports
 watch(page.auth.signOutEpoch, () => { text.value = ''; });
 onHide(() => { text.value = ''; }); onUnload(() => { text.value = ''; });
 function submit() { void page.act(async current => { const job = await imports.submit(text.value); if (current()) { text.value = ''; uni.redirectTo({ url: '/pages/imports/status?id=' + job.id }); } }); }
-const back = () => uni.reLaunch({ url: '/pages/recipes/index' });
+const back = () => uni.switchTab({ url: '/pages/recipes/index' });
 </script>
 <template>
-  <view class="page">
+  <view class="page import-page">
     <view
       v-if="confirmed"
       data-protected

@@ -18,7 +18,7 @@ import { createFamilyApi } from '../../src/features/family/api';
 
 const navigation: string[] = []; const copies: string[] = [];
 beforeEach(() => { navigation.length = 0; copies.length = 0; vi.stubGlobal('uni', {
-  reLaunch: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url),
+  switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url),
   setClipboardData: ({ data }: { data: string }) => { copies.push(data); return Promise.resolve({}); }, hideShareMenu: () => {},
 }); });
 afterEach(() => { vi.unstubAllGlobals(); });
@@ -55,7 +55,7 @@ test('card_join_requires_confirmation_and_success_shows_shared_members', async (
   const page = mountPage(Join, { client: bob }); await page.load({ token: invite.token }); await page.show();
   expect(await bob.family.current()).toBeNull(); expect(page.wrapper.find('[data-confirm-join]').exists()).toBe(true);
   await page.wrapper.find('[data-confirm-join]').trigger('click'); await flushPromises();
-  expect(navigation.at(-1)).toBe('/pages/family/home'); page.wrapper.unmount();
+  expect(navigation.at(-1)).toBe('/pages/recipes/index'); page.wrapper.unmount();
   const members = mountPage(Members, { client: bob }); await members.show();
   expect(members.wrapper.findAll('[data-member]')).toHaveLength(2); members.wrapper.unmount();
 });
@@ -93,7 +93,7 @@ test('hidden_or_logged_out_join_does_not_navigate_on_a_late_success', async () =
   const page = mountPage(Join, { client: bob }); await page.load({ token: invite.token }); await page.show();
   await page.wrapper.find('[data-confirm-join]').trigger('click'); await flushPromises(); await page.hide();
   await page.auth.signOut(); gate.resolve(null); await flushPromises();
-  expect(navigation).not.toContain('/pages/family/home'); expect(page.wrapper.find('[data-protected]').exists()).toBe(false); page.wrapper.unmount();
+  expect(navigation).not.toContain('/pages/recipes/index'); expect(page.wrapper.find('[data-protected]').exists()).toBe(false); page.wrapper.unmount();
 });
 
 test('a_rejected_invitation_can_be_replaced_by_a_new_manual_code', async () => {
@@ -105,7 +105,7 @@ test('a_rejected_invitation_can_be_replaced_by_a_new_manual_code', async () => {
   await page.wrapper.find('[data-confirm-join]').trigger('click'); await flushPromises();
   expect(page.wrapper.find('input').exists()).toBe(true);
   await page.wrapper.find('input').setValue(second.token); await page.wrapper.find('[data-confirm-join]').trigger('click'); await flushPromises();
-  expect(navigation.at(-1)).toBe('/pages/family/home'); page.wrapper.unmount();
+  expect(navigation.at(-1)).toBe('/pages/recipes/index'); page.wrapper.unmount();
 });
 
 test('manual_invitation_draft_is_erased_when_page_hides', async () => {

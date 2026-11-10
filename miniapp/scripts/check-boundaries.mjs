@@ -98,8 +98,11 @@ export async function checkBoundaries({ root, artifacts = false }) {
     try { manifest = JSON.parse(await readFile(join(root, 'dist/build/mp-weixin/app.json'), 'utf8')); }
     catch { throw new Error('Artifact route manifest missing/invalid'); }
     const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'];
+    const tabs = [{ pagePath: 'pages/recipes/index', text: '菜谱' }, { pagePath: 'pages/family/home', text: '家庭' }];
     if (!Array.isArray(manifest.pages) || manifest.pages.length !== pages.length || manifest.pages.some((page, index) => page !== pages[index])
-      || manifest.subPackages || manifest.subpackages || manifest.tabBar) throw new Error('Artifact routes must match the implemented account/family/recipe/import pages');
+      || manifest.subPackages || manifest.subpackages || manifest.tabBar?.custom
+      || !Array.isArray(manifest.tabBar?.list) || manifest.tabBar.list.length !== tabs.length
+      || manifest.tabBar.list.some((tab, index) => tab.pagePath !== tabs[index].pagePath || tab.text !== tabs[index].text)) throw new Error('Artifact routes must match the implemented account/family/recipe/import pages and native recipe/family tabs');
     for (const path of files) {
       if (/(?:[\\/](?:vendor|tests|cloudfunctions)[\\/]|uniCloud-|\.zip$|\.tar\.gz$)/i.test(path.slice(root.length))) throw new Error('Artifact contains forbidden source');
       if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|home-media|home-imports|uni-sec-check|uni-open-bridge|cloudfunctions\/common|OPENROUTER_API_KEY|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');

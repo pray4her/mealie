@@ -10,7 +10,7 @@ import List from '../../src/pages/recipes/index.vue';
 import { AppError } from '../../src/shared/errors';
 
 const navigation: string[] = [];
-beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { reLaunch: ({ url }: { url: string }) => navigation.push(url), redirectTo: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url) }); });
+beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => navigation.push(url), redirectTo: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url) }); });
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 async function setup() {
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' }); const client = h.client('alice');

@@ -1,10 +1,17 @@
 import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import { fileURLToPath } from 'node:url';
+import { initPreContext, preHtml, preJs } from '@dcloudio/uni-cli-shared';
+
+initPreContext('mp-weixin');
 
 // Intentionally independent: never execute the mini-program production plugin.
 export default defineConfig({
-  plugins: [vue({ template: { compilerOptions: { nodeTransforms: [node => {
+  plugins: [{ name: 'weixin-component-branches', enforce: 'pre', transform(source, id) {
+    if (!id.includes('/@wot-ui/') && !id.includes('/@wot-ui+')) return;
+    if (id.endsWith('.vue')) return preJs(preHtml(source, id), id);
+    if (id.endsWith('.ts')) return preJs(source, id);
+  } }, vue({ template: { compilerOptions: { nodeTransforms: [node => {
     if (node.type === 1 && ['view', 'text', 'button', 'input', 'textarea'].includes(node.tag)) {
       node.tag = `Uni${node.tag[0].toUpperCase()}${node.tag.slice(1)}`; node.tagType = 1;
     }

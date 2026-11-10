@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { enterPage } from '../../shared/navigation';
+
 import { ref, watch } from 'vue';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { copy } from '../../shared/copy';
@@ -9,7 +11,7 @@ const { phase } = auth; const { view } = family;
 const { phase: familyPhase } = family;
 const openInvite = () => uni.navigateTo({ url: '/pages/family/invite' });
 const openMembers = () => uni.navigateTo({ url: '/pages/family/members' });
-const openRecipes = () => uni.navigateTo({ url: '/pages/recipes/index' });
+const openRecipes = () => uni.switchTab({ url: '/pages/recipes/index' });
 const confirmed = ref(false);
 let generation = 0; let active = false;
 let logoutAttempt: Promise<void> | null = null;
@@ -26,7 +28,7 @@ async function check() {
     if (!active || current !== generation || uid !== lastUid) return;
     if (auth.phase.value === 'anonymous') { uni.reLaunch({ url: '/pages/account/login' }); return; }
   }
-  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family, membership, () => active && current === generation);
+  const guard = createRouteGuard(auth, url => { if (active && current === generation) enterPage(url); }, family, membership, () => active && current === generation);
   const allowed = await guard.ensureFamily('home');
   if (active && current === generation) confirmed.value = allowed;
 }
@@ -41,64 +43,70 @@ function conceal() { const wasActive = active; generation++; active = false; con
 onShow(check); onHide(conceal); onUnload(conceal);
 </script>
 <template>
-  <view class="page">
+  <view class="page family-page">
     <view
       v-if="confirmed && phase === 'authenticated' && view"
       data-protected
     >
+      <text class="eyebrow">
+        我们的家庭
+      </text>
       <text class="title">
         {{ view.name }}
       </text>
-      <text>{{ view.role === 'owner' ? copy.owner : copy.member }}</text>
-      <button
+      <text class="role-label">
+        {{ view.role === 'owner' ? copy.owner : copy.member }}
+      </text>
+      <wd-button
+        type="info"
         data-recipes
-        @tap="openRecipes"
+        @click="openRecipes"
       >
         {{ copy.recipes }}
-      </button>
-      <button
+      </wd-button>
+      <wd-button
         v-if="view.role === 'owner'"
+        type="info"
         data-invite
-        @tap="openInvite"
+        @click="openInvite"
       >
         {{ copy.inviteMembers }}
-      </button>
-      <button
+      </wd-button>
+      <wd-button
+        type="info"
         data-members
-        @tap="openMembers"
+        @click="openMembers"
       >
         {{ copy.familyMembers }}
-      </button>
-      <button
+      </wd-button>
+      <wd-button
+        type="info"
         data-sign-out
-        @tap="signOut"
+        @click="signOut"
       >
         {{ copy.signOut }}
-      </button>
+      </wd-button>
     </view>
     <view v-else>
       <text role="status">
         {{ phase === 'unavailable' ? copy.unavailable : familyPhase === 'unavailable' ? copy.familyUnavailable : phase === 'signing-out' ? copy.waiting : copy.checking }}
       </text>
-      <button
+      <wd-button
         v-if="phase === 'unavailable' || familyPhase === 'unavailable'"
+        type="info"
         data-retry
-        @tap="check"
+        @click="check"
       >
         {{ copy.retry }}
-      </button>
-      <button
+      </wd-button>
+      <wd-button
         v-if="phase === 'authenticated' || phase === 'unavailable'"
+        type="info"
         data-sign-out
-        @tap="signOut"
+        @click="signOut"
       >
         {{ copy.signOut }}
-      </button>
+      </wd-button>
     </view>
   </view>
 </template>
-<style scoped>
-.page { padding: 48rpx; }
-.title { display: block; margin-bottom: 24rpx; font-size: 40rpx; }
-button { margin-top: 40rpx; }
-</style>

@@ -1,16 +1,101 @@
 {
   "pages": [
-    { "path": "pages/account/login", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/family/onboarding", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/family/home", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/family/invite", "style": { "navigationStyle": "custom", "enableShareAppMessage": true } },
-    { "path": "pages/family/join", "style": { "navigationStyle": "custom", "enableShareAppMessage": false, "enableShareTimeline": false } },
-    { "path": "pages/family/members", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/recipes/index", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/recipes/detail", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/recipes/edit", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/imports/submit", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/imports/status", "style": { "navigationStyle": "custom" } }
+    {
+      "path": "pages/account/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/family/onboarding",
+      "style": {
+        "navigationBarTitleText": "开始使用"
+      }
+    },
+    {
+      "path": "pages/family/home",
+      "style": {
+        "navigationBarTitleText": "家庭"
+      }
+    },
+    {
+      "path": "pages/family/invite",
+      "style": {
+        "enableShareAppMessage": true,
+        "navigationBarTitleText": "邀请家人"
+      }
+    },
+    {
+      "path": "pages/family/join",
+      "style": {
+        "enableShareAppMessage": false,
+        "enableShareTimeline": false,
+        "navigationBarTitleText": "加入家庭"
+      }
+    },
+    {
+      "path": "pages/family/members",
+      "style": {
+        "navigationBarTitleText": "家庭成员"
+      }
+    },
+    {
+      "path": "pages/recipes/index",
+      "style": {
+        "navigationBarTitleText": "菜谱"
+      }
+    },
+    {
+      "path": "pages/recipes/detail",
+      "style": {
+        "navigationBarTitleText": "菜谱详情"
+      }
+    },
+    {
+      "path": "pages/recipes/edit",
+      "style": {
+        "navigationBarTitleText": "编辑菜谱"
+      }
+    },
+    {
+      "path": "pages/imports/submit",
+      "style": {
+        "navigationBarTitleText": "文本导入"
+      }
+    },
+    {
+      "path": "pages/imports/status",
+      "style": {
+        "navigationBarTitleText": "导入任务"
+      }
+    }
   ],
-  "globalStyle": { "backgroundColor": "#f6f5ef" }
+  "globalStyle": {
+    "backgroundColor": "#f7f8f7",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "default"
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^wd-(.*)": "@wot-ui/ui/components/wd-$1/wd-$1.vue"
+    }
+  },
+  "tabBar": {
+    "color": "#667269",
+    "selectedColor": "#216840",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "text": "菜谱",
+        "pagePath": "pages/recipes/index"
+      },
+      {
+        "text": "家庭",
+        "pagePath": "pages/family/home"
+      }
+    ]
+  }
 }

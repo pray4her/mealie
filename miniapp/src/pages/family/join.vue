@@ -21,12 +21,12 @@ async function join() {
     await family.load();
     const current = family.view.value;
     if (!current || current.uid !== result.uid || current.familyId !== result.familyId || current.generation !== result.generation) throw new AppError('CONFLICT');
-    return '/pages/family/home';
+    return '/pages/recipes/index';
   });
 }
 </script>
 <template>
-  <view class="page">
+  <view class="page family-page">
     <view
       v-if="confirmed"
       data-protected
@@ -36,12 +36,13 @@ async function join() {
       </text>
       <view v-if="view">
         <text>{{ copy.alreadyHasFamily }}{{ view.name }}</text>
-        <button
+        <wd-button
+          type="info"
           data-home
-          @tap="backHome"
+          @click="backHome"
         >
           {{ copy.backHome }}
-        </button>
+        </wd-button>
       </view>
       <view v-else>
         <text>{{ copy.confirmJoinExplanation }}</text>
@@ -50,13 +51,14 @@ async function join() {
         </text>
         <view v-else>
           <text>{{ copy.invitationCode }}</text>
-          <input
-            :value="manual"
+          <wd-input
+            :cursor-spacing="32"
+            :model-value="manual"
             :maxlength="160"
             :disabled="busy"
             :placeholder="copy.invitationPlaceholder"
-            @input="manual = $event.detail.value"
-          >
+            @update:model-value="manual = $event"
+          />
         </view>
         <text
           v-if="pendingJoin"
@@ -64,20 +66,24 @@ async function join() {
         >
           {{ copy.pendingJoin }}
         </text>
-        <button
+        <wd-button
+          type="primary"
           data-confirm-join
           :disabled="busy"
+          :aria-disabled="busy"
           :loading="busy"
-          @tap="join"
+          :aria-busy="busy"
+          @click="join"
         >
           {{ pendingJoin ? copy.resumeJoin : copy.confirmJoin }}
-        </button>
-        <button
+        </wd-button>
+        <wd-button
+          type="info"
           data-back-onboarding
-          @tap="backOnboarding"
+          @click="backOnboarding"
         >
           {{ copy.backOnboarding }}
-        </button>
+        </wd-button>
       </view>
     </view>
     <text
@@ -92,25 +98,20 @@ async function join() {
     >
       {{ message }}
     </text>
-    <button
+    <wd-button
       v-if="!confirmed"
+      type="info"
       data-retry
-      @tap="check"
+      @click="check"
     >
       {{ copy.retry }}
-    </button>
-    <button
+    </wd-button>
+    <wd-button
+      type="info"
       data-sign-out
-      @tap="signOut"
+      @click="signOut"
     >
       {{ copy.signOut }}
-    </button>
+    </wd-button>
   </view>
 </template>
-<style scoped>
-.page { padding: 48rpx; }
-.title { display: block; margin-bottom: 24rpx; font-size: 40rpx; }
-text { display: block; margin-bottom: 24rpx; }
-input { padding: 24rpx; background: white; }
-button { margin-top: 32rpx; }
-</style>

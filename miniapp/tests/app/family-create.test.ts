@@ -13,7 +13,7 @@ import { provideAppClient } from '../../src/shared/app-client';
 import type { AppClient } from 'home-contracts';
 
 const navigation: string[] = [];
-beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
+beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
 afterEach(() => { vi.unstubAllGlobals(); });
 
 test('confirmed_no_family_can_create_trimmed_name_and_enter_home', async () => {
@@ -25,7 +25,7 @@ test('confirmed_no_family_can_create_trimmed_name_and_enter_home', async () => {
   expect(current).toHaveBeenCalledTimes(1); expect(session).toHaveBeenCalledTimes(1);
   await page.wrapper.find('input').setValue('  我们家  ');
   await page.wrapper.find('[data-create]').trigger('click'); await flushPromises();
-  expect(navigation).toEqual(['/pages/family/home']);
+  expect(navigation).toEqual(['/pages/recipes/index']);
   expect(page.wrapper.find('[data-family-form]').exists()).toBe(false);
   expect(await client.family.current()).toMatchObject({ name: '我们家', role: 'owner' });
   page.wrapper.unmount();
@@ -66,7 +66,7 @@ test('unicode_validation_shows_chinese_feedback_and_accepts_40_non_bmp_character
     expect(page.wrapper.text()).toContain('家庭名称需为1至40个字，且不能包含控制字符。'); expect(create).not.toHaveBeenCalled();
   }
   await input.setValue('🍲'.repeat(40)); await page.wrapper.find('[data-create]').trigger('click'); await flushPromises();
-  expect(create).toHaveBeenCalledTimes(1); expect(navigation).toEqual(['/pages/family/home']); page.wrapper.unmount();
+  expect(create).toHaveBeenCalledTimes(1); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test('double_tap_creates_once_disables_input_and_navigates_once', async () => {
@@ -74,8 +74,8 @@ test('double_tap_creates_once_disables_input_and_navigates_once', async () => {
   await h.seedIdentity({ uid: 'alice' }); const client = h.client('alice'); const create = vi.spyOn(client.family, 'create');
   const page = mountPage(Onboarding, { client }); await page.show(); await page.wrapper.find('input').setValue('家');
   const button = page.wrapper.find('[data-create]'); await Promise.all([button.trigger('click'), button.trigger('click')]); await flushPromises();
-  expect(create).toHaveBeenCalledTimes(1); expect(button.attributes('disabled')).toBeDefined(); expect(page.wrapper.find('input').attributes('disabled')).toBeDefined();
-  audit.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/family/home']); page.wrapper.unmount();
+  expect(create).toHaveBeenCalledTimes(1); expect(button.attributes('aria-disabled')).toBe('true'); expect(page.wrapper.find('input').attributes('disabled')).toBeDefined();
+  audit.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test('unknown_result_keeps_name_locked_and_retries_the_same_intent', async () => {
@@ -87,7 +87,7 @@ test('unknown_result_keeps_name_locked_and_retries_the_same_intent', async () =>
   expect(page.wrapper.find('input').attributes('disabled')).toBeDefined(); expect(page.wrapper.find('[data-create]').exists()).toBe(false);
   await page.wrapper.find('[data-resume]').trigger('click'); await flushPromises();
   expect(create).toHaveBeenCalledTimes(2); expect(create.mock.calls[1]).toEqual(create.mock.calls[0]);
-  expect(navigation).toEqual(['/pages/family/home']); page.wrapper.unmount();
+  expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test('cold_start_restores_saved_name_and_request_before_offering_resume', async () => {
@@ -96,7 +96,7 @@ test('cold_start_restores_saved_name_and_request_before_offering_resume', async 
   const create = vi.spyOn(client.family, 'create'); const page = mountPage(Onboarding, { client, storage }); await page.show();
   expect((page.wrapper.find('input').element as HTMLInputElement).value).toBe('上次的家'); expect(page.wrapper.find('input').attributes('disabled')).toBeDefined();
   await page.wrapper.find('[data-resume]').trigger('click'); await flushPromises();
-  expect(create).toHaveBeenCalledWith({ requestId: 'cold-start-request-01', name: '上次的家' }); expect(navigation).toEqual(['/pages/family/home']); page.wrapper.unmount();
+  expect(create).toHaveBeenCalledWith({ requestId: 'cold-start-request-01', name: '上次的家' }); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test.each([
@@ -147,7 +147,7 @@ test('return_after_hidden_create_rechecks_and_unlocks_recovery_without_old_navig
   expect(page.wrapper.find('[data-protected]').exists()).toBe(false); await page.show();
   expect(page.wrapper.find('[data-resume]').attributes('disabled')).toBeUndefined();
   gate.resolve(null); await flushPromises(); expect(navigation).toEqual([]);
-  await page.show(); expect(navigation).toEqual(['/pages/family/home']); page.wrapper.unmount();
+  await page.show(); expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test.each(['hide', 'unload', 'signOut'] as const)('late_create_after_%s_cannot_restore_or_navigate', async action => {
@@ -174,7 +174,7 @@ test('old_account_create_cannot_navigate_or_overwrite_new_account_on_same_page',
   await page.hide(); selected = bob; await page.show(); expect((page.wrapper.find('input').element as HTMLInputElement).value).toBe('');
   gate.resolve(null); await flushPromises(); expect(navigation).toEqual([]); expect(page.wrapper.text()).not.toContain('Alice家');
   await page.wrapper.find('input').setValue('Bob家'); await page.wrapper.find('[data-create]').trigger('click'); await flushPromises();
-  expect(navigation).toEqual(['/pages/family/home']); expect(page.family.view.value).toMatchObject({ uid: 'bob', name: 'Bob家' }); page.wrapper.unmount();
+  expect(navigation).toEqual(['/pages/recipes/index']); expect(page.family.view.value).toMatchObject({ uid: 'bob', name: 'Bob家' }); page.wrapper.unmount();
 });
 
 test('first_definitive_rejection_allows_edit_and_a_new_intent', async () => {
@@ -184,7 +184,7 @@ test('first_definitive_rejection_allows_edit_and_a_new_intent', async () => {
   await page.wrapper.find('[data-create]').trigger('click'); await flushPromises();
   await page.wrapper.find('input').setValue('新的家'); await page.wrapper.find('[data-create]').trigger('click'); await flushPromises();
   expect(create.mock.calls[1][0].name).toBe('新的家'); expect(create.mock.calls[1][0].requestId).not.toBe(create.mock.calls[0][0].requestId);
-  expect(navigation).toEqual(['/pages/family/home']); page.wrapper.unmount();
+  expect(navigation).toEqual(['/pages/recipes/index']); page.wrapper.unmount();
 });
 
 test('uncertain_intent_stays_locked_even_if_a_later_retry_returns_invalid_input', async () => {

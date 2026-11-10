@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { enterPage } from '../../shared/navigation';
+
 import { ref, watch } from 'vue';
 import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { copy } from '../../shared/copy';
@@ -28,7 +30,7 @@ async function check() {
     if (!active || current !== generation || uid !== lastUid) return;
     if (auth.phase.value === 'anonymous') { uni.reLaunch({ url: '/pages/account/login' }); return; }
   }
-  const guard = createRouteGuard(auth, url => { if (active && current === generation) uni.reLaunch({ url }); }, family, membership, () => active && current === generation);
+  const guard = createRouteGuard(auth, url => { if (active && current === generation) enterPage(url); }, family, membership, () => active && current === generation);
   const allowed = await guard.ensureFamily('onboarding');
   if (active && current === generation) confirmed.value = allowed;
 }
@@ -40,7 +42,7 @@ async function submit() {
   message.value = ''; submitting.value = true;
   try {
     await (pending.value ? family.retry() : family.submit(normalized));
-    if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) uni.reLaunch({ url: '/pages/family/home' });
+    if (active && current === generation && auth.phase.value === 'authenticated' && auth.identity.value?.uid === uid) uni.switchTab({ url: '/pages/recipes/index' });
   } catch (error) {
     if (!active || current !== generation) return;
     const code = errorCode(error);
@@ -65,54 +67,65 @@ function conceal() { const wasActive = active; generation++; active = false; res
 onShow(check); onHide(conceal); onUnload(conceal);
 </script>
 <template>
-  <view class="page">
+  <view class="page family-page">
     <view
       v-if="confirmed && phase === 'authenticated' && !view"
       data-protected
     >
+      <text class="eyebrow">
+        开始记录家里的味道
+      </text>
       <text class="title">
         {{ copy.welcome }}
       </text>
       <text>{{ copy.onboarding }}</text>
-      <button
+      <wd-button
+        type="info"
         data-open-join
-        @tap="openJoin"
+        @click="openJoin"
       >
         {{ copy.joinFamily }}
-      </button>
+      </wd-button>
       <view data-family-form>
         <text>{{ copy.familyName }}</text>
-        <input
-          :value="pending?.name ?? name"
+        <wd-input
+          :cursor-spacing="32"
+          :model-value="pending?.name ?? name"
           :maxlength="80"
           :disabled="submitting || !!pending"
           :placeholder="copy.familyNamePlaceholder"
-          @input="name = $event.detail.value"
-        >
+          @update:model-value="name = $event"
+        />
         <text
           v-if="pending"
           role="status"
         >
           {{ copy.pendingFamily }}
         </text>
-        <button
+        <wd-button
           v-if="pending"
+          type="primary"
           data-resume
           :disabled="submitting"
+          :aria-disabled="submitting"
           :loading="submitting"
-          @tap="submit"
+          :aria-busy="submitting"
+          @click="submit"
         >
           {{ copy.resumeFamily }}
-        </button>
-        <button
+        </wd-button>
+        <wd-button
           v-else
+          type="primary"
           data-create
           :disabled="submitting"
+          :aria-disabled="submitting"
           :loading="submitting"
-          @tap="submit"
+          :aria-busy="submitting"
+          @click="submit"
         >
           {{ copy.createFamily }}
-        </button>
+        </wd-button>
       </view>
       <text
         v-if="message"
@@ -120,44 +133,42 @@ onShow(check); onHide(conceal); onUnload(conceal);
       >
         {{ message }}
       </text>
-      <button
+      <wd-button
         v-if="pending && !submitting"
+        type="info"
         data-retry
-        @tap="check"
+        @click="check"
       >
         {{ copy.retry }}
-      </button>
-      <button
+      </wd-button>
+      <wd-button
+        type="info"
         data-sign-out
-        @tap="signOut"
+        @click="signOut"
       >
         {{ copy.signOut }}
-      </button>
+      </wd-button>
     </view>
     <view v-else>
       <text role="status">
         {{ phase === 'unavailable' ? copy.unavailable : familyPhase === 'unavailable' ? copy.familyUnavailable : phase === 'signing-out' ? copy.waiting : copy.checking }}
       </text>
-      <button
+      <wd-button
         v-if="phase === 'unavailable' || familyPhase === 'unavailable'"
+        type="info"
         data-retry
-        @tap="check"
+        @click="check"
       >
         {{ copy.retry }}
-      </button>
-      <button
+      </wd-button>
+      <wd-button
         v-if="phase === 'authenticated' || phase === 'unavailable'"
+        type="info"
         data-sign-out
-        @tap="signOut"
+        @click="signOut"
       >
         {{ copy.signOut }}
-      </button>
+      </wd-button>
     </view>
   </view>
 </template>
-<style scoped>
-.page { padding: 48rpx; }
-.title { display: block; margin-bottom: 24rpx; font-size: 40rpx; }
-input { padding: 24rpx; margin-top: 24rpx; background: white; }
-button { margin-top: 40rpx; }
-</style>

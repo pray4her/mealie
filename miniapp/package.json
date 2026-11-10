@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@10.20.0",
-  "engines": { "node": "22.23.3", "pnpm": "10.20.0" },
+  "engines": {
+    "node": "22.23.3",
+    "pnpm": "10.20.0"
+  },
   "scripts": {
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:mp-weixin": "uni build -p mp-weixin",
@@ -27,6 +30,7 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-5030420261029002",
     "@dcloudio/uni-mp-xhs": "3.0.0-5030420261029002",
     "@dcloudio/uni-quickapp-webview": "3.0.0-5030420261029002",
+    "@wot-ui/ui": "2.4.0",
     "vue": "3.4.21",
     "vue-i18n": "9.14.5"
   },
@@ -46,6 +50,7 @@
     "eslint": "9.39.1",
     "eslint-plugin-vue": "10.5.1",
     "jsdom": "26.1.0",
+    "sass": "1.98.0",
     "typescript": "5.8.3",
     "typescript-eslint": "8.46.3",
     "vite": "5.2.8",

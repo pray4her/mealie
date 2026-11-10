@@ -22,7 +22,7 @@ async function change(action: MembershipAction, target?: MemberView) {
 }
 </script>
 <template>
-  <view class="page">
+  <view class="page family-page">
     <view
       v-if="confirmed && view"
       data-protected
@@ -42,20 +42,24 @@ async function change(action: MembershipAction, target?: MemberView) {
           {{ copy.memberId }}{{ member.uid }}
         </text>
         <template v-if="view.role === 'owner' && member.role === 'member' && member.uid !== auth.identity.value?.uid">
-          <button
+          <wd-button
+            type="info"
             data-remove-member
             :disabled="busy"
-            @tap="change('removeMember', member)"
+            :aria-disabled="busy"
+            @click="change('removeMember', member)"
           >
             {{ copy.removeMember }}
-          </button>
-          <button
+          </wd-button>
+          <wd-button
+            type="info"
             data-transfer-owner
             :disabled="busy"
-            @tap="change('transferOwner', member)"
+            :aria-disabled="busy"
+            @click="change('transferOwner', member)"
           >
             {{ copy.transferOwner }}
-          </button>
+          </wd-button>
         </template>
       </view>
       <text
@@ -64,24 +68,30 @@ async function change(action: MembershipAction, target?: MemberView) {
       >
         {{ copy.ownerLeaveHint }}
       </text>
-      <button
+      <wd-button
         v-else
+        type="info"
         data-leave-family
         :disabled="busy"
+        :aria-disabled="busy"
         :loading="busy"
-        @tap="change('leave')"
+        :aria-busy="busy"
+        @click="change('leave')"
       >
         {{ copy.leaveFamily }}
-      </button>
+      </wd-button>
       <text
         v-if="message"
         role="status"
       >
         {{ message }}
       </text>
-      <button @tap="backHome">
+      <wd-button
+        type="info"
+        @click="backHome"
+      >
         {{ copy.backHome }}
-      </button>
+      </wd-button>
     </view>
     <text
       v-else
@@ -89,26 +99,20 @@ async function change(action: MembershipAction, target?: MemberView) {
     >
       {{ message || copy.checking }}
     </text>
-    <button
+    <wd-button
       v-if="!confirmed || !view"
+      type="info"
       data-retry
-      @tap="check"
+      @click="check"
     >
       {{ copy.retry }}
-    </button>
-    <button
+    </wd-button>
+    <wd-button
+      type="info"
       data-sign-out
-      @tap="signOut"
+      @click="signOut"
     >
       {{ copy.signOut }}
-    </button>
+    </wd-button>
   </view>
 </template>
-<style scoped>
-.page { padding: 48rpx; }
-.title { display: block; margin-bottom: 24rpx; font-size: 40rpx; }
-.member { padding: 24rpx; margin-bottom: 24rpx; background: white; border-radius: 16rpx; }
-.member-id { overflow-wrap: anywhere; }
-text { display: block; margin-bottom: 16rpx; }
-button { margin-top: 32rpx; }
-</style>

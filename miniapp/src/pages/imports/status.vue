@@ -29,10 +29,10 @@ watch([confirmed, () => job.value?.state], schedule, { flush: 'sync' });
 onBeforeUnmount(stop);
 const open = (edit = false) => { if (job.value?.recipeId) uni.navigateTo({ url: '/pages/recipes/' + (edit ? 'edit' : 'detail') + '?id=' + job.value.recipeId }); };
 const start = () => uni.redirectTo({ url: '/pages/imports/submit' });
-const back = () => uni.reLaunch({ url: '/pages/recipes/index' });
+const back = () => uni.switchTab({ url: '/pages/recipes/index' });
 </script>
 <template>
-  <view class="page">
+  <view class="page import-page">
     <view
       v-if="confirmed && job"
       data-protected

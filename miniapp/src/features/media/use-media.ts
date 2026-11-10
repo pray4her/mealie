@@ -9,6 +9,7 @@ import { parseMediaRequest } from './api';
 
 type UploadIntent = { input: MediaUploadRequest; mediaId: string | null };
 type Draft = { familyId: string; generation: string; recipeId: string; imageIds: string[]; requests: UploadIntent[]; pending: RecipeImagesMutation | null };
+type ImageRecipe = Pick<Recipe, 'id' | 'familyId'> & { readonly imageIds: readonly string[] };
 export function createMediaController(options: { api: MediaApi; recipes: RecipesApi; auth: AuthController; family: ReturnType<typeof createFamilyController>; storage: SessionStorage; newRequestId(): Promise<string> }) {
   const items = ref<MediaView[]>([]); const links = ref<Record<string, MediaLink>>({}); const pending = ref<RecipeImagesMutation | null>(null);
   let draft: Draft | null = null; let epoch = 0; let visible = false; let disposed = false; let owner = options.auth.identity.value?.uid;
@@ -42,7 +43,7 @@ export function createMediaController(options: { api: MediaApi; recipes: Recipes
     const recipes = { ...savedRecipes(ctx), [draft.recipeId]: draft };
     options.storage.set(key(ctx.uid), JSON.parse(JSON.stringify({ familyId: ctx.familyId, generation: ctx.generation, recipes }))); pending.value = draft.pending;
   }
-  function restore(value: unknown, recipe: Recipe, ctx: ReturnType<typeof current>): Draft | null {
+  function restore(value: unknown, recipe: ImageRecipe, ctx: ReturnType<typeof current>): Draft | null {
     if (!value) return null;
     try {
       const row = object(value, ['familyId', 'generation', 'recipeId', 'imageIds', 'requests', 'pending']);
@@ -60,7 +61,7 @@ export function createMediaController(options: { api: MediaApi; recipes: Recipes
       return { familyId: ctx.familyId, generation: ctx.generation, recipeId: recipe.id, imageIds, requests, pending };
     } catch { throw new AppError('UNAVAILABLE'); }
   }
-  async function initialize(recipe: Recipe, edit = false) {
+  async function initialize(recipe: ImageRecipe, edit = false) {
     conceal(); visible = true; const ctx = current();
     if (recipe.familyId !== ctx.familyId) throw new AppError('UNAVAILABLE');
     draft = edit ? restore(savedRecipes(ctx)[recipe.id], recipe, ctx) : null;

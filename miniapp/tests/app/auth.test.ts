@@ -13,14 +13,22 @@ import { createMemoryStorage, deferCall } from '../support/sdk-transport';
 import type { AppClient } from 'home-contracts';
 import { copy } from '../../src/shared/copy';
 const navigation: string[] = [];
-beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
+beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
+async function signedOutClient(signInWeixin: AppClient['account']['signInWeixin']): Promise<AppClient> {
+  const h = createHarness(); await h.seedIdentity({ uid: 'alice' }); const client = h.client('alice'); let signedIn = false;
+  return { ...client, account: { ...client.account,
+    async signInWeixin() { const identity = await signInWeixin(); signedIn = true; return identity; },
+    async session() { if (!signedIn) throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); return { uid: 'alice' }; },
+  } };
+}
 test('calls_weixin_then_server_session', async () => {
   const order: string[] = []; const boundary = createSessionBoundary(createMemoryStorage());
-  const client = { ...createHarness().client('alice'), account: createAccountApi({ boundary, platformLogin: async () => { order.push('weixin'); return 'short-code'; }, wire: {
+  const h = createHarness(); await h.seedIdentity({ uid: 'alice' });
+  const client = { ...h.client('alice'), account: createAccountApi({ boundary, platformLogin: async () => { order.push('weixin'); return 'short-code'; }, wire: {
     async loginByWeixin(code) { expect(code).toBe('short-code'); order.push('login'); }, async session() { order.push('session'); return { uid: 'alice' }; }, async logout() {},
   } }) };
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click'); await flushPromises();
-  expect(order.slice(-3)).toEqual(['weixin', 'login', 'session']); expect(navigation.at(-1)).toContain('family/onboarding');
+  const start = order.indexOf('weixin'); expect(order.slice(start, start + 3)).toEqual(['weixin', 'login', 'session']); expect(navigation.at(-1)).toContain('family/onboarding');
 });
 test('redirects_on_expired_login', async () => {
   const page = mountPage(Onboarding, { client: createHarness().client('forged') }); await page.show();
@@ -78,9 +86,7 @@ test('login_hidden_then_shown_does_not_run_the_previous_show_navigation', async 
 
 test('current_login_show_finishes_pending_sign_in_once_after_repeated_hide_and_show', async () => {
   const gate = deferCall(); const signIn = vi.fn(async () => { await gate.promise; return { uid: 'alice' }; });
-  const client: AppClient = { ...createHarness().client('alice'), account: {
-    signInWeixin: signIn, async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
-  } };
+  const client = await signedOutClient(signIn);
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click');
   await page.hide(); const first = page.show(); await flushPromises(); await page.hide();
   const second = page.show(); const overlapping = page.show(); await flushPromises();
@@ -103,9 +109,7 @@ test.each(['hide', 'unload'] as const)('pending_sign_in_cannot_navigate_after_cu
 test.each(['AUTH_REQUIRED', 'UNAVAILABLE'])('pending_sign_in_failure_after_new_show_remains_retryable_%s', async code => {
   const gate = deferCall(); const signIn = vi.fn(async () => ({ uid: 'alice' }))
     .mockImplementationOnce(async () => { await gate.promise; throw Object.assign(new Error('safe'), { code }); });
-  const client: AppClient = { ...createHarness().client('alice'), account: {
-    signInWeixin: signIn, async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
-  } };
+  const client = await signedOutClient(signIn);
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click');
   await page.hide(); const showing = page.show(); await flushPromises(); gate.resolve(null); await showing;
   const button = page.wrapper.find('[data-sign-in]'); expect(button.attributes('disabled')).toBeUndefined();

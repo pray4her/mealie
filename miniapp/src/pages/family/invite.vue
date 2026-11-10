@@ -17,7 +17,7 @@ onShareAppMessage(() => ({
 }));
 </script>
 <template>
-  <view class="page">
+  <view class="page family-page">
     <view
       v-if="confirmed"
       data-protected
@@ -26,33 +26,39 @@ onShareAppMessage(() => ({
         {{ copy.inviteMembers }}
       </text>
       <text>{{ copy.invitationExplanation }}</text>
-      <button
+      <wd-button
+        type="primary"
         data-generate
         :disabled="busy"
+        :aria-disabled="busy"
         :loading="busy"
-        @tap="generate"
+        :aria-busy="busy"
+        @click="generate"
       >
         {{ copy.generateInvitation }}
-      </button>
+      </wd-button>
       <view
         v-if="invitation"
         class="invitation"
       >
         <text>{{ copy.expiresAt }}{{ formatDate(invitation.expiresAt) }}</text>
         <button
+          class="native-share"
           data-share
           open-type="share"
           :disabled="busy"
         >
           {{ copy.shareInvitation }}
         </button>
-        <button
+        <wd-button
+          type="info"
           data-copy
           :disabled="busy"
-          @tap="copyToken"
+          :aria-disabled="busy"
+          @click="copyToken"
         >
           {{ copy.copyInvitation }}
-        </button>
+        </wd-button>
       </view>
       <view
         v-for="item in items"
@@ -62,29 +68,36 @@ onShareAppMessage(() => ({
       >
         <text>{{ copy.invitationStatuses[item.status] }} · {{ formatDate(item.createdAt) }}</text>
         <text>{{ copy.expiresAt }}{{ formatDate(item.expiresAt) }}</text>
-        <button
+        <wd-button
           v-if="item.status === 'pending'"
+          type="info"
           data-revoke
           :disabled="busy"
-          @tap="revoke(item.invitationId)"
+          :aria-disabled="busy"
+          @click="revoke(item.invitationId)"
         >
           {{ copy.revokeInvitation }}
-        </button>
+        </wd-button>
       </view>
       <text v-if="!items.length">
         {{ copy.noInvitations }}
       </text>
-      <button
+      <wd-button
         v-if="nextCursor"
+        type="info"
         data-more
         :disabled="busy"
-        @tap="act(() => invitations.list(true))"
+        :aria-disabled="busy"
+        @click="act(() => invitations.list(true))"
       >
         {{ copy.loadMore }}
-      </button>
-      <button @tap="backHome">
+      </wd-button>
+      <wd-button
+        type="info"
+        @click="backHome"
+      >
         {{ copy.backHome }}
-      </button>
+      </wd-button>
     </view>
     <text
       v-else
@@ -98,25 +111,20 @@ onShareAppMessage(() => ({
     >
       {{ message }}
     </text>
-    <button
+    <wd-button
       v-if="!confirmed"
+      type="info"
       data-retry
-      @tap="check"
+      @click="check"
     >
       {{ copy.retry }}
-    </button>
-    <button
+    </wd-button>
+    <wd-button
+      type="info"
       data-sign-out
-      @tap="signOut"
+      @click="signOut"
     >
       {{ copy.signOut }}
-    </button>
+    </wd-button>
   </view>
 </template>
-<style scoped>
-.page { padding: 48rpx; }
-.title { display: block; margin-bottom: 24rpx; font-size: 40rpx; }
-.invitation { margin-top: 32rpx; padding: 24rpx; background: white; border-radius: 16rpx; }
-text { display: block; margin-bottom: 16rpx; }
-button { margin-top: 24rpx; }
-</style>

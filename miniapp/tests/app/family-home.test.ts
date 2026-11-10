@@ -12,7 +12,7 @@ import { createRouteGuard } from '../../src/shared/route-guard';
 import type { AppClient } from 'home-contracts';
 
 const navigation: string[] = [];
-beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
+beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => { navigation.push(url); } }); });
 test('home_rechecks_current_before_showing_name_and_own_role', async () => {
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' });
   const client = h.client('alice'); await client.family.create({ name: '家常饭', requestId: 'home-test-request-01' });
@@ -50,9 +50,9 @@ test.each([Home, Onboarding])('unauthenticated_direct_entry_goes_to_login_%#', a
 test('existing_family_onboarding_redirects_once_and_home_does_not_redirect_back', async () => {
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' }); const client = h.client('alice');
   await client.family.create({ name: '家', requestId: 'existing-home-request' });
-  const onboarding = mountPage(Onboarding, { client }); await onboarding.show(); expect(navigation).toEqual(['/pages/family/home']);
+  const onboarding = mountPage(Onboarding, { client }); await onboarding.show(); expect(navigation).toEqual(['/pages/recipes/index']);
   expect(onboarding.wrapper.find('[data-family-form]').exists()).toBe(false); await onboarding.hide();
-  const home = mountPage(Home, { client }); await home.show(); expect(navigation).toEqual(['/pages/family/home']);
+  const home = mountPage(Home, { client }); await home.show(); expect(navigation).toEqual(['/pages/recipes/index']);
   onboarding.wrapper.unmount(); home.wrapper.unmount();
 });
 
