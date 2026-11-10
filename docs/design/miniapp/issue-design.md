@@ -53,3 +53,12 @@ None — [已有事实为什么支持立即开始；或列出真实未满足依�
 基于已推送 `0dc31abfff4cfd53df90ad5a8161ed7498c0eaa2`，#1–#7 页面足以独立完成样式、组件和导航改造。#8 的本地未提交工作不作为输入；#9–#19 不作为前置。后续它们自己的工单引用相应页面模式即可，不以本票关闭作为一律必需的前置。
 
 若待执行分支已合入新模块，在实施计划里记录实际代码变化；不要擅自把未验收的新业务算进原 UI 工单的完成范围。
+
+## 已发布记录
+
+- 2026-11-10：[工单 #20 — 按家常设计基线重构已交付页面](https://github.com/pray4her/mealie/issues/20)。
+- 本地正文：[refactor-existing-pages.md](refactor-existing-pages.md)。
+- 固定设计提交：`f26c51e5963c71148e04a1d13862efab1d0da92d`，已推送 `upstream/miniapp-dev`；包含规范、预览、资产、AGENTS 入口、规则和 UI 工单模板。
+- GitHub 发布后回读：`OPEN`，标签仅 `ready-for-agent`，原生 `blocked_by` 返回空列表（0 项），正文含固定提交链接与 `Blocked by: None`。
+- 旧 #1–#19 状态和原生依赖未修改；本次未开始 #20 业务页面重构。
+- GitHub 网页的新建 issue 表单由默认分支提供。本模板当前发布在 `miniapp-dev`，合入默认分支后才会出现在默认网页表单列表；在此之前 agent 仍应按本约定发布完整正文。

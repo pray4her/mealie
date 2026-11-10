@@ -6,6 +6,7 @@
 - 批准依据：用户在审阅 HTML 预览后明确表示“认同该设计”，并要求沉淀依据、为既有页面重构新增不被阻塞的工单。
 - 视觉目标：[已认可的 HTML 预览](../../../miniapp/design-preview/index.html)。在本地用浏览器打开，连同 `assets/` 一起保留。
 - 事实来源：[来源与决策记录](sources.md)。后续 UI 工单使用[设计工单约定](issue-design.md)。
+- 既有页面重构：[已发布工单 #20 与范围](refactor-existing-pages.md)，可立即开始，原生阻塞 0 项。
 
 ## 1. 来源顺序与批准边界
 

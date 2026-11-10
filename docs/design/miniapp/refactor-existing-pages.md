@@ -1,6 +1,6 @@
 # 既有页面 UI 重构工单正文
 
-发布目标：`pray4her/mealie`。此文件记录工单范围；发布时将设计与代码引用转换为固定提交链接。发布结果见 [工单约定](issue-design.md)。
+已发布：[pray4her/mealie #20](https://github.com/pray4her/mealie/issues/20)，`ready-for-agent`，原生阻塞 0 项。此文件记录工单范围；GitHub 正文中的设计与代码引用使用固定提交链接。发布回读见 [工单约定](issue-design.md)。
 
 ## What to build
 
