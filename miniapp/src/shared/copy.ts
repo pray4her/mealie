@@ -19,6 +19,7 @@ export const copy = {
     ALREADY_IN_FAMILY: '请重新确认家庭状态。', INVITATION_INVALID: '请重新确认家庭状态。',
   },
   title: '家庭菜谱', signIn: '微信登录', signOut: '退出登录', retry: '重试',
+  brandName: '家常', loginIntro: '把家里的拿手菜，好好记下来。', loginHint: '微信登录后，与家人一起记录和分享菜谱。', signingIn: '正在微信登录…',
   retrySignIn: '重试微信登录',
   welcome: '创建你的家庭', onboarding: '创建家庭后，一起收藏和安排家常菜。',
   familyName: '家庭名称', familyNamePlaceholder: '请输入家庭名称', createFamily: '创建家庭',

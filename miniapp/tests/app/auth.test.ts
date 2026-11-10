@@ -55,6 +55,35 @@ test('failed_login_shows_safe_retry_without_non_weixin_entry', async () => {
   expect(page.wrapper.text()).toContain(copy.denied); expect(page.wrapper.findAll('button')).toHaveLength(1);
   expect(page.wrapper.find('[data-sign-in]').attributes('disabled')).toBeUndefined();
 });
+
+test('login_announces_busy_state_and_prevents_another_click_until_the_attempt_finishes', async () => {
+  const gate = deferCall(); let calls = 0;
+  const client: AppClient = { ...createHarness().client('alice'), account: {
+    async signInWeixin() { calls++; await gate.promise; return { uid: 'alice' }; },
+    async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
+  } };
+  const page = mountPage(Login, { client }); await page.show();
+  const button = page.wrapper.get('[data-sign-in]'); await button.trigger('click');
+  expect(page.wrapper.get('[role="status"]').attributes('aria-busy')).toBe('true');
+  expect(page.wrapper.get('[role="status"]').text()).toContain('正在微信登录');
+  expect(button.attributes('disabled')).toBeDefined(); await button.trigger('click'); expect(calls).toBe(1);
+  gate.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/family/onboarding']); page.wrapper.unmount();
+});
+
+test('login_failure_is_announced_inline_and_retry_clears_it_before_success', async () => {
+  const gate = deferCall(); let attempts = 0;
+  const client: AppClient = { ...createHarness().client('alice'), account: {
+    async signInWeixin() { if (++attempts === 1) throw Object.assign(new Error('private transport detail'), { code: 'UNAVAILABLE' }); await gate.promise; return { uid: 'alice' }; },
+    async session() { throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); }, async signOut() {},
+  } };
+  const page = mountPage(Login, { client }); await page.show();
+  await page.wrapper.get('[data-sign-in]').trigger('click'); await flushPromises();
+  expect(page.wrapper.get('[role="alert"]').text()).toBe(copy.unavailable);
+  expect(page.wrapper.text()).not.toContain('private transport detail');
+  expect(page.wrapper.findAll('button')).toHaveLength(1); expect(page.wrapper.find('input').exists()).toBe(false);
+  await page.wrapper.get('[data-sign-in]').trigger('click'); expect(page.wrapper.find('[role="alert"]').exists()).toBe(false);
+  gate.resolve(null); await flushPromises(); expect(navigation).toEqual(['/pages/family/onboarding']); page.wrapper.unmount();
+});
 test('mounted_pages_share_the_application_auth_and_family_controller', async () => {
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' });
   const Page = defineComponent({ setup() {

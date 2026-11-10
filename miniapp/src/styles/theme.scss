@@ -1,0 +1,58 @@
+@use '@wot-ui/ui/styles/theme/index.scss';
+
+// Root portals leave the page tree, so they need the same semantic theme.
+page,
+.wot-theme-light,
+.wd-root-portal,
+.wot-theme-light .wd-root-portal {
+  --app-background: #F7F8F7;
+  --app-surface: #FFFFFF;
+  --app-text: #202923;
+  --app-text-secondary: #667269;
+  --app-border: #E5EAE6;
+  --app-primary: #216840;
+  --app-primary-active: #184E30;
+  --app-selected: #EAF3ED;
+  --app-danger: #B33F38;
+  --app-warning: #9B6A1A;
+
+  --wot-primary-1: var(--app-selected);
+  --wot-primary-2: var(--app-selected);
+  --wot-primary-3: var(--app-selected);
+  --wot-primary-4: var(--app-selected);
+  --wot-primary-5: var(--app-primary);
+  --wot-primary-6: var(--app-primary);
+  --wot-primary-7: var(--app-primary-active);
+  --wot-primary-8: var(--app-primary-active);
+  --wot-primary-9: var(--app-primary-active);
+  --wot-primary-10: var(--app-primary-active);
+  --wot-text-main: var(--app-text);
+  --wot-text-secondary: var(--app-text-secondary);
+  --wot-text-auxiliary: var(--app-text-secondary);
+  --wot-icon-main: var(--app-text);
+  --wot-icon-secondary: var(--app-text-secondary);
+  --wot-border-main: var(--app-border);
+  --wot-divider-main: var(--app-border);
+  --wot-filled-bottom: var(--app-background);
+  --wot-filled-oppo: var(--app-surface);
+  --wot-danger-main: var(--app-danger);
+  --wot-warning-main: var(--app-warning);
+  --wot-success-main: var(--app-primary);
+
+  --wot-button-radius-main: 10px;
+  --wot-button-height-large: 48px;
+  --wot-button-font-size-large: 16px;
+}
+
+page {
+  background: var(--app-background);
+  color: var(--app-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--app-primary);
+  outline-offset: 3px;
+}
