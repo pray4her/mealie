@@ -7,7 +7,7 @@ import { doctor } from './doctor.mjs';
 
 // Offline inventory only: no cloud SDK, shell command, association, upload or DB API.
 export async function createDeployPreview({ root, ticket }) {
-  if (ticket !== undefined && !['task02', 'task03', 'task04', 'task05', 'task06'].includes(ticket)) throw new Error('Unknown preview ticket');
+  if (ticket !== undefined && !['task02', 'task03', 'task04', 'task05', 'task06', 'task07'].includes(ticket)) throw new Error('Unknown preview ticket');
   const target = JSON.parse(await readFile(join(root, 'ops/project-target.json'), 'utf8'));
   const readiness = await doctor({ root, ticket });
   if (readiness.blockers.includes('target-invalid')) throw new Error('Invalid project target');
@@ -26,7 +26,7 @@ export async function createDeployPreview({ root, ticket }) {
     const tree = [];
     for (const file of files) tree.push(relative(directory, file).split('\\').join('/') + '\0' + hash(await readFile(file)));
     const pkg = JSON.parse(await readFile(path, 'utf8'));
-    resources.push({ ...entry(common ? 'common-module' : 'cloud-object', (common || object)[1], directory, hash(tree.join('\n'))), platformExtensionDeclarations: Object.keys(pkg.extensions || {}).sort() });
+    resources.push({ ...entry(common ? 'common-module' : object[1] === 'media-review-callback' ? 'cloud-function' : 'cloud-object', (common || object)[1], directory, hash(tree.join('\n'))), platformExtensionDeclarations: Object.keys(pkg.extensions || {}).sort() });
   }
   for (const path of all.filter(path => /\.(?:schema|index)\.json$/.test(path))) resources.push(entry(path.endsWith('.schema.json') ? 'schema' : 'index', basename(path), path, hash(await readFile(path))));
   return {
@@ -68,6 +68,13 @@ export async function createDeployPreview({ root, ticket }) {
       preservationRequired: 'Preserve remote identity/configuration/bridge dependencies, existing recipes, indexes and receipts. Add only recipe_favorites with built-in _id uniqueness and extend receipt operation enum; no reset, plugin initialization or backfill.',
       compatibility: 'Deploy matching cloud/client artifacts in the isolated test space. Recipe.isFavorite is response-only; legacy recipes and immutable recipe receipt snapshots stay readable. Old cursors restart at first page.',
       queryBounds: { candidatesRead: 101, candidatesExamined: 100, recipesHydrated: 20, favoritesBatch: 100, index: 'existing family_created_id' },
+    } : {}),
+    ...(ticket === 'task07' ? {
+      sharedModuleImpact: ['account-co', 'uni-id-co', 'family-co', 'recipes-co', 'media-co', 'media-review-callback'],
+      proposedChanges: resources.filter(item => ['home-contracts', 'home-kernel', 'home-recipes', 'home-media', 'recipes-co', 'media-co', 'media-review-callback', 'media_files.schema.json', 'media_audit_traces.schema.json', 'mutation_receipts.schema.json'].includes(item.name)),
+      media: { maxBytes: 1048576, maxImages: 20, mime: ['image/jpeg', 'image/png'], uploadLeaseSeconds: 300, targetUrlSeconds: 600, storagePrefix: 'task07-private', reviewDefault: 'disabled' },
+      environmentVariables: ['MEDIA_REVIEW_ENABLED', 'MEDIA_REVIEW_CALLBACK_TOKEN', 'MEDIA_REVIEW_ENCODING_AES_KEY', 'MEDIA_REVIEW_WEIXIN_APP_ID'],
+      preservationRequired: 'Preserve existing recipes, receipts, identity and bridge configuration; no reset or full-plugin initialization. Real ACL, callback and device acceptance remain separate from mock tests.',
     } : {}),
     compiledCloudArtifactSha256: null,
     resources: resources.sort((a, b) => a.path.localeCompare(b.path)),

@@ -9,6 +9,7 @@ import { createInvitationController } from '../features/family/use-invitations';
 import { createMembershipIntents } from '../features/family/membership-intents';
 import { createMembershipController } from '../features/family/use-membership';
 import { createRecipesController } from '../features/recipes/use-recipes';
+import { createMediaController } from '../features/media/use-media';
 import type { SessionStorage } from './session-boundary';
 
 type ControllerOptions = { storage?: SessionStorage; newRequestId?: () => Promise<string> };
@@ -22,8 +23,9 @@ function createAppControllers(client: AppClient, options: ControllerOptions) {
   const family = createFamilyController({ api: client.family, account: client.account, auth, intents: creations, newRequestId: random, hasPendingJoin: uid => !!invitationIntents.read(uid, 'join') || !!membershipIntents.read(uid) });
   const invitations = createInvitationController({ api: client.family, auth, family, intents: invitationIntents, creations, newRequestId: random });
   const recipes = createRecipesController({ api: client.recipes, auth, family, storage, newRequestId: random });
-  const membership = createMembershipController({ api: client.family, auth, family, intents: membershipIntents, newRequestId: random, invalidate() { family.clear(); invitations.conceal(); recipes.clear(); } });
-  return { client, auth, family, invitations, membership, recipes };
+  const media = createMediaController({ api: client.media, recipes: client.recipes, auth, family, storage, newRequestId: random });
+  const membership = createMembershipController({ api: client.family, auth, family, intents: membershipIntents, newRequestId: random, invalidate() { family.clear(); invitations.conceal(); recipes.clear(); media.clear(); } });
+  return { client, auth, family, invitations, membership, recipes, media };
 }
 export const appClientKey: InjectionKey<ReturnType<typeof createAppControllers>> = Symbol('home-app-client');
 export function provideAppClient(app: App, client: AppClient, options: ControllerOptions = {}) { const value = createAppControllers(client, options); app.provide(appClientKey, value); return value; }

@@ -1,0 +1,68 @@
+{
+  "recordedAt": "2026-11-10T03:35:09.952Z",
+  "mode": "real-network-empty-session",
+  "businessSession": "empty; no uni-id token",
+  "source": "Installed official SDK and linked public client config",
+  "businessRowsWritten": false,
+  "results": [
+    {
+      "name": "media-co",
+      "method": "requestUpload",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "media-co",
+      "method": "upload",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "media-co",
+      "method": "complete",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "media-co",
+      "method": "status",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "media-co",
+      "method": "read",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "recipes-co",
+      "method": "bindImages",
+      "errorCode": "AUTH_REQUIRED"
+    },
+    {
+      "name": "media-review-callback",
+      "method": "main",
+      "statusCode": 503,
+      "meaning": "Unconfigured callback rejected; not a real Weixin callback test"
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    },
+    {
+      "method": "POST"
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "bsonType": "object",
+  "required": [
+    "_id",
+    "uid",
+    "familyId",
+    "generation",
+    "sessionHash",
+    "requestId",
+    "payloadHash",
+    "purpose",
+    "mime",
+    "bytes",
+    "sha256",
+    "fileId",
+    "cloudPath",
+    "attempt",
+    "traceId",
+    "recipeId",
+    "state",
+    "review",
+    "uploadExpiresAt",
+    "createdAt",
+    "updatedAt",
+    "leaseUntil",
+    "reviewExpiresAt",
+    "cleanupAt",
+    "garbagePaths"
+  ],
+  "permission": {
+    "read": false,
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "bsonType": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "uid": {
+      "bsonType": "string",
+      "minLength": 1
+    },
+    "familyId": {
+      "bsonType": "string",
+      "minLength": 1
+    },
+    "generation": {
+      "bsonType": "string",
+      "minLength": 1
+    },
+    "sessionHash": {
+      "bsonType": "string",
+      "minLength": 1
+    },
+    "requestId": {
+      "bsonType": "string",
+      "minLength": 1
+    },
+    "payloadHash": {
+      "bsonType": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "bsonType": "string",
+      "enum": [
+        "recipe-image",
+        "import-input"
+      ]
+    },
+    "mime": {
+      "bsonType": "string",
+      "enum": [
+        "image/jpeg",
+        "image/png"
+      ]
+    },
+    "bytes": {
+      "bsonType": "int",
+      "minimum": 1,
+      "maximum": 1048576
+    },
+    "sha256": {
+      "bsonType": [
+        "string",
+        "null"
+      ]
+    },
+    "fileId": {
+      "bsonType": [
+        "string",
+        "null"
+      ]
+    },
+    "cloudPath": {
+      "bsonType": [
+        "string",
+        "null"
+      ]
+    },
+    "attempt": {
+      "bsonType": [
+        "string",
+        "null"
+      ]
+    },
+    "traceId": {
+      "bsonType": [
+        "string",
+        "null"
+      ]
+    },
+    "recipeId": {
+      "bsonType": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "bsonType": "string",
+      "enum": [
+        "requested",
+        "uploading",
+        "uploaded",
+        "checking",
+        "pending",
+        "ready",
+        "rejected",
+        "review-error",
+        "failed"
+      ]
+    },
+    "review": {
+      "bsonType": "string",
+      "enum": [
+        "disabled",
+        "weixin",
+        "mock"
+      ]
+    },
+    "uploadExpiresAt": {
+      "bsonType": "long",
+      "minimum": 0
+    },
+    "createdAt": {
+      "bsonType": "long",
+      "minimum": 0
+    },
+    "updatedAt": {
+      "bsonType": "long",
+      "minimum": 0
+    },
+    "leaseUntil": {
+      "bsonType": "long",
+      "minimum": 0
+    },
+    "reviewExpiresAt": {
+      "bsonType": [
+        "long",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "cleanupAt": {
+      "bsonType": [
+        "long",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "garbagePaths": {
+      "bsonType": "array",
+      "items": {
+        "bsonType": "string"
+      }
+    }
+  }
+}

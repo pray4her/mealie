@@ -2,7 +2,7 @@ import type { Page, Recipe, RecipesApi } from 'home-contracts';
 import type { Invoke } from '../family/api';
 import type { SessionBoundary } from '../../shared/session-boundary';
 import { AppError, errorCode } from '../../shared/errors';
-import { object, parseFavoriteMutation, parseListInput, parseMutation, parseRecipe, validId } from './validation';
+import { object, parseFavoriteMutation, parseImagesMutation, parseListInput, parseMutation, parseRecipe, validId } from './validation';
 
 export function createRecipesApi({ invoke, boundary }: { invoke: Invoke; boundary: SessionBoundary }): RecipesApi {
   async function call(method: string, input: unknown): Promise<unknown> {
@@ -15,6 +15,7 @@ export function createRecipesApi({ invoke, boundary }: { invoke: Invoke; boundar
   return {
     async create(input) { return parseRecipe(await call('create', parseMutation(input, false))); },
     async update(input) { return parseRecipe(await call('update', parseMutation(input, true))); },
+    async bindImages(input) { return parseRecipe(await call('bindImages', parseImagesMutation(input))); },
     async get(id) { return parseRecipe(await call('get', validId(id))); },
     async favorite(input) { if (await call('favorite', parseFavoriteMutation(input)) !== null) throw new AppError('UNAVAILABLE'); },
     async list(input): Promise<Page<Recipe>> {

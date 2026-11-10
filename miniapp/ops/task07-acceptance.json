@@ -1,0 +1,302 @@
+{
+  "ticket": "task07",
+  "version": 1,
+  "recordedAt": "2026-11-10T03:34:13.385Z",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "6f9788606f7281ac2158a7a2dfa4b65dfdabff6aced0832c53985373f9536316",
+  "local": {
+    "status": "passed",
+    "mode": "automated",
+    "evidenceFile": "ops/task07-test-evidence.md",
+    "buildSha256": "158f6a5c5d57961b7a513552f2bd6b7ba79a48085c868efb88471dab3c3754c1",
+    "suites": 48,
+    "tests": 607,
+    "scenarios": {
+      "full-check": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task07-test-evidence.md"
+      },
+      "media-domain": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task07-test-evidence.md"
+      },
+      "encrypted-callback-contract": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task07-test-evidence.md"
+      },
+      "storage-adapter-contract": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task07-test-evidence.md"
+      },
+      "page-independent-save": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task07-test-evidence.md"
+      },
+      "hidden-session-isolation": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task07-test-evidence.md"
+      }
+    }
+  },
+  "cloud": {
+    "status": "pending",
+    "mode": "real",
+    "buildSha256": "de193417c5e3743a10ce119eaad8f3bd79788af41880201b2f21f8be7ae4af77",
+    "evidenceFile": null,
+    "scenarios": {
+      "upload-read-bind": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "file-integrity": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "anonymous-original-url": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "client-sdk-link": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "client-overwrite-delete": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "actual-expiry": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "membership-revocation": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "callback-configuration": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "cleanup-inventory": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      }
+    }
+  },
+  "device": {
+    "status": "pending",
+    "mode": "real",
+    "buildSha256": null,
+    "evidenceFile": null,
+    "scenarios": {
+      "select-cancel": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "jpeg-png-preview": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "independent-save-draft": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "weak-network-recovery": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "hidden-response": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      },
+      "logout-account-switch": {
+        "status": "pending",
+        "mode": "real",
+        "evidenceFile": null
+      }
+    }
+  },
+  "review": {
+    "configuredMode": "disabled",
+    "realWeixinAcceptance": "pending",
+    "mockIsRealAcceptance": false
+  },
+  "storage": {
+    "historicalEvidence": "ops/task07-storage-results.json",
+    "originalUrlAnonymousRead": "historical-denied",
+    "publicSdkLink": "historical-allowed",
+    "strictReadIsolation": "not-passed",
+    "overwriteDelete": "pending",
+    "actualExpiry": "pending"
+  },
+  "automaticDeployment": false,
+  "physicalCleanupTicket": 18,
+  "deployment": {
+    "status": "passed",
+    "mode": "real",
+    "scope": "upload-readback-and-empty-session-auth-only",
+    "evidenceFile": "ops/task07-deployment.md",
+    "sourceSha256": "6f9788606f7281ac2158a7a2dfa4b65dfdabff6aced0832c53985373f9536316",
+    "buildSha256": "de193417c5e3743a10ce119eaad8f3bd79788af41880201b2f21f8be7ae4af77",
+    "resources": 10
+  },
+  "cloudArtifact": {
+    "status": "passed",
+    "mode": "real",
+    "evidenceFile": "ops/task07-deployment.md",
+    "sourceSha256": "6f9788606f7281ac2158a7a2dfa4b65dfdabff6aced0832c53985373f9536316",
+    "buildSha256": "de193417c5e3743a10ce119eaad8f3bd79788af41880201b2f21f8be7ae4af77",
+    "files": 43,
+    "staticModuleLoads": 37
+  },
+  "cloudAuthentication": {
+    "status": "passed",
+    "mode": "real",
+    "evidenceFile": "ops/task07-deployment.md",
+    "businessSession": "empty; no uni-id token",
+    "methods": 6
+  },
+  "deliveryStatus": "completed-user-confirmed-device-validation",
+  "closeout": {
+    "status": "completed-user-confirmed-device-validation",
+    "date": "2026-11-09",
+    "timezone": "America/Los_Angeles",
+    "recordedAt": "2026-11-10T07:13:51.447Z",
+    "evidenceFile": "ops/task07-closeout.md",
+    "userStatement": "已完成真机验证，验收相关文档，关闭issues 7，生成git提交信息提交并推送 https://github.com/pray4her/mealie/issues/7",
+    "acceptance": {
+      "status": "accepted-for-issue-closeout-with-documented-storage-boundary",
+      "basis": [
+        "explicit-user-reported-device-validation",
+        "implementation-and-regression-review",
+        "full-local-check"
+      ],
+      "prerequisiteIssuesClosed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "deviceValidation": "passed-user-reported",
+      "userReportedPerScenarioResultsProvided": false,
+      "agentRepeatedDeviceTests": false,
+      "rawDeviceEvidenceAttached": false,
+      "actualTestedBuildSha256Provided": false,
+      "cloudScenarioAcceptanceReported": false,
+      "realWeixinReviewAcceptanceReported": false,
+      "criteria": [
+        {
+          "criterion": "upload-validation-and-media-id-binding",
+          "status": "accepted",
+          "evidence": "Local domain, cloud-entry and real SFC tests; historical live upload/read/bind sample; user-reported physical-device validation. Default media review is disabled; enabled-mode callbacks have local coverage only."
+        },
+        {
+          "criterion": "storage-reading-boundary",
+          "status": "accepted-with-user-approved-revision",
+          "evidenceFile": "ops/task07-storage-gate.md",
+          "acceptedCapability": "Public SDK configuration and a known file identifier can yield a readable URL; storage-level anonymous/cross-family read isolation and hard revocation within 600 seconds are not promised."
+        },
+        {
+          "criterion": "membership-fencing-and-cleanup-metadata",
+          "status": "accepted",
+          "evidence": "Local removal, session revocation, rejoin, late upload/callback and transaction regression tests; physical cleanup remains issue #18."
+        }
+      ]
+    },
+    "review": {
+      "baseline": "1750dadb94b5455054a0fa6b312642c614c83814",
+      "scope": [
+        "shared media contract and callers",
+        "upload validation, authorization and recipe binding",
+        "review callbacks and storage adapter",
+        "recipe edit/detail and native picker recovery",
+        "tests, configuration, boundary checks and operational evidence"
+      ],
+      "remainingVerifiedBlockers": 0
+    },
+    "localVerification": {
+      "status": "passed",
+      "command": "task -d miniapp check -- --maxWorkers=2",
+      "exitCode": 0,
+      "nodeVersion": "22.23.3",
+      "pnpmVersion": "10.20.0",
+      "taskVersion": "3.54.0",
+      "suites": 48,
+      "tests": 612,
+      "checkSteps": 10,
+      "logFile": "dist/task07-closeout-check.log",
+      "snapshot": {
+        "sourceSha256": "6d56f8fdfaaecd5a92765fb1e8e11902f55f7918bb967aced4308550be5157c3",
+        "clientBuildSha256": "dac67767421e5b5c6939328a13f61ad37d71166e3f99724a71fdd03e188f5569",
+        "cloudBuildSha256": "de193417c5e3743a10ce119eaad8f3bd79788af41880201b2f21f8be7ae4af77",
+        "deviceBuildSha256": null
+      },
+      "historicalBindingsOverwritten": false,
+      "strictDoctor": {
+        "ready": false,
+        "blockers": [
+          "task07-source-drift",
+          "task07-local-artifact-unverified",
+          "task07-cloud-acceptance-pending",
+          "task07-cloud-scenario:upload-read-bind",
+          "task07-cloud-scenario:file-integrity",
+          "task07-cloud-scenario:anonymous-original-url",
+          "task07-cloud-scenario:client-sdk-link",
+          "task07-cloud-scenario:client-overwrite-delete",
+          "task07-cloud-scenario:actual-expiry",
+          "task07-cloud-scenario:membership-revocation",
+          "task07-cloud-scenario:callback-configuration",
+          "task07-cloud-scenario:cleanup-inventory",
+          "task07-device-acceptance-pending",
+          "task07-device-artifact-unverified",
+          "task07-device-scenario:select-cancel",
+          "task07-device-scenario:jpeg-png-preview",
+          "task07-device-scenario:independent-save-draft",
+          "task07-device-scenario:weak-network-recovery",
+          "task07-device-scenario:hidden-response",
+          "task07-device-scenario:logout-account-switch"
+        ],
+        "blockerCount": 20
+      }
+    },
+    "delivery": {
+      "branch": "miniapp-dev",
+      "remote": "upstream",
+      "repository": "pray4her/mealie",
+      "commitTitle": "feat(miniapp): 完成菜谱图片上传预览与 #7 验收",
+      "issueUrl": "https://github.com/pray4her/mealie/issues/7",
+      "commitPushAuthorized": true,
+      "issueCloseAuthorized": true,
+      "newCloudDeployment": false,
+      "productionReleased": false
+    }
+  }
+}

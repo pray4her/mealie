@@ -16,10 +16,12 @@ export type RecipeMutation = MembershipMutation & { recipe: RecipeInput };
 export type RecipeUpdate = RecipeMutation & { id: Id; version: number };
 export type RecipeListInput = { query?: string; tag?: string; cursor?: string; limit?: number; favoritesOnly?: boolean };
 export type RecipeFavoriteMutation = MembershipMutation & { id: Id; enabled: boolean };
+export type RecipeImagesMutation = MembershipMutation & { id: Id; version: number; imageIds: Id[] };
 export interface RecipesApi {
   create(input: RecipeMutation): Promise<Recipe>;
   get(id: Id): Promise<Recipe>;
   list(input: RecipeListInput): Promise<Page<Recipe>>;
   update(input: RecipeUpdate): Promise<Recipe>;
   favorite(input: RecipeFavoriteMutation): Promise<void>;
+  bindImages(input: RecipeImagesMutation): Promise<Recipe>;
 }

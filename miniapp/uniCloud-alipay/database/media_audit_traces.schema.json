@@ -1,0 +1,42 @@
+{
+  "bsonType": "object",
+  "required": [
+    "_id",
+    "mediaId",
+    "traceId",
+    "attempt",
+    "verdict"
+  ],
+  "permission": {
+    "read": false,
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "bsonType": "string"
+    },
+    "mediaId": {
+      "bsonType": "string"
+    },
+    "traceId": {
+      "bsonType": "string"
+    },
+    "attempt": {
+      "bsonType": "string"
+    },
+    "verdict": {
+      "bsonType": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "pass",
+        "reject",
+        "error"
+      ]
+    }
+  }
+}

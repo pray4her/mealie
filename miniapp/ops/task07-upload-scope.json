@@ -1,0 +1,122 @@
+{
+  "ticket": "task07",
+  "authorizedBy": "User explicitly requested cloud deployment in this turn",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "sourceSha256": "6f9788606f7281ac2158a7a2dfa4b65dfdabff6aced0832c53985373f9536316",
+  "uploadAuthorized": true,
+  "resources": [
+    {
+      "kind": "common-module",
+      "name": "home-contracts",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-contracts",
+      "sha256": "ffa0e48a78ddcd08f13d5d07cc1920e68e50e8bc3fd0530497bb30d611ccbb44",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-kernel",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-kernel",
+      "sha256": "116903681bb31ec077a3851154434119ee0bb948f662b6098a48209d1ad2b207",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-media",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-media",
+      "sha256": "97047f76fcd1b3d1a61e16bb316db348488142401e325c9b8fa1cc988a94080a",
+      "hashKind": "source-tree-sha256",
+      "existing": "absent",
+      "action": "create",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "common-module",
+      "name": "home-recipes",
+      "path": "uniCloud-alipay/cloudfunctions/common/home-recipes",
+      "sha256": "bd7fbdc5dfba8cdeee6681399b1740361b4a6682ac8667b08c133c65dbfa5202",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "cloud-object",
+      "name": "media-co",
+      "path": "uniCloud-alipay/cloudfunctions/media-co",
+      "sha256": "525c7495193d13698c21060eaf8cef2e483638745c56a7a9189675c17d6dca3c",
+      "hashKind": "source-tree-sha256",
+      "existing": "absent",
+      "action": "create",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "cloud-function",
+      "name": "media-review-callback",
+      "path": "uniCloud-alipay/cloudfunctions/media-review-callback",
+      "sha256": "898446b51fdbb48a8e5f9074c9efcff876b0ac5f0bd3b62aa058880259e13ff3",
+      "hashKind": "source-tree-sha256",
+      "existing": "absent",
+      "action": "create",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "cloud-object",
+      "name": "recipes-co",
+      "path": "uniCloud-alipay/cloudfunctions/recipes-co",
+      "sha256": "fbb58db8cdae24f4b0be9b931f0d8f377e955fcb0e492ceed4d89efd4f623d3e",
+      "hashKind": "source-tree-sha256",
+      "existing": "present",
+      "action": "update",
+      "platformExtensionDeclarations": []
+    },
+    {
+      "kind": "schema",
+      "name": "media_audit_traces.schema.json",
+      "path": "uniCloud-alipay/database/media_audit_traces.schema.json",
+      "sha256": "c0391a3626140d2b832b030ebd92c226c4c9fb38025ff72a83be7df7127337f2",
+      "hashKind": "file-sha256",
+      "existing": "absent",
+      "action": "create"
+    },
+    {
+      "kind": "schema",
+      "name": "media_files.schema.json",
+      "path": "uniCloud-alipay/database/media_files.schema.json",
+      "sha256": "04df6b8f530e3f9f8a4f8cdce66535c4d8eac0b907b0c56d55e0939edeaa74cc",
+      "hashKind": "file-sha256",
+      "existing": "absent",
+      "action": "create"
+    },
+    {
+      "kind": "schema",
+      "name": "mutation_receipts.schema.json",
+      "path": "uniCloud-alipay/database/mutation_receipts.schema.json",
+      "sha256": "eb7afd3917f863973d92f378ba65267f941184b69e6d778bfbdb63e67f26dbdf",
+      "hashKind": "file-sha256",
+      "existing": "present",
+      "action": "update"
+    }
+  ],
+  "protectedDependencies": [
+    "uni-id-common",
+    "uni-config-center",
+    "uni-open-bridge-common",
+    "uni-sec-check",
+    "uni-cloud-s2s"
+  ],
+  "reviewMode": "disabled-by-default",
+  "dataReset": false
+}

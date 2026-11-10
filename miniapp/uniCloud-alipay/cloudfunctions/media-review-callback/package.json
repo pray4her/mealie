@@ -1,0 +1,5 @@
+{
+  "name": "media-review-callback", "version": "0.0.0", "main": "index.js", "private": true,
+  "dependencies": { "home-kernel": "file:../common/home-kernel", "home-media": "file:../common/home-media" },
+  "cloudfunction-config": { "keepRunningAfterReturn": false, "timeout": 15, "path": "/media-review" }
+}

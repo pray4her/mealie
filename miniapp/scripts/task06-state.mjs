@@ -22,7 +22,7 @@ export async function task06Snapshot({ root }) {
   const cloudRoot = join(root, 'dist/task06-normal-cloud'); const cloud = await walk(cloudRoot);
   const production = [...await walk(join(root, 'uniCloud-alipay')), ...cloud, ...await walk(join(root, 'dist/build/mp-weixin')), ...await walk(join(root, 'dist/task06-device/mp-weixin'))];
   const remnants = production.filter(path => /(?:task\d+-probe|tests[\\/]cloud|(?:^|[\\/])(?:probe|fixture)[-.])/i.test(path)
-    || (/[\\/]index\.obj\.[jt]s$/.test(path) && !/[\\/](?:uni-id-co|account-co|family-co|recipes-co)[\\/]index\.obj\.[jt]s$/.test(path)));
+    || (/[\\/]index\.obj\.[jt]s$/.test(path) && !/[\\/](?:uni-id-co|account-co|family-co|recipes-co|media-co)[\\/]index\.obj\.[jt]s$/.test(path)));
   return { sourceSha256: await treeSha256(root, source), clientBuildSha256: await treeSha256(join(root, 'dist/build/mp-weixin')), deviceBuildSha256: await treeSha256(join(root, 'dist/task06-device/mp-weixin')), cloudBuildSha256: await treeSha256(cloudRoot), probeRemnants: [...new Set(remnants.map(path => relative(root, path).split('\\').join('/')))] };
 }
 export async function task06Readiness({ root, evidence, target }) {

@@ -1,0 +1,65 @@
+{
+  "ticket": "task07",
+  "version": 2,
+  "recordedAt": "2026-11-10T02:17:22Z",
+  "baselineCommit": "1750dadb94b5455054a0fa6b312642c614c83814",
+  "status": "accepted",
+  "ready": true,
+  "readinessScope": "storage-selection-only",
+  "implementationAllowed": true,
+  "implementationStarted": false,
+  "featureAcceptance": "pending",
+  "requirementsRevisedAt": "2026-11-10",
+  "userDecision": {
+    "basis": "无登录仅凭公开配置，就能获取图片链接，这是可以接受的",
+    "usage": "仅向亲友开放的小程序内的菜谱图片",
+    "storage": "existing alipay built-in storage",
+    "acceptedCapability": "anonymous client with public configuration and file identifier can obtain a URL and read recipe image bytes",
+    "scope": "storage-level image reads; application data scope, writes, validation and moderation remain required",
+    "revokeReadWithin600SecondsRequired": false,
+    "planFile": "ops/task07-plan.md"
+  },
+  "previousAssessment": {
+    "status": "failed",
+    "recordedAt": "2026-11-10T02:17:22Z",
+    "basis": "superseded requirement that anonymous client SDK signing must be denied"
+  },
+  "target": {
+    "provider": "alipay",
+    "spaceName": "mealie",
+    "spaceId": "env-00jy7289et7b"
+  },
+  "targetInspection": {
+    "status": "passed",
+    "tool": "HBuilderX 5.34.2026102909 CLI protocol 1",
+    "requestId": "task07-storage-target",
+    "scope": "read-only linked target identifiers; not storage permissions"
+  },
+  "blockers": [],
+  "storageScenarios": {
+    "private-directory-configuration": "partial",
+    "raw-url-anonymous-denied": "passed",
+    "client-temp-url-denied": "accepted-exception",
+    "client-overwrite-denied": "pending",
+    "client-delete-denied": "pending",
+    "cloud-upload-read-sign": "passed",
+    "temp-url-expires-within-600-seconds": "pending",
+    "private-acl-inheritance-and-immutability": "partial"
+  },
+  "liveStorageRequestsExecuted": true,
+  "cloudResourcesCreated": [
+    { "kind": "cloud-function", "name": "task07-storage-e50713853130", "retired": true, "physicallyRemoved": false },
+    { "kind": "synthetic-files", "count": 2, "removed": true }
+  ],
+  "localVerification": {
+    "status": "passed",
+    "command": "task -d miniapp check -- --maxWorkers=2",
+    "exitCode": 0,
+    "testSuites": 43,
+    "tests": 574,
+    "logFile": "dist/task07-local-check.log",
+    "scope": "historical baseline and nine storage probe checks; feature acceptance remains pending"
+  },
+  "evidenceFile": "ops/task07-storage-gate.md",
+  "liveResultsFile": "ops/task07-storage-results.json"
+}

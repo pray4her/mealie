@@ -1,0 +1,5 @@
+{
+  "name": "media-co", "version": "0.0.0", "private": true,
+  "dependencies": { "home-contracts": "file:../common/home-contracts", "home-kernel": "file:../common/home-kernel", "home-family": "file:../common/home-family", "home-media": "file:../common/home-media" },
+  "cloudfunction-config": { "keepRunningAfterReturn": false, "timeout": 30, "memorySize": 256 }
+}

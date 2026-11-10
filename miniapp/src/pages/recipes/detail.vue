@@ -7,8 +7,9 @@ import { AppError } from '../../shared/errors';
 import { copy } from '../../shared/copy';
 const id = ref<string | null>(null);
 onLoad(query => { try { id.value = validId(query?.id); } catch { id.value = null; } });
-const page = useRecipesPage(async () => { if (!id.value) throw new AppError('INVALID_INPUT'); await page.recipes.get(id.value); });
-const { confirmed, busy, message, recipes } = page;
+const page = useRecipesPage(async () => { if (!id.value) throw new AppError('INVALID_INPUT'); const recipe = await page.recipes.get(id.value); if (recipe) await page.media.initialize(recipe); });
+const { confirmed, busy, message, recipes, media } = page;
+const { items: images, links: imageLinks } = media;
 const { recipe, pendingFavorite } = recipes;
 const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edit?id=' + recipe.value.id }); };
 </script>
@@ -22,6 +23,20 @@ const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edi
         {{ recipe.title }}
       </text>
       <text>{{ recipe.authorLabel }}</text>
+      <view
+        v-for="image in images"
+        :key="image.mediaId"
+      >
+        <image
+          v-if="imageLinks[image.mediaId]"
+          data-recipe-image
+          :src="imageLinks[image.mediaId].url"
+          mode="aspectFit"
+          class="recipe-image"
+          aria-label="预览菜谱图片"
+          @tap="page.act(async () => { await media.preview(image.mediaId); })"
+        />
+      </view>
       <button
         data-favorite
         :disabled="busy || !!pendingFavorite"
@@ -143,4 +158,5 @@ const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edi
 .section { font-size: 32rpx; margin-top: 32rpx; }
 .row { padding: 16rpx; margin-top: 12rpx; background: white; }
 button { margin-top: 32rpx; }
+.recipe-image { width: 100%; height: 400rpx; }
 </style>

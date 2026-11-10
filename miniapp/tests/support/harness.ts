@@ -1,3 +1,6 @@
+import { createMediaService } from '../../uniCloud-alipay/cloudfunctions/common/home-media';
+import type { MediaReviewPort, StoragePort } from '../../uniCloud-alipay/cloudfunctions/common/home-media';
+import { digest } from '../../uniCloud-alipay/cloudfunctions/common/home-media/files';
 import type { AccountStatusPort, AppClient, FamilyApi, Id, TokenPort, VerifiedToken } from 'home-contracts';
 import { AppError, createRequireIdentity } from 'home-kernel';
 import type { ContentPort } from 'home-kernel';
@@ -12,9 +15,15 @@ import { requireFamily } from 'home-family';
 import type { RecipesApi } from 'home-contracts';
 import type { RecipeRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-recipes/repository';
 
-export function createHarness(options: { now?: number; content?: ContentPort; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
+export function createHarness(options: { now?: number; content?: ContentPort; storage?: StoragePort; review?: MediaReviewPort; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
   let now = options.now ?? 1_800_000_000_000;
   const memory = createMemoryDatabase();
+  const files = new Map<string, Buffer>();
+  const storage: StoragePort = options.storage ?? {
+    async upload(path, bytes) { const id = 'cloud://mock/' + path; files.set(id, Buffer.from(bytes)); return id; },
+    async read(id) { const bytes = files.get(id); if (!bytes) throw new AppError('NOT_FOUND'); return Buffer.from(bytes); },
+    async sign(id) { if (!files.has(id)) throw new AppError('NOT_FOUND'); return { url: 'https://mock.invalid/media/' + encodeURIComponent(id) + '?expire_at=' + Math.floor((now + 600000) / 1000), expiresAt: now + 600000 }; },
+  };
   let nextId = 0;
   const nicknames = new Map<string, string>();
   const records = new Map<string, NonNullable<Awaited<ReturnType<AccountStatusPort['get']>>>>();
@@ -67,9 +76,19 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
       async revalidateIdentity() { await guard(tokenFor(uid), clientInfo, { refresh: false }); },
     }, await requireFamily(memory.database, await guard(tokenFor(uid), clientInfo)));
     return { async create(input) { return (await service()).create(input); }, async get(id) { return (await service()).get(id); },
-      async list(input) { return (await service()).list(input); }, async update(input) { return (await service()).update(input); }, async favorite(input) { return (await service()).favorite(input); } };
+      async list(input) { return (await service()).list(input); }, async update(input) { return (await service()).update(input); }, async favorite(input) { return (await service()).favorite(input); }, async bindImages(input) { return (await service()).bindImages(input); } };
+  };
+  const media = (uid: Id): import('home-contracts').MediaApi => {
+    const service = async () => createMediaService({ database: memory.database, storage, review: options.review ?? { mode: 'disabled', async submit() { throw new Error('disabled'); } },
+      now: () => now, newId: () => (++nextId).toString(16).padStart(32, '0'), sessionHash: digest(tokenFor(uid)),
+      async revalidateIdentity() { await guard(tokenFor(uid), clientInfo, { refresh: false }); },
+    }, await requireFamily(memory.database, await guard(tokenFor(uid), clientInfo)));
+    return { async requestUpload(input) { return (await service()).requestUpload(input); }, async upload(input) { return (await service()).upload(input); },
+      async complete(input) { return (await service()).complete(input); }, async status(input) { return (await service()).status(input); }, async read(input) { return (await service()).read(input); } };
   };
   return {
+    files, storage, get now() { return now; },
+    async accountActive(uid: string, sessionHash: string) { try { await guard(tokenFor(uid), clientInfo, { refresh: false }); return sessionHash === digest(tokenFor(uid)); } catch { return false; } },
     memory, database: memory.database,
     nickname(uid: string, value: string) { nicknames.set(uid, value); },
     family,
@@ -80,7 +99,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
     revokeToken(uid: Id) { const row = records.get(uid); if (row) row.tokens = []; },
     closeAccount(uid: Id) { records.delete(uid); },
     client(uid: Id): AppClient {
-      return { recipes: recipes(uid), family: family(uid), account: {
+      return { media: media(uid), recipes: recipes(uid), family: family(uid), account: {
         async signInWeixin() { return guard(tokenFor(uid), clientInfo); },
         async session() { return guard(uid ? tokenFor(uid) : undefined, clientInfo); },
         async signOut() { await guard(tokenFor(uid), clientInfo, { refresh: false }); const row = records.get(uid); if (row) row.tokens = []; },
@@ -88,7 +107,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; in
     },
     advance(ms: number) { now += ms; },
     async rows<T>(collection: string): Promise<T[]> {
-      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'recipe_favorites') return memory.rows<T>(collection);
+      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'recipe_favorites' || collection === 'media_files' || collection === 'media_audit_traces') return memory.rows<T>(collection);
       if (collection !== 'uni-id-users') throw new Error('Unsupported fixture collection');
       return [...records].map(([uid, row]) => ({ uid, ...row })) as T[];
     },

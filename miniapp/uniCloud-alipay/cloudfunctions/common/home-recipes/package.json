@@ -1,4 +1,13 @@
 {
-  "name": "home-recipes", "version": "0.0.0", "main": "index.js", "types": "index.ts", "private": true,
-  "dependencies": { "home-contracts": "file:../home-contracts", "home-kernel": "file:../home-kernel", "home-family": "file:../home-family" }
+  "name": "home-recipes",
+  "version": "0.0.0",
+  "main": "index.js",
+  "types": "index.ts",
+  "private": true,
+  "dependencies": {
+    "home-contracts": "file:../home-contracts",
+    "home-kernel": "file:../home-kernel",
+    "home-family": "file:../home-family",
+    "home-media": "file:../home-media"
+  }
 }

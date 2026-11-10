@@ -20,8 +20,14 @@ async function fixture() {
     await writeFile(join(common, 'package.json'), JSON.stringify({ name, private: true }));
   }
   const recipes = join(dir, 'uniCloud-alipay/cloudfunctions/recipes-co'); await mkdir(recipes, { recursive: true });
-  await writeFile(join(recipes, 'index.obj.ts'), 'export async function create() {}\nexport async function get() {}\nexport async function list() {}\nexport async function update() {}\nexport async function favorite() {}');
+  await writeFile(join(recipes, 'index.obj.ts'), 'export async function create() {}\nexport async function get() {}\nexport async function list() {}\nexport async function update() {}\nexport async function favorite() {}\nexport async function bindImages() {}');
   await writeFile(join(recipes, 'package.json'), '{"name":"recipes-co","private":true}');
+  const media = join(dir, 'uniCloud-alipay/cloudfunctions/media-co'); await mkdir(media, { recursive: true });
+  await writeFile(join(media, 'index.obj.ts'), ['requestUpload', 'upload', 'complete', 'status', 'read'].map(method => 'export async function ' + method + '() {}').join('\n'));
+  await writeFile(join(media, 'package.json'), '{"name":"media-co","private":true}');
+  const callback = join(dir, 'uniCloud-alipay/cloudfunctions/media-review-callback'); await mkdir(callback, { recursive: true });
+  await writeFile(join(callback, 'index.ts'), 'export async function main() {}');
+  await writeFile(join(callback, 'package.json'), '{"name":"media-review-callback","private":true}');
   return dir;
 }
 test('unique_discoverable_identity_object', async () => {
@@ -65,7 +71,7 @@ test('artifact_routes_are_exactly_the_nine_implemented_account_family_and_recipe
 test('family_content_and_fixture_runtime_cannot_enter_actual_artifact_content', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
   await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit'] }));
-  for (const forbidden of ['home-recipes', 'home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common']) {
+  for (const forbidden of ['home-media', 'home-recipes', 'home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common']) {
     await writeFile(join(dist, 'app.js'), `const leaked = '${forbidden}';`);
     await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact/i);
   }
@@ -119,7 +125,7 @@ test('family_public_surface_rejects_default_reexports_helpers_and_test_entry', a
 });
 test('all_business_schemas_deny_every_clientdb_operation', async () => {
   const dir = await fixture(); const database = join(dir, 'uniCloud-alipay/database'); await mkdir(database, { recursive: true });
-  for (const collection of ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits', 'recipes', 'recipe_favorites']) {
+  for (const collection of ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits', 'recipes', 'recipe_favorites', 'media_files', 'media_audit_traces']) {
     const path = join(database, collection + '.schema.json');
     const schema = { permission: { read: false, create: false, update: false, delete: false } };
     await writeFile(path, JSON.stringify(schema)); await expect(checkBoundaries({ root: dir })).resolves.toBeUndefined();

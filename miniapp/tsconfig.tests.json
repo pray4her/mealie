@@ -7,7 +7,8 @@
       "home-contracts": ["uniCloud-alipay/cloudfunctions/common/home-contracts/index.ts"],
       "home-kernel": ["uniCloud-alipay/cloudfunctions/common/home-kernel/index.ts"],
       "home-family": ["uniCloud-alipay/cloudfunctions/common/home-family/index.ts"],
-      "home-recipes": ["uniCloud-alipay/cloudfunctions/common/home-recipes/index.ts"]
+      "home-recipes": ["uniCloud-alipay/cloudfunctions/common/home-recipes/index.ts"],
+      "home-media": ["uniCloud-alipay/cloudfunctions/common/home-media/index.ts"]
     },
     "types": ["node", "vitest", "vite/client", "@dcloudio/types", "@uni-helper/uni-app-types"]
   },

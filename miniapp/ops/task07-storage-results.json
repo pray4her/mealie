@@ -1,0 +1,209 @@
+{
+  "ticket": "task07",
+  "recordedAt": "2026-11-10T02:19:10.095Z",
+  "probe": {
+    "name": "task07-storage-e50713853130",
+    "prefix": "task07-private/task07-probe-e50713853130",
+    "initialSourceSha256": "f68b6ec4f0b1e572ecdd848fc1473a8a08b87b30af2a6df1ee43fbe5ca4ebee7",
+    "lastActiveSourceSha256": "7e0f9cbc9c2eaccafdd53538ff3fb21836e6a886c4ce25bd368282d717926151",
+    "retiredSourceSha256": "1426c6788a20a2d41d516dccaab34f09d8997c33633544e5a38ec25e81db545d"
+  },
+  "seed": {
+    "recordedAt": "2026-11-10T02:16:02.746Z",
+    "requestId": "1c7a898c-743e-4e3f-829a-1e53170461a2",
+    "ok": true,
+    "fileIds": [
+      "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/sample.png",
+      "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/nested/sample.png"
+    ],
+    "sampleHash": "a38a4ff7320a3d8764ac959b264f15e335360d7c1e23a0627dee7f366c95c58f",
+    "bytes": 68
+  },
+  "client": {
+    "recordedAt": "2026-11-10T02:16:03.927Z",
+    "target": {
+      "provider": "alipay",
+      "spaceId": "env-00jy7289et7b"
+    },
+    "clientSource": "HBuilderX installed official uniCloud SDK; public linked development bundle configuration only",
+    "publicBundleSha256": "afef67f132fb871f5c8f0472d2ad955a2dd4f1817ebac0f953fdc048c6ed43e3",
+    "officialSdkSha256": "8e0c7dc917892112977da29fb8e1587e1e43868e73c4b30b05f2b794813de589",
+    "privateReadByAnonymousClient": true,
+    "businessSession": "empty isolated storage; no uni-id token",
+    "requests": [
+      {
+        "method": "POST",
+        "headerNames": [
+          "x-alipay-cloud-mode",
+          "x-data-api-type",
+          "x-expire-timestamp",
+          "x-from-app-id",
+          "x-from-env-id",
+          "x-to-env-id",
+          "x-from-instance-id",
+          "x-from-function-name",
+          "x-client-timestamp",
+          "x-alipay-source",
+          "x-request-id",
+          "x-alipay-callid",
+          "x-trace-id",
+          "Authorization"
+        ],
+        "businessTokenPresent": false
+      }
+    ],
+    "results": [
+      {
+        "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/sample.png",
+        "signed": {
+          "status": 200,
+          "bytes": 68,
+          "sha256": "a38a4ff7320a3d8764ac959b264f15e335360d7c1e23a0627dee7f366c95c58f"
+        },
+        "anonymous": {
+          "status": 403,
+          "bytes": 181,
+          "sha256": "ed4a3a09af9a16d7fa197419c66686e48f23fdf740f94a7349e21a56ef4a05ed"
+        },
+        "queryKeys": [
+          "expire_at",
+          "er_sign"
+        ],
+        "signedBytesMatch": true
+      },
+      {
+        "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/nested/sample.png",
+        "signed": {
+          "status": 200,
+          "bytes": 68,
+          "sha256": "a38a4ff7320a3d8764ac959b264f15e335360d7c1e23a0627dee7f366c95c58f"
+        },
+        "anonymous": {
+          "status": 403,
+          "bytes": 181,
+          "sha256": "ed4a3a09af9a16d7fa197419c66686e48f23fdf740f94a7349e21a56ef4a05ed"
+        },
+        "queryKeys": [
+          "expire_at",
+          "er_sign"
+        ],
+        "signedBytesMatch": true
+      }
+    ]
+  },
+  "cloud": {
+    "recordedAt": "2026-11-10T02:09:11.466Z",
+    "inspect": {
+      "requestId": "ece0e6e1-50c2-4174-800c-341d1102a513",
+      "ok": true,
+      "files": [
+        {
+          "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/sample.png",
+          "bytes": 68,
+          "sha256": "a38a4ff7320a3d8764ac959b264f15e335360d7c1e23a0627dee7f366c95c58f",
+          "matchesSample": true
+        },
+        {
+          "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/nested/sample.png",
+          "bytes": 68,
+          "sha256": "a38a4ff7320a3d8764ac959b264f15e335360d7c1e23a0627dee7f366c95c58f",
+          "matchesSample": true
+        }
+      ]
+    },
+    "sign": {
+      "requestId": "c57f27a6-a48a-4a1e-9c91-a8fe7bab0a41",
+      "issuedAt": 1794276551269,
+      "links": [
+        {
+          "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/sample.png",
+          "response": {
+            "status": 200,
+            "bytes": 68,
+            "sha256": "a38a4ff7320a3d8764ac959b264f15e335360d7c1e23a0627dee7f366c95c58f"
+          }
+        },
+        {
+          "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/nested/sample.png",
+          "response": {
+            "status": 200,
+            "bytes": 68,
+            "sha256": "a38a4ff7320a3d8764ac959b264f15e335360d7c1e23a0627dee7f366c95c58f"
+          }
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "recordedAt": "2026-11-10T02:16:14.701Z",
+    "requestId": "700a891c-7d5e-402f-913c-47522c258d2d",
+    "ok": false,
+    "errorCode": "STORAGE_UNAVAILABLE",
+    "deleteResult": {
+      "keys": [
+        "fileList"
+      ],
+      "files": [
+        {
+          "scoped": true,
+          "keys": [
+            "code",
+            "message",
+            "fileID"
+          ]
+        },
+        {
+          "scoped": true,
+          "keys": [
+            "code",
+            "message",
+            "fileID"
+          ]
+        }
+      ]
+    },
+    "oldSignedLinks": [
+      {
+        "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/sample.png",
+        "response": {
+          "status": 404,
+          "bytes": 431,
+          "sha256": "e19c156b76fb15f31bf936372d1a94cda498020079c1f6d3ddb70c92c7cff19b"
+        }
+      },
+      {
+        "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/nested/sample.png",
+        "response": {
+          "status": 404,
+          "bytes": 438,
+          "sha256": "efaa0b5ec223144d9f8844fa4fff736fdaa5257acd841e99d220a168fdd36df8"
+        }
+      }
+    ]
+  },
+  "removal": {
+    "recordedAt": "2026-11-10T02:17:22.878Z",
+    "removed": true,
+    "files": [
+      {
+        "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/sample.png",
+        "status": 404
+      },
+      {
+        "fileID": "cloud://env-00jy7289et7b/task07-private/task07-probe-e50713853130/nested/sample.png",
+        "status": 404
+      }
+    ],
+    "checkedBeforeSignedUrlExpiry": true,
+    "signedUrlsExpireAt": [
+      "2026-11-10T02:26:03.000Z",
+      "2026-11-10T02:26:03.000Z"
+    ]
+  },
+  "retirement": {
+    "recordedAt": "2026-11-10T02:17:21.862Z",
+    "requestId": "ba5da203-1579-494c-83fb-918e4d95c785",
+    "ok": false,
+    "errorCode": "PROBE_RETIRED"
+  }
+}

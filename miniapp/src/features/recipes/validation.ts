@@ -84,3 +84,11 @@ export function parseFavoriteMutation(value: unknown): RecipeFavoriteMutation {
   if (typeof row.requestId !== 'string' || !/^[A-Za-z0-9_-]{16,128}$/.test(row.requestId) || typeof row.enabled !== 'boolean') throw new AppError('INVALID_INPUT');
   return { requestId: row.requestId, familyId: text(row.familyId, 128), generation: text(row.generation, 128), id: validId(row.id), enabled: row.enabled };
 }
+export function parseImagesMutation(value: unknown): import('home-contracts').RecipeImagesMutation {
+  const row = object(value, ['requestId', 'familyId', 'generation', 'id', 'version', 'imageIds']);
+  if (typeof row.requestId !== 'string' || !/^[A-Za-z0-9_-]{16,128}$/.test(row.requestId)
+    || typeof row.version !== 'number' || !Number.isSafeInteger(row.version) || row.version < 1 || row.version >= Number.MAX_SAFE_INTEGER
+    || !Array.isArray(row.imageIds) || row.imageIds.length > 20) throw new AppError('INVALID_INPUT');
+  const imageIds = row.imageIds.map(validId); if (new Set(imageIds).size !== imageIds.length) throw new AppError('INVALID_INPUT');
+  return { requestId: row.requestId, familyId: text(row.familyId, 128), generation: text(row.generation, 128), id: validId(row.id), version: row.version, imageIds };
+}

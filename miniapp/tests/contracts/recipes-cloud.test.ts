@@ -11,8 +11,8 @@ function setup() {
   f.rows.set('family_members/alice', { _id: 'alice', familyId: 'home', generation: 'generation', role: 'owner', mutationSeq: 0, joinedAt: now, updatedAt: now });
   return f;
 }
-test('recipe_object_has_only_five_lazy_methods_and_uses_trusted_openid_scene3', async () => {
-  const f = setup(); expect(Object.keys(f.entry).sort()).toEqual(['create', 'favorite', 'get', 'list', 'update']); expect(f.sdkImports).toBe(0); expect(f.transactions).toBe(0);
+test('recipe_object_has_only_six_lazy_methods_and_uses_trusted_openid_scene3', async () => {
+  const f = setup(); expect(Object.keys(f.entry).sort()).toEqual(['bindImages', 'create', 'favorite', 'get', 'list', 'update']); expect(f.sdkImports).toBe(0); expect(f.transactions).toBe(0);
   const input = { requestId: 'cloud-recipe-create-01', familyId: 'home', generation: 'generation', recipe: recipe() };
   const created = await f.entry.create.call(f.context, input) as { data: Recipe };
   expect(created).toMatchObject({ errCode: 0, data: { createdBy: 'alice', familyId: 'home', version: 1, ingredients: [{ raw: '盐适量', quantity: null }] }, newToken: { token: 'renewed-token' } });

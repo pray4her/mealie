@@ -4,7 +4,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import type { RecipeInput } from 'home-contracts';
 import { useRecipesPage } from '../../features/recipes/use-recipes-page';
 import { editable, parseInput, validId } from '../../features/recipes/validation';
-import { AppError } from '../../shared/errors';
+import { AppError, errorCode } from '../../shared/errors';
 import { copy } from '../../shared/copy';
 
 let sequence = 0;
@@ -13,7 +13,8 @@ const step = () => ({ key: ++sequence, text: '' });
 const draft = ref({ title: '', description: '', baseServings: '', prepMinutes: '', cookMinutes: '', ingredients: [ingredient()], steps: [step()], tags: '' });
 const id = ref<string | null>(null); let version = 1; let initializedScope = ''; let invalidId = false;
 const page = useRecipesPage(initialize);
-const { confirmed, busy, message, recipes } = page;
+const { confirmed, busy, message, recipes, media } = page;
+const { items: images, links: imageLinks, pending: pendingImages, canSave: canSaveImages } = media;
 const { pending } = recipes;
 let lastUid = page.auth.identity.value?.uid;
 watch([page.auth.phase, () => page.auth.identity.value?.uid, page.family.phase, page.family.view], ([phase, uid, familyPhase, view]) => {
@@ -37,14 +38,17 @@ async function initialize() {
   if (invalidId) throw new AppError('INVALID_INPUT');
   const view = page.family.view.value!;
   const scope = view.uid + ':' + view.familyId + ':' + view.generation;
-  if (initializedScope === scope) return;
+  if (initializedScope === scope) {
+    if (id.value) { const value = await recipes.get(id.value); if (value) await media.initialize(value, true); }
+    return;
+  }
   const intent = recipes.restore();
   if (intent) {
     id.value = intent.kind === 'update' ? intent.input.id : null;
     version = intent.kind === 'update' ? intent.input.version : 1; apply(intent.input.recipe);
   } else if (id.value) {
     const value = await recipes.get(id.value); if (!value) return;
-    version = value.version; apply(editable(value));
+    version = value.version; apply(editable(value)); await media.initialize(value, true);
   } else apply(blank());
   initializedScope = scope;
 }
@@ -73,9 +77,27 @@ async function reload() {
     const result = await uni.showModal({ title: copy.reloadRecipe, content: copy.reloadRecipeConfirm, confirmText: copy.reloadRecipe, cancelText: copy.cancel });
     if (!result.confirm || !isCurrent() || !id.value || pending.value) return;
     const value = await recipes.get(id.value);
-    if (value && isCurrent()) { apply(editable(value)); version = value.version; }
+    if (value && isCurrent()) { apply(editable(value)); version = value.version; await media.initialize(value, true); }
   });
 }
+async function saveImages() {
+  await page.act(async isCurrent => {
+    if (!id.value || pending.value) return;
+    const result = await media.save(id.value, version);
+    if (isCurrent()) { version = result.version; message.value = '图片已保存，文字草稿仍保留。'; }
+  });
+}
+async function chooseImage() {
+  await page.act(async (isCurrent, resume) => {
+    try { await media.choose(isCurrent, resume); }
+    catch (error) {
+      if (errorCode(error) === 'INVALID_INPUT') { if (isCurrent()) message.value = '请选择有效的 JPEG 或 PNG 图片，单张不能超过 1 MiB。'; }
+      else throw error;
+    }
+    finally { if (isCurrent()) await media.refresh(); }
+  });
+}
+const imageState = { requested: '尚未上传，请移除后重新选择', uploading: '正在上传', uploaded: '上传完成，点击重试校验', checking: '正在校验', pending: '等待审核，可刷新状态', ready: '可保存', rejected: '审核未通过，请移除并更换图片', 'review-error': '审核异常或超时，可重试', failed: '上传失败，请移除后重新选择' };
 </script>
 <template>
   <view class="page">
@@ -93,7 +115,7 @@ async function reload() {
         <text>{{ copy.pendingRecipe }}</text>
         <button
           data-resume
-          :disabled="busy"
+          :disabled="busy || !!pendingImages"
           :loading="busy"
           @tap="save(true)"
         >
@@ -252,7 +274,7 @@ async function reload() {
         <button
           v-if="!pending"
           data-save
-          :disabled="busy"
+          :disabled="busy || !!pendingImages"
           :loading="busy"
           @tap="save()"
         >
@@ -266,6 +288,76 @@ async function reload() {
         >
           {{ copy.reloadRecipe }}
         </button>
+      </view>
+      <view data-images>
+        <text class="section">
+          菜谱图片（JPEG / PNG，单张最多 1 MiB，最多 20 张）
+        </text>
+        <text v-if="!id">
+          请先保存菜谱文字，再进入编辑页添加图片。
+        </text>
+        <view v-else>
+          <view
+            v-for="image in images"
+            :key="image.mediaId"
+            class="row"
+            data-image
+          >
+            <image
+              v-if="imageLinks[image.mediaId]"
+              :src="imageLinks[image.mediaId].url"
+              mode="aspectFit"
+              class="recipe-image"
+              aria-label="菜谱图片"
+              @tap="page.act(async () => { await media.preview(image.mediaId); })"
+            />
+            <text role="status">
+              {{ imageState[image.state] }}{{ image.review === 'mock' ? '（模拟审核）' : '' }}
+            </text>
+            <button
+              v-if="image.retryable"
+              data-retry-image
+              :disabled="busy || !!pendingImages"
+              @tap="page.act(async () => { await media.retry(image.mediaId); })"
+            >
+              重试图片处理
+            </button>
+            <button
+              data-remove-image
+              :disabled="busy || !!pendingImages"
+              @tap="media.remove(image.mediaId)"
+            >
+              移除图片
+            </button>
+          </view>
+          <button
+            data-choose-image
+            :disabled="busy || !!pending || !!pendingImages || images.length >= 20"
+            @tap="chooseImage"
+          >
+            选择图片
+          </button>
+          <button
+            data-refresh-images
+            :disabled="busy"
+            @tap="page.act(async () => { await media.refresh(); })"
+          >
+            刷新图片状态
+          </button>
+          <button
+            data-save-images
+            :disabled="busy || !!pending || !canSaveImages"
+            @tap="saveImages"
+          >
+            {{ pendingImages ? '恢复原图片保存请求' : '保存图片' }}
+          </button>
+          <text
+            v-if="pendingImages"
+            role="status"
+          >
+            上次保存结果未知，请恢复原请求后继续编辑。
+          </text>
+        </view>
       </view>
     </view>
     <text
@@ -300,4 +392,5 @@ async function reload() {
 input, textarea { box-sizing: border-box; width: 100%; min-height: 80rpx; margin-top: 16rpx; padding: 16rpx; background: white; border: 1rpx solid #76766d; border-radius: 8rpx; }
 textarea { height: 180rpx; }
 button { margin-top: 24rpx; }
+.recipe-image { width: 100%; height: 320rpx; }
 </style>

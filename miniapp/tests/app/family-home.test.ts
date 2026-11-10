@@ -138,7 +138,7 @@ test.each([Home, Onboarding])('logout_completion_from_previous_uid_cannot_naviga
     await bob.family.create({ name: 'Bob家', requestId: 'bob-logout-request-1' });
   }
   let selected = alice; const gate = deferCall();
-  const client: AppClient = { recipes: selected.recipes, account: {
+  const client: AppClient = { media: selected.media, recipes: selected.recipes, account: {
     session: () => selected.account.session(), signInWeixin: () => selected.account.signInWeixin(),
     async signOut() { const account = selected.account; await gate.promise; await account.signOut(); },
   }, family: { ...selected.family, current: () => selected.family.current(), create: input => selected.family.create(input) } };

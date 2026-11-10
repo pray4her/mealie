@@ -4,7 +4,8 @@ import { createRequire } from 'node:module';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 const realRequire = createRequire(import.meta.url);
-export function cloudFixture(entryName: 'family-co' | 'recipes-co' = 'family-co', commitAcknowledgement: 'object' | 'void' = 'object') {
+export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' = 'family-co', commitAcknowledgement: 'object' | 'void' = 'object') {
+  const files = new Map<string, Buffer>();
   const rows = new Map<string, Record<string, unknown>>();
   const checks: { token: string; autoRefresh: boolean }[] = [];
   const contentCalls: unknown[] = []; const contexts: unknown[] = []; const reads: string[] = [];
@@ -35,7 +36,7 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' = 'family-co'
     if (cache.has(path)) return cache.get(path)!.exports;
     const module = { exports: {} }; cache.set(path, module);
     const code = ts.transpileModule(readFileSync(path, 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
-    runInNewContext(code, { module, exports: module.exports, Buffer, setTimeout, clearTimeout, process: { env: { FAMILY_INVITATION_KEY_VERSION: 'test', FAMILY_INVITATION_KEYS: JSON.stringify({ test: '01'.repeat(32) }) } }, uniCloud: { database: () => database }, require: (name: string) => {
+    runInNewContext(code, { module, exports: module.exports, Buffer, URL, setTimeout, clearTimeout, process: { env: { FAMILY_INVITATION_KEY_VERSION: 'test', FAMILY_INVITATION_KEYS: JSON.stringify({ test: '01'.repeat(32) }) } }, uniCloud: { database: () => database, async uploadFile(input: { cloudPath: string; fileContent: Buffer }) { const fileID = 'cloud://mock/' + input.cloudPath; files.set(fileID, input.fileContent); return { fileID }; }, async downloadFile(input: { fileID: string }) { return { fileContent: files.get(input.fileID) }; }, async getTempFileURL(input: { fileList: string[] }) { return { fileList: input.fileList.map(fileID => ({ fileID, tempFileURL: 'https://mock.invalid/file?expire_at=' + Math.floor(Date.now() / 1000 + 600) })) }; } }, require: (name: string) => {
       if (name === 'uni-id-common') { sdkImports++; return { createInstance: () => ({ async checkToken(token: string, options: { autoRefresh: boolean }) {
         checks.push({ token, ...options }); if (token !== 'verified-token') return { errCode: 'bad' };
         return { errCode: 0, uid: 'alice', iat: Math.floor(Date.now() / 1000) - 60, exp: Math.floor(Date.now() / 1000) + 3600, ...(options.autoRefresh ? { token: 'renewed-token', tokenExpired: Date.now() + 3600000 } : {}) };
@@ -49,6 +50,12 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' = 'family-co'
     return module.exports;
   }
   const entry = load(resolve('uniCloud-alipay/cloudfunctions', entryName, 'index.obj.ts')) as {
+    requestUpload: (this: object, ...args: unknown[]) => Promise<unknown>;
+    upload: (this: object, ...args: unknown[]) => Promise<unknown>;
+    complete: (this: object, ...args: unknown[]) => Promise<unknown>;
+    status: (this: object, ...args: unknown[]) => Promise<unknown>;
+    read: (this: object, ...args: unknown[]) => Promise<unknown>;
+    bindImages: (this: object, ...args: unknown[]) => Promise<unknown>;
     get: (this: object, ...args: unknown[]) => Promise<unknown>;
     list: (this: object, ...args: unknown[]) => Promise<unknown>;
     update: (this: object, ...args: unknown[]) => Promise<unknown>;

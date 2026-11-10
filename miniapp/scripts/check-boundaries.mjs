@@ -19,8 +19,13 @@ export async function checkBoundaries({ root, artifacts = false }) {
   const discovered = [...client, ...cloud].filter(path => /[\\/]uni-id-co[\\/]index\.obj\.[jt]s$/.test(path));
   if (discovered.length !== 1 || !discovered[0].includes('uniCloud-alipay')) throw new Error('Expected unique uni-id-co; duplicate or missing object');
   const objectEntries = [...client, ...cloud].filter(path => /[\\/]index\.obj\.[jt]s$/.test(path));
-  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts', 'family-co/index.obj.ts', 'recipes-co/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
-  if (objectEntries.length !== 4 || objectEntries.some(path => !allowed.includes(path))) throw new Error('Unexpected discoverable public cloud object');
+  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts', 'family-co/index.obj.ts', 'recipes-co/index.obj.ts', 'media-co/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
+  if (objectEntries.length !== 5 || objectEntries.some(path => !allowed.includes(path))) throw new Error('Unexpected discoverable public cloud object');
+  const httpEntries = cloud.filter(path => /[\\/]cloudfunctions[\\/][^\\/]+[\\/]index\.[jt]s$/.test(path));
+  if (httpEntries.length !== 1 || httpEntries[0] !== resolve(root, 'uniCloud-alipay/cloudfunctions/media-review-callback/index.ts')) throw new Error('Unexpected public HTTP cloud function');
+  const callbackSource = ts.createSourceFile(httpEntries[0], await readFile(httpEntries[0], 'utf8'), ts.ScriptTarget.Latest, true);
+  const callbackExports = callbackSource.statements.filter(node => ts.isExportDeclaration(node) || ts.isExportAssignment(node) || ts.canHaveModifiers(node) && ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword));
+  if (callbackExports.length !== 1 || !ts.isFunctionDeclaration(callbackExports[0]) || callbackExports[0].name?.text !== 'main') throw new Error('Unexpected HTTP callback export');
   for (const path of [...client, ...cloud].filter(path => path.endsWith('.schema.json'))) {
     const permission = JSON.parse(await readFile(path, 'utf8')).permission;
     if (!permission || ['read', 'create', 'update', 'delete'].some(key => permission[key] !== false)) throw new Error('ClientDB permission open: ' + path);
@@ -36,7 +41,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
       const ast = ts.createSourceFile(path, code, ts.ScriptTarget.Latest, true);
       const check = (specifier, typeOnly) => {
         if (typeof specifier !== 'string') throw new Error('Client dynamic runtime import denied: ' + path);
-        if (/(?:home-kernel|home-family|home-recipes|uni-sec-check|uni-open-bridge|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
+        if (/(?:home-kernel|home-family|home-recipes|home-media|uni-sec-check|uni-open-bridge|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
       };
       const visit = node => {
         if (ts.isImportDeclaration(node)) {
@@ -78,9 +83,9 @@ export async function checkBoundaries({ root, artifacts = false }) {
       }
       ts.forEachChild(node, visit);
     }; visit(ast);
-    if (/[\\/](?:account-co|family-co|recipes-co)[\\/]index\.obj\.ts$/.test(path)) {
+    if (/[\\/](?:account-co|family-co|recipes-co|media-co)[\\/]index\.obj\.ts$/.test(path)) {
       const exports = ast.statements.filter(node => ts.isExportDeclaration(node) || ts.isExportAssignment(node) || (ts.canHaveModifiers(node) && ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)));
-      const expected = path.includes('recipes-co') ? ['create', 'get', 'list', 'update', 'favorite'] : path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
+      const expected = path.includes('media-co') ? ['requestUpload', 'upload', 'complete', 'status', 'read'] : path.includes('recipes-co') ? ['create', 'get', 'list', 'update', 'favorite', 'bindImages'] : path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
       if (exports.length !== expected.length || exports.some(node => !ts.isFunctionDeclaration(node) || !expected.includes(node.name?.text) || ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword))
         || new Set(exports.map(node => node.name?.text)).size !== expected.length) throw new Error('Unexpected public method export: ' + path);
     }
@@ -96,7 +101,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
       || manifest.subPackages || manifest.subpackages || manifest.tabBar) throw new Error('Artifact routes must be exactly the nine implemented account/family/recipe pages');
     for (const path of files) {
       if (/(?:[\\/](?:vendor|tests|cloudfunctions)[\\/]|uniCloud-|\.zip$|\.tar\.gz$)/i.test(path.slice(root.length))) throw new Error('Artifact contains forbidden source');
-      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|uni-sec-check|uni-open-bridge|cloudfunctions\/common|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
+      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|home-media|uni-sec-check|uni-open-bridge|cloudfunctions\/common|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
     }
   }
 }

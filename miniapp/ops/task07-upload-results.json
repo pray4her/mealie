@@ -1,0 +1,772 @@
+[
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_files",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始运行上传数据集合Schema(media_files.schema.json)",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_files",
+    "type": "progress",
+    "phase": "database",
+    "message": "创建数据表(media_files)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_files",
+    "type": "progress",
+    "phase": "database",
+    "message": "上传数据集合Schema(media_files.schema.json)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_files",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceName": "media_files.schema.json",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\database\\media_files.schema.json",
+      "message": "media_files.schema.json 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_audit_traces",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始运行上传数据集合Schema(media_audit_traces.schema.json)",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_audit_traces",
+    "type": "progress",
+    "phase": "database",
+    "message": "创建数据表(media_audit_traces)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_audit_traces",
+    "type": "progress",
+    "phase": "database",
+    "message": "上传数据集合Schema(media_audit_traces.schema.json)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media_audit_traces",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceName": "media_audit_traces.schema.json",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\database\\media_audit_traces.schema.json",
+      "message": "media_audit_traces.schema.json 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-mutation_receipts",
+    "type": "progress",
+    "phase": "database",
+    "message": "开始运行上传数据集合Schema(mutation_receipts.schema.json)",
+    "level": "info"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-mutation_receipts",
+    "type": "progress",
+    "phase": "database",
+    "message": "上传数据集合Schema(mutation_receipts.schema.json)成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-mutation_receipts",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceName": "mutation_receipts.schema.json",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\database\\mutation_receipts.schema.json",
+      "message": "mutation_receipts.schema.json 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-contracts，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 公共模块 home-contracts 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-contracts，开始编译..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 family.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 identity.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 media.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 recipes.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 5 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传公共模块home-contracts..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-contracts被云端云函数依赖，正在更新相关云端云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "更新云端云函数成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-contracts上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-contracts",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceName": "home-contracts",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\cloudfunctions\\common\\home-contracts",
+      "message": "公共模块 home-contracts 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-kernel，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 公共模块 home-kernel 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-kernel，开始编译..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 auth.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 clock.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 content.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 database-platform.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 database.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 errors.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 idempotency.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 persistent-request-limit.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 request-limit.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 uni-id-adapter.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 11 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传公共模块home-kernel..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-kernel被云端云函数依赖，正在更新相关云端云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "更新云端云函数成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-kernel上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-kernel",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceName": "home-kernel",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\cloudfunctions\\common\\home-kernel",
+      "message": "公共模块 home-kernel 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-media，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 公共模块 home-media 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-media，开始编译..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 binding.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 callback.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 files.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 model.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 review.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 storage.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 validation.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 8 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传公共模块home-media..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-media上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-media-final",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceName": "home-media",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\cloudfunctions\\common\\home-media",
+      "message": "公共模块 home-media 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-recipes，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 公共模块 home-recipes 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 公共模块 home-recipes，开始编译..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 repository.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 validation.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 3 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传公共模块home-recipes..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-recipes被云端云函数依赖，正在更新相关云端云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "更新云端云函数成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "公共模块home-recipes上传成功",
+    "level": "success"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-home-recipes-final",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceName": "home-recipes",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\cloudfunctions\\common\\home-recipes",
+      "message": "公共模块 home-recipes 上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "progress",
+    "phase": "runtime-warning",
+    "message": "本地node版本是18.20.0，云端node版本是18.18.2，请注意兼容问题。调整云端node版本参考",
+    "level": "warning",
+    "links": [
+      {
+        "kind": "external",
+        "start": 42,
+        "end": 54,
+        "target": "https://doc.dcloud.net.cn/uniCloud/cf-functions.html#node%E7%89%88%E6%9C%AC",
+        "tooltip": "调整云端node版本参考"
+      }
+    ]
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 云函数，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "开始编译 TypeScript 云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.obj.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 1 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传云对象media-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceLabel": "云对象",
+      "resourceName": "media-co",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\cloudfunctions\\media-co",
+      "message": "云对象media-co上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "progress",
+    "phase": "runtime-warning",
+    "message": "本地node版本是18.20.0，云端node版本是18.18.2，请注意兼容问题。调整云端node版本参考",
+    "level": "warning",
+    "links": [
+      {
+        "kind": "external",
+        "start": 42,
+        "end": 54,
+        "target": "https://doc.dcloud.net.cn/uniCloud/cf-functions.html#node%E7%89%88%E6%9C%AC",
+        "tooltip": "调整云端node版本参考"
+      }
+    ]
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 云函数，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "开始编译 TypeScript 云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 1 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传云函数media-review-callback..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-media-review-callback",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceLabel": "云函数",
+      "resourceName": "media-review-callback",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\cloudfunctions\\media-review-callback",
+      "message": "云函数media-review-callback上传完成"
+    }
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "progress",
+    "phase": "runtime-warning",
+    "message": "本地node版本是18.20.0，云端node版本是18.18.2，请注意兼容问题。调整云端node版本参考",
+    "level": "warning",
+    "links": [
+      {
+        "kind": "external",
+        "start": 42,
+        "end": 54,
+        "target": "https://doc.dcloud.net.cn/uniCloud/cf-functions.html#node%E7%89%88%E6%9C%AC",
+        "tooltip": "调整云端node版本参考"
+      }
+    ]
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "检测到 TypeScript 云函数，开始类型检查..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "TypeScript 类型检查通过"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "开始编译 TypeScript 云函数..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译 index.obj.ts"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "编译完成，共 1 个文件"
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "progress",
+    "phase": "transfer",
+    "message": "正在上传云对象recipes-co..."
+  },
+  {
+    "protocolVersion": 1,
+    "requestId": "upload-recipes-co",
+    "type": "result",
+    "data": {
+      "projectPath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage",
+      "provider": "alipay",
+      "resourceLabel": "云对象",
+      "resourceName": "recipes-co",
+      "resourcePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\mealie-task07-deploy-hcpS8c\\stage\\uniCloud-alipay\\cloudfunctions\\recipes-co",
+      "message": "云对象recipes-co上传完成"
+    }
+  }
+]

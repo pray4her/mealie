@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import type { FamilyContext, Page, Recipe, RecipeMutation, RecipeUpdate, RecipesApi, RecipeListInput, RecipeFavoriteMutation } from 'home-contracts';
+import type { FamilyContext, Page, Recipe, RecipeMutation, RecipeUpdate, RecipesApi, RecipeListInput, RecipeFavoriteMutation, RecipeImagesMutation } from 'home-contracts';
 import { AppError, consumeRequestLimit, DatabaseFault, safeError } from 'home-kernel';
 import type { ContentPort, DatabasePort, TransactionPort } from 'home-kernel';
 import { guardMutation, readFamily } from 'home-family';
+import { bindRecipeMedia } from 'home-media';
 import { auditText, exact, favoriteMutation, listInput, mutation, recipeId } from './validation';
 import { favoriteId, favoriteRecord, isFavorite, readRecipe, recipeCandidate, recipeView } from './repository';
 import type { RecipeCursor, RecipeReads, RecipeRecord } from './repository';
@@ -23,7 +24,7 @@ export function createRecipesService(deps: RecipeDeps, ctx: FamilyContext): Reci
     await consumeRequestLimit(deps.database, { subject: 'uid:' + ctx.uid, operation, now: deps.now(), max: write ? 10 : 60 });
     await consumeRequestLimit(deps.database, { subject: 'family:' + ctx.familyId, operation, now: deps.now(), max: write ? 60 : 300 });
   }
-  async function receipt(tx: TransactionPort, input: RecipeMutation | RecipeUpdate | RecipeFavoriteMutation, operation: string): Promise<Receipt['result'] | null> {
+  async function receipt(tx: TransactionPort, input: RecipeMutation | RecipeUpdate | RecipeFavoriteMutation | RecipeImagesMutation, operation: string): Promise<Receipt['result'] | null> {
     await confirm(tx);
     const id = hash(['recipe-receipt-v1', ctx.uid, ctx.familyId, ctx.generation, operation, input.requestId]);
     const value = await tx.get<Receipt>('mutation_receipts', id);
@@ -37,14 +38,14 @@ export function createRecipesService(deps: RecipeDeps, ctx: FamilyContext): Reci
     }
     return value.result;
   }
-  async function replay(tx: TransactionPort, input: RecipeMutation | RecipeUpdate, operation: string): Promise<Recipe | null> {
+  async function replay(tx: TransactionPort, input: RecipeMutation | RecipeUpdate | RecipeImagesMutation, operation: string): Promise<Recipe | null> {
     const result = await receipt(tx, input, operation);
     if (!result) return null;
     if (!('familyId' in result) || result.familyId !== ctx.familyId) throw new AppError('UNAVAILABLE');
     await readRecipe(tx, ctx.familyId, recipeId(result.id));
     return { ...result, isFavorite: await isFavorite(tx, ctx, result.id) };
   }
-  async function saveReceipt(tx: TransactionPort, input: RecipeMutation | RecipeUpdate | RecipeFavoriteMutation, operation: string, result: Receipt['result']) {
+  async function saveReceipt(tx: TransactionPort, input: RecipeMutation | RecipeUpdate | RecipeFavoriteMutation | RecipeImagesMutation, operation: string, result: Receipt['result']) {
     const receipt: Receipt = { _id: hash(['recipe-receipt-v1', ctx.uid, ctx.familyId, ctx.generation, operation, input.requestId]),
       uid: ctx.uid, familyId: ctx.familyId, generation: ctx.generation, operation, requestId: input.requestId, payloadHash: hash(input), result, createdAt: deps.now() };
     await tx.insert('mutation_receipts', receipt._id, receipt);
@@ -203,6 +204,33 @@ export function createRecipesService(deps: RecipeDeps, ctx: FamilyContext): Reci
       if (!await deps.database.transaction(completed)) throw new AppError('UNAVAILABLE');
     }
   }
+  async function bindImages(raw: unknown): Promise<Recipe> {
+    const value = exact(raw, ['requestId', 'familyId', 'generation', 'id', 'version', 'imageIds']);
+    if (typeof value.requestId !== 'string' || !/^[A-Za-z0-9_-]{16,128}$/.test(value.requestId)
+      || !Number.isSafeInteger(value.version) || (value.version as number) < 1 || (value.version as number) >= Number.MAX_SAFE_INTEGER
+      || !Array.isArray(value.imageIds) || value.imageIds.length > 20) throw new AppError('INVALID_INPUT');
+    const imageIds = value.imageIds.map(recipeId);
+    if (new Set(imageIds).size !== imageIds.length) throw new AppError('INVALID_INPUT');
+    if (value.familyId !== ctx.familyId || value.generation !== ctx.generation) throw new AppError('CONFLICT');
+    const input: RecipeImagesMutation = { requestId: value.requestId, familyId: ctx.familyId, generation: ctx.generation,
+      id: recipeId(value.id), version: value.version as number, imageIds };
+    const operation = 'recipe-images-v1'; await prepare(operation, true); await deps.revalidateIdentity();
+    const execute = () => deps.database.transaction(async tx => {
+      const previous = await replay(tx, input, operation); if (previous) return previous;
+      await guardMutation(tx, ctx); const row = await readRecipe(tx, ctx.familyId, input.id);
+      if (row.version !== input.version) throw new AppError('CONFLICT');
+      await bindRecipeMedia(tx, ctx, row._id, row.imageIds, imageIds, deps.now());
+      const updated = { ...row, imageIds, version: row.version + 1, updatedAt: deps.now() };
+      await tx.replace('recipes', row._id, updated); const result = await recipeView(tx, updated, ctx);
+      const { isFavorite: _private, ...snapshot } = result; await saveReceipt(tx, input, operation, snapshot); return result;
+    });
+    try { return await execute(); }
+    catch (error) {
+      if (!(error instanceof DatabaseFault) || error.kind !== 'commit-unknown') throw error;
+      await deps.revalidateIdentity(); const recovered = await deps.database.transaction(tx => replay(tx, input, operation));
+      if (!recovered) throw new AppError('UNAVAILABLE'); return recovered;
+    }
+  }
   async function finish<T>(value: T): Promise<T> {
     await deps.revalidateIdentity(); await deps.database.transaction(confirm); return value;
   }
@@ -212,5 +240,6 @@ export function createRecipesService(deps: RecipeDeps, ctx: FamilyContext): Reci
     async get(id) { try { return await get(id); } catch (error) { throw safeError(error); } },
     async list(input) { try { return await list(input); } catch (error) { throw safeError(error); } },
     async favorite(input) { try { await favorite(input); await finish(undefined); } catch (error) { throw safeError(error); } },
+    async bindImages(input) { try { return await finish(await bindImages(input)); } catch (error) { throw safeError(error); } },
   };
 }
