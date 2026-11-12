@@ -8,6 +8,7 @@ page, .wd-root-portal {
   --home-primary: #216840;
   --home-selected: #eaf3ed;
   --home-danger: #b33f38;
+  --home-warning: #8a5d17;
   --home-space: 20px;
   --home-radius: 10px;
   --wot-primary-1: #eaf3ed;
@@ -15,57 +16,126 @@ page, .wd-root-portal {
   --wot-primary-6: #216840;
   --wot-primary-7: #184e30;
   --wot-danger-main: #b33f38;
+  --wot-warning-main: #8a5d17;
   --wot-text-main: #202923;
   --wot-text-secondary: #667269;
   --wot-text-placeholder: #667269;
-  --wot-button-height-medium: 48px;
-  --wot-button-font-size-medium: 16px;
+  --wot-button-height-medium: 3rem;
+  --wot-button-font-size-medium: 1rem;
   --wot-button-radius-main: 10px;
-  --wot-input-inner-font-size: 16px;
-  --wot-input-inner-height: 24px;
-  --wot-textarea-inner-font-size: 16px;
-  background: var(--home-bg);
+  --wot-button-info-plain-border: var(--home-border);
+  --wot-button-info-color: var(--home-text);
+  --wot-button-padding-medium: 0 16px;
+  --wot-button-size-icon-medium: 22px;
+  --wot-cell-title-line-height: 1.6;
+  --wot-cell-value-line-height: 1.6;
+  --wot-cell-title-font-size: 1rem;
+  --wot-cell-value-font-size: 1rem;
+  background: var(--home-surface);
   color: var(--home-text);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
+  -webkit-text-size-adjust: 100%;
   line-height: 1.6;
 }
-.page { box-sizing: border-box; padding: 24px var(--home-space) calc(32px + env(safe-area-inset-bottom)); overflow-wrap: anywhere; }
-.title { display: block; font-size: 24px; font-weight: 600; line-height: 1.4; margin-bottom: 16px; }
-.eyebrow, .muted { display: block; color: var(--home-muted); font-size: 14px; }
+.page { box-sizing: border-box; padding: 16px var(--home-space) calc(24px + env(safe-area-inset-bottom)); overflow-wrap: anywhere; }
+.title { display: block; font-size: 1.5rem; font-weight: 600; line-height: 1.4; margin-bottom: 16px; }
+.eyebrow, .muted { display: block; color: var(--home-muted); font-size: .875rem; }
 .eyebrow { margin-bottom: 8px; }
-.section { display: block; margin: 28px 0 12px; font-size: 18px; font-weight: 600; }
+.section { display: block; margin: 28px 0 12px; font-size: 1.125rem; font-weight: 600; }
 .block { display: block; white-space: pre-wrap; }
 .status { display: block; padding: 16px 0; white-space: pre-wrap; }
 .error { color: var(--home-danger); }
+.warning { color: var(--home-warning); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
-.actions > .wd-button { flex: 1; min-width: 120px; }
+.actions > .home-action--button { flex: 1; min-width: 120px; }
+.home-action { box-sizing: border-box; display: inline-flex; max-width: 100%; min-width: 44px; min-height: 48px; border-radius: 10px; vertical-align: top; cursor: pointer; }
+.home-action__visual { display: flex; width: 100%; pointer-events: none; }
+.home-action .wd-button { width: 100%; margin: 0; }
+.home-action--block { display: flex; width: 100%; }
+.home-action:focus-visible { outline: 2px solid var(--home-primary); outline-offset: 3px; }
+.home-action[aria-disabled="true"] { cursor: default; }
 .page .wd-button.is-medium, .wd-root-portal .wd-button.is-medium { min-width: 44px; min-height: 48px; height: auto; white-space: normal; }
 .page .wd-button .wd-button__content, .wd-root-portal .wd-button .wd-button__content { height: auto; min-width: 0; max-width: 100%; }
 .page .wd-button .wd-button__text, .wd-root-portal .wd-button .wd-button__text { white-space: normal; line-height: 1.5; padding: 10px 0; min-width: 0; overflow-wrap: anywhere; }
+.home-action--text, .home-action--icon { min-height: 44px; }
+.page .home-action--text .wd-button.is-medium, .sheet .home-action--text .wd-button.is-medium { --wot-button-padding-medium: 0; min-height: 44px; }
+.page .home-action--icon, .sheet .home-action--icon { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 50%; }
+.page .home-action--icon .wd-button.is-medium { --wot-button-padding-medium: 0; min-height: 44px; height: 44px; border-radius: 50%; }
+.page .home-action--icon .wd-button__text { padding: 0; }
+.page .home-action.add-recipe { flex: 0 0 auto; min-width: 72px; }
+.page .home-action.scope-tab { position: relative; padding-bottom: 9px; border-radius: 0; }
+.page .scope-tab .wd-button { color: var(--home-muted); text-align: left; }
+.page .scope-tab--active .wd-button { color: var(--home-text); font-weight: 600; }
+.page .home-action.scope-tab--active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 26px; height: 3px; border-radius: 2px; background: var(--home-primary); }
+.page .home-action.favorite-action { position: absolute; right: 4px; top: 4px; background: var(--home-surface); }
+.page .favorite-action .wd-button { background: var(--home-surface); }
+.filter-action .wd-button__content { justify-content: flex-start; }
 .page .wd-button:focus-visible, .page input:focus-visible, .page textarea:focus-visible, .wd-root-portal .wd-button:focus-visible { outline: 2px solid var(--home-primary); outline-offset: 3px; }
-.wd-input, .wd-textarea { border: 1px solid var(--home-border); border-radius: var(--home-radius); padding: 12px; }
-.wd-input__inner { min-height: 24px; }
-.wd-search { --wot-search-input-height: 48px; --wot-search-input-font-size: 16px; --wot-search-placeholder-font-size: 14px; }
-.wd-search__field { border: 1px solid var(--home-border); }
 .sheet { padding: 24px 20px; }
-.sheet .wd-button { display: block; margin-top: 12px; }
+.sheet .home-action { display: flex; margin-top: 12px; }
 .family-page > view > text, .family-page .invitation > text, .family-page .member > text { display: block; margin-bottom: 12px; }
-.family-page .wd-button, .editor-page .wd-button { display: block; margin-top: 16px; }
+.family-page .home-action--button, .editor-page .home-action--button { display: flex; margin-top: 16px; }
+.family-page .home-action--text, .editor-page .home-action--text { margin-top: 8px; margin-right: 12px; }
 .family-page .invitation, .family-page .member { padding: 20px 0; border-bottom: 1px solid var(--home-line); }
 .family-page [data-family-form] { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--home-line); }
-.family-page .member-id { color: var(--home-muted); font-size: 14px; }
+.family-page .member-id { color: var(--home-muted); font-size: .875rem; }
 .role-label { display: inline-block; padding: 4px 12px; background: var(--home-selected); color: var(--home-primary); border-radius: 8px; }
-.family-page .wd-input { margin: 12px 0; }
-.native-share { background: var(--home-primary); color: white; font-size: 16px; border-radius: var(--home-radius); min-height: 48px; margin-top: 16px; white-space: normal; }
+.family-page .role-label { display: inline-block; width: auto; }
+.native-share { background: var(--home-primary); color: white; font-size: 1rem; border-radius: var(--home-radius); min-height: 48px; margin-top: 16px; white-space: normal; }
+.native-share { box-sizing: border-box; padding: 12px 16px; line-height: 1.5; }
+.native-share::after { border: 0; }
+.member-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.member-avatar { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; color: var(--home-primary); background: var(--home-selected); }
+.member-name { display: block; font-size: 1.125rem; font-weight: 600; }
 .login-page { padding-top: 64px; background: var(--home-surface); min-height: 100vh; }
 .login-page > text { display: block; margin-bottom: 20px; }
-.login-page .wd-button { display: block; margin-top: 36px; }
+.login-page .home-brand { margin-bottom: 36px; }
+.family-page .home-brand { margin-bottom: 16px; }
+.login-page .home-action { display: flex; margin-top: 36px; }
 .editor-page { background: var(--home-surface); }
-.editor-page .form > text, .editor-page .field-label { display: block; margin: 20px 0 8px; font-size: 14px; }
+.editor-page .field-label { display: block; margin: 20px 0 8px; font-size: .875rem; }
 .editor-page .row { margin-top: 16px; padding: 20px 0; border-top: 1px solid var(--home-line); }
-.editor-page .row > text:first-child { display: block; font-size: 18px; font-weight: 600; }
+.editor-page .row > text:first-child { display: block; font-size: 1.125rem; font-weight: 600; }
 .editor-page .recipe-image { width: 100%; height: 220px; border-radius: 12px; }
-.import-page button { min-height: 48px; border-radius: var(--home-radius); background: var(--home-surface); color: var(--home-text); font-size: 16px; white-space: normal; }
-.import-page button[data-submit], .import-page button[data-replay], .import-page button[data-open] { background: var(--home-primary); color: white; }
+.import-page { background: var(--home-surface); }
+.import-page .notice { display: block; margin-top: 16px; }
+.import-page .home-action--button { display: flex; margin-top: 16px; }
+.import-page .home-action--text { margin-top: 8px; }
+/* Wot 2.4.0 does not forward ARIA to its internal input/textarea; these native fields share its tokens. */
+.home-input, .home-textarea { box-sizing: border-box; display: block; width: 100%; border: 1px solid var(--home-border); border-radius: var(--home-radius); padding: 12px; background: var(--home-surface); color: var(--home-text); font-family: inherit; font-size: 1rem; line-height: 1.6; }
+.home-input { height: calc(1.6rem + 26px); min-height: 48px; }
+.home-textarea { min-height: 8rem; }
+.home-input[disabled], .home-textarea[disabled] { background: var(--home-bg); }
+.family-page .home-input { margin: 12px 0; }
+.family-nav { margin-top: 24px; }
+.family-nav .wd-cell { min-height: 48px; }
+.family-nav .wd-cell__left { max-width: 100%; }
+.family-nav .wd-cell__title { white-space: normal; overflow-wrap: anywhere; }
+.family-nav__action:focus-visible { outline: 2px solid var(--home-primary); outline-offset: 3px; }
+.home-brand { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; }
+.recipe-page .home-brand { height: 1.6rem; min-height: 1.6rem; }
+.home-brand__mark { display: flex; align-items: center; flex-shrink: 0; gap: 6px; color: var(--home-primary); font-weight: 600; font-size: 1.125rem; }
+.home-brand__leaf { width: 24px; height: 24px; }
+.home-brand__family-icon { width: 16px; height: 16px; flex-shrink: 0; margin-right: 4px; vertical-align: middle; }
+.home-brand .home-action.brand-family { min-width: 0; width: 58%; max-width: 58%; margin: 0; }
+.home-brand .wd-button.brand-family { width: 100%; max-width: 100%; }
+.home-brand .brand-family .wd-button { --wot-button-padding-medium: 0; font-size: .875rem; color: var(--home-muted); }
+.home-brand .brand-family .wd-button__content { min-width: 0; justify-content: flex-end; }
+.home-brand .brand-family .wd-button__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recovery-note { margin: 12px 0; padding: 12px; border-radius: 10px; background: var(--home-selected); color: var(--home-primary); font-size: .875rem; }
+.recovery-note > text { display: block; }
+.field-label { display: block; font-size: .875rem; margin: 20px 0 8px; }
+.field-error { display: block; margin-top: 6px; color: var(--home-danger); font-size: .875rem; }
+.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.field-grid > view { min-width: 0; }
+.is-single-column .field-grid, .field-grid.is-single-column { grid-template-columns: minmax(0, 1fr); }
+.form-section { margin-top: 24px; }
+.form-section .section { margin-top: 0; }
+.page .home-form-item { --wot-cell-padding: 0; --wot-cell-border-color: transparent; }
+.page .home-form-item .field-label { margin-top: 16px; }
+.compact-notice { display: block; margin: 16px 0; padding: 12px; background: var(--home-selected); border-radius: 10px; font-size: .875rem; }
+.status-heading { display: block; font-size: 1.5rem; line-height: 1.4; font-weight: 600; margin: 12px 0; }
+.status-details { padding: 12px 0; border-top: 1px solid var(--home-line); }
+.recipe-open:focus-visible { outline: 2px solid var(--home-primary); outline-offset: 3px; }
 @media (max-width: 359px) { page, .wd-root-portal { --home-space: 16px; } }

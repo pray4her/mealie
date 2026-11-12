@@ -56,3 +56,7 @@
 实际起点 `842a0ee114`；实施提交 `1978ad2b532d76ec9b13266c32a2ce4aa8b2010e`（仅本地，未推送）。按 D-01/02/03/06/07/08/09 和 S-USER/PREVIEW/BUSINESS/CODE/WOT/UNI/A11Y 完成九页重构、原生双 Tab 与授权封面；#8 两页仅导航和主题兼容。
 
 `task -d miniapp check -- --maxWorkers=2` 退出 0，55 套件 / 694 项通过；独立审查无剩余 Critical/Important。详见 [九页状态与验收记录](../../../miniapp/ops/issue20-ui-acceptance.md)、[新候选摘要](../../../miniapp/ops/issue20-ui-candidate.json) 和 [执行进度](../../superpowers/plans/2026-11-10-miniapp-issue20.md)。微信实际截图、四种屏宽/大字号、安全区/键盘及真机读屏仍待验证；不将上述验收复选框批量标为通过，不关闭 #20，不覆盖 #6–#8 历史证据。
+
+## 设计审阅补充（2026-11-10）
+
+后续实施同时遵循 [逐页与组件规范](page-specs.md) 及 D-11 / D-12；[本轮审阅](review-2026-11-10.md)补出了字段错误定位、未提交输入、微信语义/字号、令牌配对和组件一致性等缺口。上文“无剩余 Critical/Important”与测试数量是当时候选的历史记录，不代表本轮发现已修复。保持九页范围与原有业务约束，不把 AI 两页或未来模块加入 #20 前置依赖。

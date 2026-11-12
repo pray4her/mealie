@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, watch } from 'vue';
+import HomeAction from '../../components/HomeAction.vue';
+import { usePageTypography } from '../../shared/use-page-typography';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useRecipesPage } from '../../features/recipes/use-recipes-page';
 import { importErrors } from '../../features/imports/api';
 import { validId } from '../../features/recipes/validation';
 import { AppError } from '../../shared/errors';
+const { rootFontSize } = usePageTypography();
 let id = ''; let invalid = false; let timer: ReturnType<typeof globalThis.setTimeout> | undefined; let revision = 0;
 onLoad(query => { try { if (query?.id) id = validId(query.id); } catch { invalid = true; } });
 const page = useRecipesPage(async () => {
@@ -13,6 +16,7 @@ const page = useRecipesPage(async () => {
   if (!id) throw new AppError('NOT_FOUND'); await page.imports.get(id);
 });
 const { confirmed, busy, message, imports } = page; const { job } = imports;
+const details = ref(false);
 const terminal = computed(() => !!job.value && ['succeeded', 'failed', 'cancelled'].includes(job.value.state));
 const labels = { queued: '等待处理', running: '正在解析或审核', succeeded: '已保存到家庭菜谱', failed: '导入失败', cancelled: '已取消' };
 function stop() { revision++; if (timer !== undefined) globalThis.clearTimeout(timer); timer = undefined; }
@@ -30,24 +34,36 @@ onBeforeUnmount(stop);
 const open = (edit = false) => { if (job.value?.recipeId) uni.navigateTo({ url: '/pages/recipes/' + (edit ? 'edit' : 'detail') + '?id=' + job.value.recipeId }); };
 const start = () => uni.redirectTo({ url: '/pages/imports/submit' });
 const back = () => uni.switchTab({ url: '/pages/recipes/index' });
+async function cancel() {
+  await page.act(async isCurrent => {
+    const result = await uni.showModal({ title: '取消这次导入？', content: '取消后不会保存新菜谱；已经开始的 AI 调用可能仍产生费用。', confirmText: '取消导入', cancelText: '继续等待', confirmColor: '#b33f38' });
+    if (result.confirm && isCurrent() && !terminal.value) await imports.cancel(id);
+  });
+}
 </script>
 <template>
+  <page-meta :root-font-size="rootFontSize" />
   <view class="page import-page">
     <view
       v-if="confirmed && job"
       data-protected
     >
-      <text class="title">
-        文本导入任务
+      <text
+        class="title"
+        role="heading"
+        aria-role="heading"
+        aria-level="1"
+      >
+        {{ job.state === 'queued' || job.state === 'running' ? '正在整理这道菜' : labels[job.state] }}
       </text>
       <text
-        class="notice"
+        class="compact-notice"
         role="status"
+        aria-role="status"
+        aria-live="polite"
+        aria-atomic="true"
       >
         {{ labels[job.state] }}
-      </text>
-      <text class="notice">
-        AI 尝试次数：{{ job.attempts }} / 3
       </text>
       <text
         v-if="!terminal"
@@ -59,45 +75,74 @@ const back = () => uni.switchTab({ url: '/pages/recipes/index' });
         v-if="job.error"
         class="notice"
         role="status"
+        aria-role="status"
+        aria-live="polite"
+        aria-atomic="true"
       >
         {{ importErrors[job.error] }}
       </text>
+      <HomeAction
+        :label="details ? '收起处理详情' : '查看处理详情'"
+        variant="text"
+        data-details
+        @click="details = !details"
+      >
+        {{ details ? '收起处理详情' : '查看处理详情' }}
+      </HomeAction>
+      <view
+        v-if="details"
+        class="status-details"
+      >
+        <text class="muted">
+          AI 尝试次数：{{ job.attempts }} / 3。取消后不会保存新菜谱；已经开始的 AI 调用可能仍产生费用。
+        </text>
+      </view>
       <view v-if="job.state === 'succeeded'">
-        <button
+        <HomeAction
+          label="打开已保存菜谱"
           data-open
-          @tap="open()"
+          @click="open()"
         >
           打开已保存菜谱
-        </button>
-        <button
+        </HomeAction>
+        <HomeAction
+          label="核对并编辑菜谱"
+          type="info"
+          variant="plain"
           data-edit
-          @tap="open(true)"
+          @click="open(true)"
         >
           核对并编辑菜谱
-        </button>
+        </HomeAction>
       </view>
       <view v-if="!terminal">
-        <text class="notice">
-          取消后不会保存新菜谱；已经开始的 AI 调用可能仍产生费用。
-        </text>
-        <button
+        <HomeAction
+          label="取消任务"
+          type="danger"
+          variant="text"
           data-cancel
           :disabled="busy"
-          @tap="page.act(async () => { await imports.cancel(id); })"
+          @click="cancel"
         >
           取消任务
-        </button>
+        </HomeAction>
       </view>
-      <button
+      <HomeAction
         v-if="terminal"
+        label="重新导入"
+        :type="job.state === 'succeeded' ? 'info' : 'primary'"
+        :variant="job.state === 'succeeded' ? 'plain' : 'base'"
         data-new
-        @tap="start"
+        @click="start"
       >
         重新导入
-      </button>
+      </HomeAction>
       <text
         v-if="message"
         role="status"
+        aria-role="status"
+        aria-live="polite"
+        aria-atomic="true"
       >
         {{ message }}
       </text>
@@ -105,24 +150,29 @@ const back = () => uni.switchTab({ url: '/pages/recipes/index' });
     <text
       v-else
       role="status"
+      aria-role="status"
+      aria-live="polite"
+      aria-atomic="true"
     >
       {{ message || '正在确认登录与家庭…' }}
     </text>
-    <button
+    <HomeAction
       v-if="message"
+      label="重新查询"
+      type="info"
+      variant="plain"
       data-retry
-      @tap="page.check"
+      @click="page.check"
     >
       重新查询
-    </button>
-    <button @tap="back">
+    </HomeAction>
+    <HomeAction
+      label="返回菜谱"
+      :type="terminal ? 'info' : 'primary'"
+      :variant="terminal ? 'text' : 'base'"
+      @click="back"
+    >
       返回菜谱
-    </button>
+    </HomeAction>
   </view>
 </template>
-<style scoped>
-.page { padding: 40rpx; }
-.title { display: block; font-size: 40rpx; }
-.notice { display: block; margin-top: 24rpx; }
-button { margin: 24rpx 0; }
-</style>

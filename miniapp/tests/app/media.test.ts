@@ -20,12 +20,12 @@ afterEach(() => vi.unstubAllGlobals());
 test('image_save_is_independent_and_preserves_unsaved_text_and_version', async () => {
   const f = await mediaFixture(); const recipe = await f.recipe(); const storage = createMemoryStorage();
   const page = mountPage(Edit, { client: f.owner, storage }); await page.load({ id: recipe.id }); await page.show();
-  await page.wrapper.find('[data-title] input').setValue('尚未保存的文字');
+  await page.wrapper.find('input[data-title]').setValue('尚未保存的文字');
   await page.wrapper.find('[data-choose-image]').trigger('click'); await flushPromises();
   expect(page.wrapper.findAll('[data-image]')).toHaveLength(1); expect(page.wrapper.text()).toContain('可保存');
   await page.wrapper.find('[data-save-images]').trigger('click'); await flushPromises();
   expect(await f.owner.recipes.get(recipe.id)).toMatchObject({ title: '图片菜谱', version: 2, imageIds: [expect.any(String)] });
-  expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('尚未保存的文字');
+  expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('尚未保存的文字');
   await page.wrapper.find('[data-save]').trigger('click'); await flushPromises();
   expect(await f.owner.recipes.get(recipe.id)).toMatchObject({ title: '尚未保存的文字', version: 3, imageIds: [expect.any(String)] });
   expect(JSON.stringify(storage.get('home.media.pending.v1:owner') ?? null)).not.toContain('https://'); page.wrapper.unmount();
@@ -45,7 +45,7 @@ test.each(['before-show', 'during-check', 'after-check'])('native_picker_resumes
   const f = await mediaFixture(); const recipe = await f.recipe(); const picked = deferCall(); const entered = deferCall(); const session = deferCall();
   const requestUpload = vi.spyOn(f.owner.media, 'requestUpload');
   const page = mountPage(Edit, { client: f.owner }); await page.load({ id: recipe.id }); await page.show();
-  await page.wrapper.find('[data-title] input').setValue('选图前的文字草稿');
+  await page.wrapper.find('input[data-title]').setValue('选图前的文字草稿');
   choose = async () => { entered.resolve(null); return picked.promise; };
   await page.wrapper.find('[data-choose-image]').trigger('click'); await entered.promise; await page.hide();
   if (timing === 'during-check') {
@@ -60,7 +60,7 @@ test.each(['before-show', 'during-check', 'after-check'])('native_picker_resumes
   if (timing === 'during-check') session.resolve(null);
   await returning; await flushPromises();
   expect(requestUpload).toHaveBeenCalledOnce(); expect(page.controllers.media.items.value[0]?.state).toBe('ready');
-  expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('选图前的文字草稿');
+  expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('选图前的文字草稿');
   await page.wrapper.find('[data-save-images]').trigger('click'); await flushPromises();
   expect((await f.owner.recipes.get(recipe.id)).imageIds).toHaveLength(1); page.wrapper.unmount();
 });
@@ -125,10 +125,10 @@ test('hidden_picker_or_upload_response_cannot_restore_images', async () => {
 });
 test('version_conflict_preserves_text_and_can_reload_then_remove_images', async () => {
   const f = await mediaFixture(); const recipe = await f.recipe(); const page = mountPage(Edit, { client: f.owner }); await page.load({ id: recipe.id }); await page.show();
-  await page.wrapper.find('[data-title] input').setValue('本地文字'); await page.wrapper.find('[data-choose-image]').trigger('click'); await flushPromises();
+  await page.wrapper.find('input[data-title]').setValue('本地文字'); await page.wrapper.find('[data-choose-image]').trigger('click'); await flushPromises();
   await f.owner.recipes.bindImages({ ...f.scope, requestId: request(), id: recipe.id, version: 1, imageIds: [] });
   await page.wrapper.find('[data-save-images]').trigger('click'); await flushPromises();
-  expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('本地文字'); expect((await f.owner.recipes.get(recipe.id)).imageIds).toEqual([]);
+  expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('本地文字'); expect((await f.owner.recipes.get(recipe.id)).imageIds).toEqual([]);
   await page.wrapper.find('[data-reload]').trigger('click'); await flushPromises();
   await page.wrapper.find('[data-save-images]').trigger('click'); await flushPromises(); expect((await f.owner.recipes.get(recipe.id)).imageIds).toHaveLength(1);
   await page.wrapper.find('[data-remove-image]').trigger('click'); await page.wrapper.find('[data-save-images]').trigger('click'); await flushPromises(); expect((await f.owner.recipes.get(recipe.id)).imageIds).toEqual([]); page.wrapper.unmount();

@@ -46,3 +46,10 @@ miniprogram_npm/
 
 # Intentionally tracked: pnpm-lock.yaml, src/uni_modules, uniCloud-alipay,
 # and vendor archives. Assembly checks those archives by digest.
+
+# AI doc snapshots and local UI acceptance evidence — kept on disk, not tracked.
+/llms.txt
+/llms-full.txt
+/ops/ui-visual-v11/
+/ops/ui-accessibility-2026-11-10/
+/review/capture-wechat.mjs

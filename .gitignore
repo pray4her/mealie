@@ -176,3 +176,6 @@ dev/code-generation/openapi.json
 .task/*
 .dev.env
 frontend/eslint.config.deprecated.js
+
+# Miniapp implementation planning notes — local process, not tracked.
+/docs/superpowers/plans/2026-11-10-miniapp-*.md

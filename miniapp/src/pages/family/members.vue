@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import HomeAction from '../../components/HomeAction.vue';
+import { usePageTypography } from '../../shared/use-page-typography';
 import { useFamilyPage } from '../../features/family/use-family-page';
 import { copy } from '../../shared/copy';
 import type { MemberView } from 'home-contracts';
 import type { MembershipAction } from '../../features/family/membership-validation';
+const { rootFontSize } = usePageTypography();
 const { invitations, auth, family, membership, confirmed, busy, message, check, act, signOut, backHome } = useFamilyPage('members');
 const { members } = invitations;
 const { view } = family;
@@ -22,12 +25,18 @@ async function change(action: MembershipAction, target?: MemberView) {
 }
 </script>
 <template>
+  <page-meta :root-font-size="rootFontSize" />
   <view class="page family-page">
     <view
       v-if="confirmed && view"
       data-protected
     >
-      <text class="title">
+      <text
+        class="title"
+        role="heading"
+        aria-role="heading"
+        aria-level="1"
+      >
         {{ copy.familyMembers }}
       </text>
       <view
@@ -36,30 +45,49 @@ async function change(action: MembershipAction, target?: MemberView) {
         class="member"
         data-member
       >
-        <text>{{ member.nickname }}{{ member.uid === auth.identity.value?.uid ? copy.me : '' }}</text>
-        <text>{{ member.role === 'owner' ? copy.owner : copy.member }}</text>
-        <text class="member-id">
-          {{ copy.memberId }}{{ member.uid }}
+        <view class="member-heading">
+          <text
+            class="member-avatar"
+            aria-hidden="true"
+          >
+            {{ member.nickname.slice(0, 1) }}
+          </text>
+          <view>
+            <text class="member-name">
+              {{ member.nickname }}{{ member.uid === auth.identity.value?.uid ? copy.me : '' }}
+            </text>
+            <text class="muted">
+              {{ member.role === 'owner' ? copy.owner : copy.member }}
+            </text>
+          </view>
+        </view>
+        <text
+          class="member-id"
+          :aria-label="copy.memberId + member.uid"
+        >
+          编号尾号 {{ member.uid.slice(-4) }}
         </text>
         <template v-if="view.role === 'owner' && member.role === 'member' && member.uid !== auth.identity.value?.uid">
-          <wd-button
-            type="info"
+          <HomeAction
+            :label="copy.removeMember + ' ' + member.nickname"
+            type="danger"
+            variant="text"
             data-remove-member
             :disabled="busy"
-            :aria-disabled="busy"
             @click="change('removeMember', member)"
           >
             {{ copy.removeMember }}
-          </wd-button>
-          <wd-button
+          </HomeAction>
+          <HomeAction
+            :label="copy.transferOwner + ' ' + member.nickname"
             type="info"
+            variant="text"
             data-transfer-owner
             :disabled="busy"
-            :aria-disabled="busy"
             @click="change('transferOwner', member)"
           >
             {{ copy.transferOwner }}
-          </wd-button>
+          </HomeAction>
         </template>
       </view>
       <text
@@ -68,51 +96,62 @@ async function change(action: MembershipAction, target?: MemberView) {
       >
         {{ copy.ownerLeaveHint }}
       </text>
-      <wd-button
+      <HomeAction
         v-else
-        type="info"
+        :label="copy.leaveFamily"
+        type="danger"
+        variant="plain"
         data-leave-family
         :disabled="busy"
-        :aria-disabled="busy"
         :loading="busy"
-        :aria-busy="busy"
         @click="change('leave')"
       >
         {{ copy.leaveFamily }}
-      </wd-button>
+      </HomeAction>
       <text
         v-if="message"
         role="status"
+        aria-role="status"
+        aria-live="polite"
+        aria-atomic="true"
       >
         {{ message }}
       </text>
-      <wd-button
+      <HomeAction
+        :label="copy.backHome"
         type="info"
+        variant="text"
         @click="backHome"
       >
         {{ copy.backHome }}
-      </wd-button>
+      </HomeAction>
     </view>
     <text
       v-else
       role="status"
+      aria-role="status"
+      aria-live="polite"
+      aria-atomic="true"
     >
       {{ message || copy.checking }}
     </text>
-    <wd-button
+    <HomeAction
       v-if="!confirmed || !view"
+      :label="copy.retry"
       type="info"
       data-retry
       @click="check"
     >
       {{ copy.retry }}
-    </wd-button>
-    <wd-button
+    </HomeAction>
+    <HomeAction
+      :label="copy.signOut"
       type="info"
+      variant="text"
       data-sign-out
       @click="signOut"
     >
       {{ copy.signOut }}
-    </wd-button>
+    </HomeAction>
   </view>
 </template>

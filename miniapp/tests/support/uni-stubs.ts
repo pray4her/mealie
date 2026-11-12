@@ -6,10 +6,9 @@ import { appClientKey, provideAppClient } from '../../src/shared/app-client';
 import { createMemoryStorage } from './sdk-transport';
 import type { SessionStorage } from '../../src/shared/session-boundary';
 import WdButton from '@wot-ui/ui/components/wd-button/wd-button.vue';
-import WdSearch from '@wot-ui/ui/components/wd-search/wd-search.vue';
-import WdInput from '@wot-ui/ui/components/wd-input/wd-input.vue';
-import WdTextarea from '@wot-ui/ui/components/wd-textarea/wd-textarea.vue';
 import WdPopup from '@wot-ui/ui/components/wd-popup/wd-popup.vue';
+import WdCell from '@wot-ui/ui/components/wd-cell/wd-cell.vue';
+import WdCellGroup from '@wot-ui/ui/components/wd-cell-group/wd-cell-group.vue';
 
 export function registerHook(name: string, callback: (value: never) => unknown) {
   const instance = getCurrentInstance(); if (!instance) throw new Error('Hook registered outside setup');
@@ -39,7 +38,7 @@ export function mountPage(component: Component, { client, storage = createMemory
   const wrapper = mount(component, { global: { plugins: [{ install(app) {
     if (controllers) { context = controllers; app.provide(appClientKey, controllers); }
     else context = provideAppClient(app, client, { storage, newRequestId: async () => `fixture-request-${++request}` });
-  } }], components: { WdButton, WdSearch, WdInput, WdTextarea, WdPopup }, stubs: { UniView: View, UniText: Text, UniButton: Button, UniInput: Input, UniTextarea: Textarea } } });
+  } }], components: { WdButton, WdPopup, WdCell, WdCellGroup }, stubs: { UniView: View, UniText: Text, UniButton: Button, UniInput: Input, UniTextarea: Textarea } } });
   const hooks = (wrapper.vm.$ as typeof wrapper.vm.$ & { uniTestHooks?: Record<string, ((value: never) => unknown)[]> }).uniTestHooks ?? {};
   async function drive(name: string, value?: unknown) { let result: unknown; for (const fn of hooks[name] ?? []) result = await fn(value as never); await flushPromises(); return result; }
   const unmount = wrapper.unmount.bind(wrapper); wrapper.unmount = () => { if (!controllers) { context.imports.dispose(); context.recipes.dispose(); context.media.dispose(); context.membership.dispose(); context.family.dispose(); context.invitations.dispose(); } unmount(); };

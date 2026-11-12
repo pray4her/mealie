@@ -1,6 +1,6 @@
 export const copy = {
   recipes: '家庭菜谱', createRecipe: '新建菜谱', editRecipe: '编辑菜谱', saveRecipe: '保存菜谱', noRecipes: '还没有菜谱，先记下一道家常菜吧。',
-  allRecipes: '全部', myFavorites: '我的收藏', favoriteRecipe: '收藏', unfavoriteRecipe: '取消收藏',
+  allRecipes: '全部菜谱', myFavorites: '我的收藏', favoriteRecipe: '收藏', unfavoriteRecipe: '取消收藏',
   searchRecipes: '搜索', recipeQuery: '搜索标题', recipeTag: '精确标签（可选）', noMatchingRecipes: '没有符合条件的菜谱。',
   recipeSearchHint: '在“搜索标题”中输入菜名关键词；标签需完整匹配，同时填写时会同时筛选。',
   continueSearching: '继续查找', searchSegmentEmpty: '本段暂无匹配，继续查找后续菜谱。',
@@ -18,7 +18,7 @@ export const copy = {
     QUOTA_EXCEEDED: '操作过于频繁，请稍后恢复原请求。', UNAVAILABLE: '暂时无法确认结果，请重试；保存请求将保持原样。',
     ALREADY_IN_FAMILY: '请重新确认家庭状态。', INVITATION_INVALID: '请重新确认家庭状态。',
   },
-  title: '家庭菜谱', signIn: '微信登录', signOut: '退出登录', retry: '重试',
+  title: '一家人的菜谱', signIn: '微信登录', signOut: '退出登录', retry: '重试',
   retrySignIn: '重试微信登录',
   welcome: '创建你的家庭', onboarding: '创建家庭后，一起收藏和安排家常菜。',
   familyName: '家庭名称', familyNamePlaceholder: '请输入家庭名称', createFamily: '创建家庭',

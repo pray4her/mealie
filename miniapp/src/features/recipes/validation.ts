@@ -19,20 +19,44 @@ function numeric(value: unknown, max: number, zero = false): number | null {
   return value;
 }
 export const inputKeys = ['title', 'description', 'baseServings', 'prepMinutes', 'cookMinutes', 'ingredients', 'steps', 'tags'] as const;
+export interface FieldIssue { path: (string | number)[]; message: string }
+export class RecipeInputError extends AppError {
+  constructor(public readonly issues: FieldIssue[]) { super('INVALID_INPUT'); }
+}
 export function parseInput(value: unknown): RecipeInput {
-  const row = object(value, inputKeys);
-  if (!Array.isArray(row.ingredients) || row.ingredients.length < 1 || row.ingredients.length > 100
-    || !Array.isArray(row.steps) || row.steps.length < 1 || row.steps.length > 50 || !Array.isArray(row.tags) || row.tags.length > 20) throw new AppError('INVALID_INPUT');
+  let row: Record<string, unknown>;
+  try { row = object(value, inputKeys); } catch { throw new RecipeInputError([{ path: ['_form'], message: '菜谱字段不完整，请重新载入后再试。' }]); }
+  const issues: FieldIssue[] = [];
+  function check<T>(path: FieldIssue['path'], message: string, read: () => T): T {
+    try { return read(); } catch { issues.push({ path, message }); return undefined as T; }
+  }
+  function list(key: 'ingredients' | 'steps' | 'tags', min: number, max: number): unknown[] {
+    const items = row[key];
+    if (!Array.isArray(items) || items.length < min || items.length > max) { issues.push({ path: [key], message: `${key === 'ingredients' ? '食材' : key === 'steps' ? '步骤' : '标签'}需为 ${min}–${max} 项。` }); return []; }
+    return items;
+  }
   const result: RecipeInput = {
-    title: text(row.title, 120), description: optional(row.description, 2000, true),
-    baseServings: numeric(row.baseServings, 10000), prepMinutes: numeric(row.prepMinutes, 10080, true), cookMinutes: numeric(row.cookMinutes, 10080, true),
-    ingredients: row.ingredients.map((value): Ingredient => {
-      const item = object(value, ['raw', 'name', 'quantity', 'unit', 'note']);
-      return { raw: text(item.raw, 500, true, true), name: text(item.name, 100), quantity: numeric(item.quantity, 1000000), unit: optional(item.unit, 40), note: optional(item.note, 500, true) };
-    }), steps: row.steps.map(value => text(value, 2000, true)), tags: row.tags.map(value => text(value, 40)),
+    title: check(['title'], '请输入有效菜名，最多 120 字。', () => text(row.title, 120)),
+    description: check(['description'], '简介最多 2000 字，请移除无效字符。', () => optional(row.description, 2000, true)),
+    baseServings: check(['baseServings'], '份数须大于 0 且不超过 10000；未注明可留空。', () => numeric(row.baseServings, 10000)),
+    prepMinutes: check(['prepMinutes'], '准备时间须为 0–10080 分钟；未注明可留空。', () => numeric(row.prepMinutes, 10080, true)),
+    cookMinutes: check(['cookMinutes'], '烹饪时间须为 0–10080 分钟；未注明可留空。', () => numeric(row.cookMinutes, 10080, true)),
+    ingredients: list('ingredients', 1, 100).map((value, index): Ingredient => {
+      const item = check(['ingredients', index, 'raw'], '食材字段不完整，请重新填写。', () => object(value, ['raw', 'name', 'quantity', 'unit', 'note']));
+      if (!item) return undefined as unknown as Ingredient;
+      const at = <T>(key: string, message: string, read: () => T) => check(['ingredients', index, key], message, read);
+      return { raw: at('raw', '请输入食材原文，最多 500 字。', () => text(item.raw, 500, true, true)),
+        name: at('name', '请输入食材名称，最多 100 字。', () => text(item.name, 100)),
+        quantity: at('quantity', '数量须大于 0 且不超过 1000000；未注明请留空。', () => numeric(item.quantity, 1000000)),
+        unit: at('unit', '单位最多 40 字，请移除无效字符。', () => optional(item.unit, 40)),
+        note: at('note', '备注最多 500 字，请移除无效字符。', () => optional(item.note, 500, true)) };
+    }),
+    steps: list('steps', 1, 50).map((value, index) => check(['steps', index], '请输入做法，单步最多 2000 字。', () => text(value, 2000, true))),
+    tags: list('tags', 0, 20).map((value, index) => check(['tags', index], '每个标签最多 40 字，请移除无效字符。', () => text(value, 40))),
   };
+  if (issues.length) throw new RecipeInputError(issues);
   // encodeURIComponent counts UTF-8 bytes without relying on a browser TextEncoder.
-  if (encodeURIComponent(JSON.stringify(result)).replace(/%[A-F0-9]{2}|./g, 'x').length > 32768) throw new AppError('INVALID_INPUT');
+  if (encodeURIComponent(JSON.stringify(result)).replace(/%[A-F0-9]{2}|./g, 'x').length > 32768) throw new RecipeInputError([{ path: ['_form'], message: '菜谱内容合计不能超过 32 KiB，请缩短简介、食材或步骤。' }]);
   return result;
 }
 export function validId(value: unknown): string {

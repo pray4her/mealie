@@ -20,6 +20,7 @@ const navigation: string[] = []; const copies: string[] = [];
 beforeEach(() => { navigation.length = 0; copies.length = 0; vi.stubGlobal('uni', {
   switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url),
   setClipboardData: ({ data }: { data: string }) => { copies.push(data); return Promise.resolve({}); }, hideShareMenu: () => {},
+  showModal: async () => ({ confirm: true, cancel: false }),
 }); });
 afterEach(() => { vi.unstubAllGlobals(); });
 async function fixture() {
@@ -108,11 +109,12 @@ test('a_rejected_invitation_can_be_replaced_by_a_new_manual_code', async () => {
   expect(navigation.at(-1)).toBe('/pages/recipes/index'); page.wrapper.unmount();
 });
 
-test('manual_invitation_draft_is_erased_when_page_hides', async () => {
+test('manual_invitation_draft_survives_background_but_is_erased_on_unload', async () => {
   const Join = (await import('../../src/pages/family/join.vue')).default;
   const { owner, bob } = await fixture(); const invite = await owner.family.invite({ requestId: 'page-invite-000001' });
   const page = mountPage(Join, { client: bob }); await page.show(); await page.wrapper.find('input').setValue(invite.token);
-  await page.hide(); await page.show(); expect((page.wrapper.find('input').element as HTMLInputElement).value).toBe(''); page.wrapper.unmount();
+  await page.hide(); await page.show(); expect((page.wrapper.find('input').element as HTMLInputElement).value).toBe(invite.token);
+  await page.unload(); await page.show(); expect((page.wrapper.find('input').element as HTMLInputElement).value).toBe(''); page.wrapper.unmount();
 });
 
 test('uncertain_family_creation_blocks_join_and_provides_a_route_to_resume_creation', async () => {

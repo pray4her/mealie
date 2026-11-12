@@ -22,10 +22,10 @@ async function signedOutClient(signInWeixin: AppClient['account']['signInWeixin'
   } };
 }
 test('calls_weixin_then_server_session', async () => {
-  const order: string[] = []; const boundary = createSessionBoundary(createMemoryStorage());
+  const order: string[] = []; const boundary = createSessionBoundary(createMemoryStorage()); let signedIn = false;
   const h = createHarness(); await h.seedIdentity({ uid: 'alice' });
   const client = { ...h.client('alice'), account: createAccountApi({ boundary, platformLogin: async () => { order.push('weixin'); return 'short-code'; }, wire: {
-    async loginByWeixin(code) { expect(code).toBe('short-code'); order.push('login'); }, async session() { order.push('session'); return { uid: 'alice' }; }, async logout() {},
+    async loginByWeixin(code) { expect(code).toBe('short-code'); order.push('login'); signedIn = true; }, async session() { order.push('session'); if (!signedIn) throw Object.assign(new Error('auth'), { code: 'AUTH_REQUIRED' }); return { uid: 'alice' }; }, async logout() {},
   } }) };
   const page = mountPage(Login, { client }); await page.show(); await page.wrapper.find('[data-sign-in]').trigger('click'); await flushPromises();
   const start = order.indexOf('weixin'); expect(order.slice(start, start + 3)).toEqual(['weixin', 'login', 'session']); expect(navigation.at(-1)).toContain('family/onboarding');

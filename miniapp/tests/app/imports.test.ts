@@ -29,7 +29,9 @@ test('lost_submission_replays_same_request_after_cold_start_then_retains_only_jo
 test('closing_page_does_not_stop_worker_and_recent_entry_restores_saved_result_and_edit_links', async () => {
   const f = await setup(); const submit = mountPage(Submit, f); await submit.show(); await submit.wrapper.find('[data-text]').setValue('盐汤：盐适量，加水煮开。');
   await submit.wrapper.find('[data-submit]').trigger('click'); await flushPromises(); submit.wrapper.unmount(); await f.h.runImports();
-  const list = mountPage(List, f); await list.show(); expect(list.wrapper.find('[data-import-resume]').exists()).toBe(true); list.wrapper.unmount();
+  const list = mountPage(List, f); await list.show(); expect(list.wrapper.find('[data-import-resume]').exists()).toBe(false);
+  await list.wrapper.find('[data-add]').trigger('click'); await flushPromises();
+  await vi.waitFor(() => expect(list.wrapper.find('[data-import-resume]').exists()).toBe(true)); list.wrapper.unmount();
   const status = mountPage(Status, f); await status.load({}); await status.show(); expect(status.wrapper.text()).toContain('已保存');
   const [saved] = await f.h.rows<{ _id: string }>('recipes'); await status.wrapper.find('[data-open]').trigger('click'); expect(navigation.at(-1)).toBe('/pages/recipes/detail?id=' + saved._id);
   await status.wrapper.find('[data-edit]').trigger('click'); expect(navigation.at(-1)).toBe('/pages/recipes/edit?id=' + saved._id); status.wrapper.unmount();

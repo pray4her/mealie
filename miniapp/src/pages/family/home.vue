@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import HomeAction from '../../components/HomeAction.vue';
+import HomeBrand from '../../components/HomeBrand.vue';
+import { usePageTypography } from '../../shared/use-page-typography';
 import { enterPage } from '../../shared/navigation';
 
 import { ref, watch } from 'vue';
@@ -6,6 +9,7 @@ import { onShow, onHide, onUnload } from '@dcloudio/uni-app';
 import { copy } from '../../shared/copy';
 import { useAppClient } from '../../shared/app-client';
 import { createRouteGuard } from '../../shared/route-guard';
+const { rootFontSize } = usePageTypography();
 const { auth, family, membership } = useAppClient();
 const { phase } = auth; const { view } = family;
 const { phase: familyPhase } = family;
@@ -43,70 +47,121 @@ function conceal() { const wasActive = active; generation++; active = false; con
 onShow(check); onHide(conceal); onUnload(conceal);
 </script>
 <template>
+  <page-meta :root-font-size="rootFontSize" />
   <view class="page family-page">
     <view
       v-if="confirmed && phase === 'authenticated' && view"
       data-protected
     >
-      <text class="eyebrow">
-        我们的家庭
-      </text>
-      <text class="title">
+      <HomeBrand />
+      <text
+        class="title"
+        role="heading"
+        aria-role="heading"
+        aria-level="1"
+      >
         {{ view.name }}
       </text>
       <text class="role-label">
         {{ view.role === 'owner' ? copy.owner : copy.member }}
       </text>
-      <wd-button
-        type="info"
-        data-recipes
-        @click="openRecipes"
+      <wd-cell-group
+        custom-class="family-nav"
+        border
       >
-        {{ copy.recipes }}
-      </wd-button>
-      <wd-button
-        v-if="view.role === 'owner'"
-        type="info"
-        data-invite
-        @click="openInvite"
-      >
-        {{ copy.inviteMembers }}
-      </wd-button>
-      <wd-button
-        type="info"
-        data-members
-        @click="openMembers"
-      >
-        {{ copy.familyMembers }}
-      </wd-button>
-      <wd-button
+        <view
+          class="family-nav__action"
+          role="button"
+          aria-role="button"
+          :aria-label="copy.recipes"
+          tabindex="0"
+          data-recipes
+          @click="openRecipes"
+          @keydown.enter.prevent="openRecipes"
+          @keydown.space.prevent="openRecipes"
+        >
+          <view aria-hidden="true">
+            <wd-cell
+              :title="copy.recipes"
+              is-link
+            />
+          </view>
+        </view>
+        <view
+          v-if="view.role === 'owner'"
+          class="family-nav__action"
+          role="button"
+          aria-role="button"
+          :aria-label="copy.inviteMembers"
+          tabindex="0"
+          data-invite
+          @click="openInvite"
+          @keydown.enter.prevent="openInvite"
+          @keydown.space.prevent="openInvite"
+        >
+          <view aria-hidden="true">
+            <wd-cell
+              :title="copy.inviteMembers"
+              is-link
+            />
+          </view>
+        </view>
+        <view
+          class="family-nav__action"
+          role="button"
+          aria-role="button"
+          :aria-label="copy.familyMembers"
+          tabindex="0"
+          data-members
+          @click="openMembers"
+          @keydown.enter.prevent="openMembers"
+          @keydown.space.prevent="openMembers"
+        >
+          <view aria-hidden="true">
+            <wd-cell
+              :title="copy.familyMembers"
+              is-link
+            />
+          </view>
+        </view>
+      </wd-cell-group>
+      <HomeAction
+        :label="copy.signOut"
         type="info"
         data-sign-out
+        variant="text"
         @click="signOut"
       >
         {{ copy.signOut }}
-      </wd-button>
+      </HomeAction>
     </view>
     <view v-else>
-      <text role="status">
+      <text
+        role="status"
+        aria-role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {{ phase === 'unavailable' ? copy.unavailable : familyPhase === 'unavailable' ? copy.familyUnavailable : phase === 'signing-out' ? copy.waiting : copy.checking }}
       </text>
-      <wd-button
+      <HomeAction
         v-if="phase === 'unavailable' || familyPhase === 'unavailable'"
+        :label="copy.retry"
         type="info"
         data-retry
         @click="check"
       >
         {{ copy.retry }}
-      </wd-button>
-      <wd-button
+      </HomeAction>
+      <HomeAction
         v-if="phase === 'authenticated' || phase === 'unavailable'"
+        :label="copy.signOut"
         type="info"
         data-sign-out
         @click="signOut"
       >
         {{ copy.signOut }}
-      </wd-button>
+      </HomeAction>
     </view>
   </view>
 </template>

@@ -3,7 +3,7 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { flushPromises } from '@vue/test-utils';
 import List from '../../src/pages/recipes/index.vue';
 import { mountPage } from '../support/uni-stubs';
-import { mediaFixture } from '../support/media-fixtures';
+import { mediaFixture, request } from '../support/media-fixtures';
 import Login from '../../src/pages/account/login.vue';
 import Onboarding from '../../src/pages/family/onboarding.vue';
 import Home from '../../src/pages/family/home.vue';
@@ -64,7 +64,7 @@ test.each([Submit, Status])('import_return_uses_recipe_tab_%#', async component 
   const f = await mediaFixture(); const page = mountPage(component, { client: f.owner }); await page.load({}); await page.show();
   try {
     await page.wrapper.findAll('button').at(-1)!.trigger('click');
-    expect(uni.switchTab).toHaveBeenLastCalledWith({ url: '/pages/recipes/index' });
+    expect(uni.switchTab).toHaveBeenLastCalledWith(expect.objectContaining({ url: '/pages/recipes/index' }));
   } finally { page.wrapper.unmount(); }
 });
 
@@ -105,7 +105,7 @@ test('old_filter_cover_reply_cannot_reappear_in_new_results', async () => {
   vi.spyOn(f.owner.media, 'read').mockImplementationOnce(async input => { await gate.promise; return read(input); });
   const page = mountPage(List, { client: f.owner }); await page.show();
   try {
-    await page.wrapper.find('[data-query] input').setValue('不存在'); await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    await page.wrapper.find('[data-query] input').setValue('不存在'); await page.wrapper.find('[data-query] input').trigger('confirm'); await flushPromises();
     gate.resolve(null); await flushPromises(); expect(page.wrapper.find('[data-cover]').exists()).toBe(false);
     expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(0);
   } finally { page.wrapper.unmount(); }
@@ -128,9 +128,45 @@ test('detail_media_failure_does_not_hide_authorized_body_and_retry_recovers', as
   try {
     expect(page.wrapper.find('[data-protected]').exists()).toBe(true);
     expect(page.wrapper.text()).toContain('盐适量'); expect(page.wrapper.text()).toContain('图片加载失败');
+    expect(page.wrapper.findAll('.photo')).toHaveLength(1);
+    expect(page.wrapper.find('.photo').text()).toBe('图片加载失败');
     await page.wrapper.find('[data-retry-images]').trigger('click'); await flushPromises();
     expect(page.wrapper.find('[data-recipe-image]').exists()).toBe(true);
   } finally { page.wrapper.unmount(); }
+});
+
+test('detail_single_image_error_keeps_other_images_visible_and_retry_restores_gallery', async () => {
+  const f = await imageRecipe(); const second = await f.upload();
+  const recipe = await f.owner.recipes.get(f.recipe.id);
+  await f.owner.recipes.bindImages({ ...f.scope, requestId: request(), id: recipe.id, version: recipe.version, imageIds: [f.image.mediaId, second.mediaId] });
+  const page = mountPage(Detail, { client: f.owner }); await page.load({ id: recipe.id }); await page.show();
+  try {
+    const images = page.wrapper.findAll('[data-recipe-image]'); expect(images).toHaveLength(2);
+    const secondUrl = images[1].attributes('src');
+    await images[0].trigger('error'); await flushPromises();
+    expect(page.wrapper.findAll('[data-recipe-image]')).toHaveLength(1);
+    expect(page.wrapper.find('[data-recipe-image]').attributes('src')).toBe(secondUrl);
+    expect(page.wrapper.findAll('.photo')).toHaveLength(2);
+    expect(page.wrapper.find('.photo').text()).toContain('图片加载失败');
+    await page.wrapper.find('[data-retry-images]').trigger('click'); await flushPromises();
+    expect(page.wrapper.findAll('[data-recipe-image]')).toHaveLength(2);
+    expect(page.wrapper.findAll('.photo')).toHaveLength(2);
+    expect(page.wrapper.find('[data-retry-images]').exists()).toBe(false);
+  } finally { page.wrapper.unmount(); }
+});
+
+test('detail_image_frames_stay_visible_while_retry_is_loading', async () => {
+  const f = await imageRecipe(); const gate = deferCall(); const status = f.owner.media.status.bind(f.owner.media);
+  const page = mountPage(Detail, { client: f.owner }); await page.load({ id: f.recipe.id }); await page.show();
+  try {
+    await page.wrapper.find('[data-recipe-image]').trigger('error'); await flushPromises();
+    vi.spyOn(f.owner.media, 'status').mockImplementationOnce(async input => { await gate.promise; return status(input); });
+    await page.wrapper.find('[data-retry-images]').trigger('click'); await flushPromises();
+    expect(page.wrapper.findAll('.photo')).toHaveLength(1);
+    expect(page.wrapper.find('.photo').text()).toContain('图片加载中');
+    gate.resolve(null); await flushPromises();
+    expect(page.wrapper.find('[data-recipe-image]').exists()).toBe(true);
+  } finally { gate.resolve(null); await flushPromises(); page.wrapper.unmount(); }
 });
 
 test('cover_batches_stay_bounded_and_unreadable_states_do_not_request_links', async () => {
@@ -183,10 +219,10 @@ test.each([false, true])('real_media_boundary_expiry_only_redirects_visible_page
   } finally { page.wrapper.unmount(); }
 });
 
-test.each([{ width: 320, font: 16 }, { width: 390, font: 22 }])('narrow_or_large_text_uses_one_column_%j', async ({ width, font }) => {
-  Object.assign(uni, { getSystemInfoSync: () => ({ windowWidth: width, fontSizeSetting: font }) });
+test.each([{ width: 320, font: 16, single: false }, { width: 390, font: 22, single: true }])('standard_narrow_keeps_photo_grid_and_large_text_reflows_%j', async ({ width, font, single }) => {
+  Object.assign(uni, { getWindowInfo: () => ({ windowWidth: width }), getAppBaseInfo: () => ({ fontSizeSetting: font }) });
   const f = await mediaFixture(); const page = mountPage(List, { client: f.owner }); await page.show();
-  try { expect(page.wrapper.find('.recipe-grid').classes()).toContain('single-column'); }
+  try { expect(page.wrapper.find('.recipe-grid').classes().includes('single-column')).toBe(single); }
   finally { page.wrapper.unmount(); }
 });
 

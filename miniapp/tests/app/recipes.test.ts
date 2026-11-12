@@ -25,10 +25,10 @@ async function setup() {
   return { h, client };
 }
 async function fill(page: ReturnType<typeof mountPage>) {
-  await page.wrapper.find('[data-title] input').setValue('家常汤');
-  await page.wrapper.find('[data-raw] input').setValue('盐适量');
-  await page.wrapper.find('[data-name] input').setValue('盐');
-  await page.wrapper.find('[data-step] textarea').setValue('放盐煮熟。');
+  await page.wrapper.find('input[data-title]').setValue('家常汤');
+  await page.wrapper.find('input[data-raw]').setValue('盐适量');
+  await page.wrapper.find('input[data-name]').setValue('盐');
+  await page.wrapper.find('textarea[data-step]').setValue('放盐煮熟。');
 }
 test('single_page_creates_unknown_quantity_and_lists_reads_edits_saved_text', async () => {
   const { h, client } = await setup(); const page = mountPage(Edit, { client });
@@ -40,7 +40,7 @@ test('single_page_creates_unknown_quantity_and_lists_reads_edits_saved_text', as
   const detail = mountPage(Detail, { client }); await detail.load({ id: rows[0]._id }); await detail.show();
   expect(detail.wrapper.text()).toContain('盐适量'); expect(detail.wrapper.text()).toContain('放盐煮熟。'); detail.wrapper.unmount();
   const edit = mountPage(Edit, { client }); await edit.load({ id: rows[0]._id }); await edit.show();
-  await edit.wrapper.find('[data-title] input').setValue('第二版');
+  await edit.wrapper.find('input[data-title]').setValue('第二版');
   await edit.wrapper.find('[data-save]').trigger('click'); await flushPromises();
   expect(await client.recipes.get(rows[0]._id)).toMatchObject({ title: '第二版', version: 2 }); edit.wrapper.unmount();
 });
@@ -48,18 +48,18 @@ test('ingredient_and_step_rows_can_be_added_removed_and_optional_values_roundtri
   const { h, client } = await setup(); const page = mountPage(Edit, { client }); await page.load({}); await page.show(); await fill(page);
   await page.wrapper.find('[data-add-ingredient]').trigger('click'); expect(page.wrapper.findAll('[data-ingredient]')).toHaveLength(2);
   await page.wrapper.findAll('[data-remove-ingredient]')[1].trigger('click'); expect(page.wrapper.findAll('[data-ingredient]')).toHaveLength(1);
-  await page.wrapper.find('[data-add-step]').trigger('click'); expect(page.wrapper.findAll('[data-step] textarea')).toHaveLength(2);
+  await page.wrapper.find('[data-add-step]').trigger('click'); expect(page.wrapper.findAll('textarea[data-step]')).toHaveLength(2);
   await page.wrapper.findAll('[data-remove-step]')[1].trigger('click');
-  await page.wrapper.find('[data-servings] input').setValue('2.5'); await page.wrapper.find('[data-prep] input').setValue('0');
-  await page.wrapper.find('[data-cook] input').setValue('30'); await page.wrapper.find('[data-tags] input').setValue('家常，汤');
+  await page.wrapper.find('input[data-servings]').setValue('2.5'); await page.wrapper.find('input[data-prep]').setValue('0');
+  await page.wrapper.find('input[data-cook]').setValue('30'); await page.wrapper.find('input[data-tags]').setValue('家常，汤');
   await page.wrapper.find('[data-save]').trigger('click'); await flushPromises();
   expect((await h.rows('recipes'))[0]).toMatchObject({ baseServings: 2.5, prepMinutes: 0, cookMinutes: 30, tags: ['家常', '汤'] }); page.wrapper.unmount();
 });
 test('empty_or_zero_quantity_is_rejected_without_sending_and_input_is_retained', async () => {
   const { client } = await setup(); const send = vi.spyOn(client.recipes, 'create');
   const page = mountPage(Edit, { client }); await page.load({}); await page.show(); await fill(page);
-  await page.wrapper.find('[data-quantity] input').setValue('0'); await page.wrapper.find('[data-save]').trigger('click'); await flushPromises();
-  expect(send).not.toHaveBeenCalled(); expect(page.wrapper.text()).toContain('数量'); expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('家常汤'); page.wrapper.unmount();
+  await page.wrapper.find('input[data-quantity]').setValue('0'); await page.wrapper.find('[data-save]').trigger('click'); await flushPromises();
+  expect(send).not.toHaveBeenCalled(); expect(page.wrapper.text()).toContain('数量'); expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('家常汤'); page.wrapper.unmount();
 });
 test('double_tap_and_lost_reply_retry_the_original_durable_request_after_cold_start', async () => {
   const { h, client } = await setup(); const storage = createMemoryStorage(); const create = client.recipes.create.bind(client.recipes);
@@ -77,15 +77,15 @@ test('conflict_keeps_local_input_until_confirmed_reload', async () => {
   const { client } = await setup(); const view = (await client.family.current())!;
   const recipe = await client.recipes.create({ requestId: 'page-recipe-create-01', familyId: view.familyId, generation: view.generation,
     recipe: { title: '第一版', description: null, baseServings: null, prepMinutes: null, cookMinutes: null, ingredients: [{ raw: '盐适量', name: '盐', quantity: null, unit: null, note: null }], steps: ['煮'], tags: [] } });
-  const page = mountPage(Edit, { client }); await page.load({ id: recipe.id }); await page.show(); await page.wrapper.find('[data-title] input').setValue('本地未保存');
+  const page = mountPage(Edit, { client }); await page.load({ id: recipe.id }); await page.show(); await page.wrapper.find('input[data-title]').setValue('本地未保存');
   const { title: _title, description, baseServings, prepMinutes, cookMinutes, ingredients, steps, tags } = recipe;
   await client.recipes.update({ requestId: 'page-recipe-update-02', familyId: view.familyId, generation: view.generation, id: recipe.id, version: 1, recipe: { title: '他人的修改', description, baseServings, prepMinutes, cookMinutes, ingredients, steps, tags } });
   await page.wrapper.find('[data-save]').trigger('click'); await flushPromises();
-  expect(page.wrapper.text()).toContain('其他成员'); expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('本地未保存');
+  expect(page.wrapper.text()).toContain('其他成员'); expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('本地未保存');
   accept = false; await page.wrapper.find('[data-reload]').trigger('click'); await flushPromises();
-  expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('本地未保存');
+  expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('本地未保存');
   accept = true; await page.wrapper.find('[data-reload]').trigger('click'); await flushPromises();
-  expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('他人的修改'); page.wrapper.unmount();
+  expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('他人的修改'); page.wrapper.unmount();
 });
 test('hidden_late_save_cannot_navigate_and_logout_clears_durable_recipe_content', async () => {
   const { client } = await setup(); const storage = createMemoryStorage(); const pending = deferCall();
@@ -102,7 +102,7 @@ test('logout_then_same_account_login_cannot_restore_an_unsent_draft', async () =
   const { client } = await setup(); vi.spyOn(client.account, 'signOut').mockResolvedValue();
   const page = mountPage(Edit, { client }); await page.load({}); await page.show(); await fill(page);
   await page.auth.signOut(); await page.auth.signIn(); await page.show();
-  expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('');
+  expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('');
   page.wrapper.unmount();
 });
 test('unknown_result_then_terminal_audit_rejection_unlocks_original_draft_and_allows_a_new_request', async () => {
@@ -116,9 +116,9 @@ test('unknown_result_then_terminal_audit_rejection_unlocks_original_draft_and_al
   expect(page.wrapper.find('[data-resume]').exists()).toBe(true);
   await page.wrapper.find('[data-resume]').trigger('click'); await flushPromises();
   expect(page.wrapper.find('[data-resume]').exists()).toBe(false);
-  expect((page.wrapper.find('[data-title] input').element as HTMLInputElement).value).toBe('家常汤');
-  expect(page.wrapper.find('[data-title] input').attributes('disabled')).toBeUndefined();
-  rejected = false; await page.wrapper.find('[data-title] input').setValue('重新编辑');
+  expect((page.wrapper.find('input[data-title]').element as HTMLInputElement).value).toBe('家常汤');
+  expect(page.wrapper.find('input[data-title]').attributes('disabled')).toBeUndefined();
+  rejected = false; await page.wrapper.find('input[data-title]').setValue('重新编辑');
   await page.wrapper.find('[data-save]').trigger('click'); await flushPromises();
   expect(send).toHaveBeenCalledTimes(3);
   expect(send.mock.calls[0][0].requestId).toBe(send.mock.calls[1][0].requestId);
@@ -136,12 +136,15 @@ async function seedRecipe(client: Awaited<ReturnType<typeof setup>>['client'], t
 test('list_search_is_explicit_and_combines_filters_and_favorites_then_removes_unmarked_row', async () => {
   const { client } = await setup(); await seedRecipe(client, 'Soup', ['家常']); await seedRecipe(client, 'Noodles', ['面']);
   const send = vi.spyOn(client.recipes, 'list'); const page = mountPage(List, { client }); await page.show();
-  await page.wrapper.find('[data-query] input').setValue('sOuP'); await page.wrapper.find('[data-tag] input').setValue('家常');
+  await page.wrapper.find('[data-query] input').setValue('sOuP');
+  await page.wrapper.find('[data-filter]').trigger('click'); await flushPromises();
+  await vi.waitFor(() => expect(page.wrapper.find('input[data-tag]').exists()).toBe(true));
+  await page.wrapper.find('input[data-tag]').setValue('家常');
   expect(send).toHaveBeenCalledTimes(1);
-  await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+  await page.wrapper.find('[data-apply-filter]').trigger('click'); await flushPromises();
   expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['Soup']);
   await page.wrapper.find('[data-favorite]').trigger('click'); await flushPromises();
-  expect(page.wrapper.find('[data-favorite]').text()).toBe('取消收藏');
+  expect(page.wrapper.find('[data-favorite]').attributes('aria-pressed')).toBe('true');
   await page.wrapper.find('[data-favorites]').trigger('click'); await flushPromises();
   expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(1);
   await page.wrapper.find('[data-favorite]').trigger('click'); await flushPromises();
@@ -150,20 +153,24 @@ test('list_search_is_explicit_and_combines_filters_and_favorites_then_removes_un
   expect((page.wrapper.find('[data-query] input').element as HTMLInputElement).value).toBe('soup'); page.wrapper.unmount();
 });
 
-test('title_and_exact_tag_search_fields_keep_visible_labels_while_typing', async () => {
+test('title_search_and_sheet_exact_tag_combine_without_changing_results_on_input', async () => {
   const { client } = await setup(); await seedRecipe(client, 'test123', ['22']);
   const page = mountPage(List, { client }); await page.show();
   try {
     await page.wrapper.find('[data-query] input').setValue('123');
-    expect(page.wrapper.findAll('.filter-label').map(label => label.text())).toEqual(['搜索标题', '精确标签（可选）']);
-    await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    expect(page.wrapper.find('[data-query] input').attributes('aria-label')).toBe('搜索菜谱');
+    await page.wrapper.find('[data-query] input').trigger('confirm'); await flushPromises();
     expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['test123']);
-    await page.wrapper.find('[data-tag] input').setValue('22');
-    expect(page.wrapper.findAll('.filter-label').map(label => label.text())).toEqual(['搜索标题', '精确标签（可选）']);
-    await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    await page.wrapper.find('[data-filter]').trigger('click'); await flushPromises();
+    await vi.waitFor(() => expect(page.wrapper.find('input[data-tag]').exists()).toBe(true));
+    await page.wrapper.find('input[data-tag]').setValue('22');
+    expect(page.wrapper.find('.sheet .field-label').text()).toBe('精确标签（可选）');
+    await page.wrapper.find('[data-apply-filter]').trigger('click'); await flushPromises();
     expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['test123']);
-    await page.wrapper.find('[data-tag] input').setValue('123');
-    await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    await page.wrapper.find('[data-filter]').trigger('click'); await flushPromises();
+    await vi.waitFor(() => expect(page.wrapper.find('input[data-tag]').exists()).toBe(true));
+    await page.wrapper.find('input[data-tag]').setValue('123');
+    await page.wrapper.find('[data-apply-filter]').trigger('click'); await flushPromises();
     expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(0);
   } finally { page.wrapper.unmount(); }
 });
@@ -183,8 +190,8 @@ test('late_filter_response_and_hidden_response_cannot_replace_current_results', 
   const { client } = await setup(); const row = await seedRecipe(client, 'Soup');
   const send = vi.spyOn(client.recipes, 'list'); const page = mountPage(List, { client }); await page.show();
   const gate = deferCall(); send.mockImplementationOnce(async () => { await gate.promise; return { items: [row], nextCursor: 'old' }; });
-  await page.wrapper.find('[data-query] input').setValue('Soup'); await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
-  await page.wrapper.find('[data-query] input').setValue('missing'); await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+  await page.wrapper.find('[data-query] input').setValue('Soup'); await page.wrapper.find('[data-query] input').trigger('confirm'); await flushPromises();
+  await page.wrapper.find('[data-query] input').setValue('missing'); await page.wrapper.find('[data-query] input').trigger('confirm'); await flushPromises();
   gate.resolve(null); await flushPromises();
   expect(page.wrapper.findAll('[data-recipe]')).toHaveLength(0); expect(page.controllers.recipes.nextCursor.value).toBeNull();
   await page.hide(); expect(page.wrapper.find('[data-protected]').exists()).toBe(false); page.wrapper.unmount();
@@ -197,7 +204,7 @@ test('unloading_a_hidden_recipe_page_cannot_discard_the_current_lists_search_res
   const list = client.recipes.list.bind(client.recipes); const gate = deferCall();
   vi.spyOn(client.recipes, 'list').mockImplementationOnce(async input => { const result = await list(input); await gate.promise; return result; });
   try {
-    await page.wrapper.find('[data-query] input').setValue('test'); await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+    await page.wrapper.find('[data-query] input').setValue('test'); await page.wrapper.find('[data-query] input').trigger('confirm'); await flushPromises();
     await old.unload(); gate.resolve(null); await flushPromises();
     expect(page.wrapper.find('[data-protected]').exists()).toBe(true);
     expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['testRecipe']);
@@ -227,7 +234,7 @@ test('favorite_lost_confirmation_survives_cold_start_and_retries_same_intent_wit
   await restored.wrapper.find('[data-resume-favorite]').trigger('click'); await flushPromises();
   expect(send).toHaveBeenCalledTimes(2); expect(send.mock.calls[1][0]).toEqual(send.mock.calls[0][0]);
   expect(await h.rows('recipe_favorites')).toHaveLength(1); expect(restored.wrapper.find('[data-resume-favorite]').exists()).toBe(false);
-  expect(restored.wrapper.find('[data-favorite]').text()).toBe('取消收藏'); restored.wrapper.unmount();
+  expect(restored.wrapper.find('[data-favorite]').attributes('aria-pressed')).toBe('true'); restored.wrapper.unmount();
 });
 
 test('logout_discards_pending_favorite_and_late_success_cannot_publish_private_state', async () => {
@@ -251,7 +258,7 @@ test('favorite_confirmation_supersedes_an_older_list_snapshot', async () => {
   vi.spyOn(client.recipes, 'favorite').mockImplementationOnce(async input => { await favoriteGate.promise; return favorite(input); });
   await page.wrapper.findAll('[data-favorite]')[1].trigger('click'); await flushPromises();
   vi.spyOn(client.recipes, 'list').mockImplementationOnce(async input => { const snapshot = await list(input); await listGate.promise; return snapshot; });
-  await page.wrapper.find('[data-search]').trigger('click'); await flushPromises();
+  await page.wrapper.find('[data-query] input').trigger('confirm'); await flushPromises();
   favoriteGate.resolve(null); await flushPromises(); expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['Noodles']);
   listGate.resolve(null); await flushPromises(); expect(page.wrapper.findAll('[data-recipe]').map(item => item.text())).toEqual(['Noodles']);
   expect(page.controllers.recipes.nextCursor.value).toBeNull(); page.wrapper.unmount();
@@ -265,6 +272,6 @@ test('visible_retry_uses_original_request_while_a_hidden_favorite_call_is_still_
   await page.wrapper.find('[data-resume-favorite]').trigger('click'); await flushPromises();
   gate.resolve(null); await flushPromises();
   expect(send).toHaveBeenCalledTimes(2); expect(send.mock.calls[1][0]).toEqual(send.mock.calls[0][0]);
-  expect(page.wrapper.find('[data-protected]').exists()).toBe(true); expect(page.wrapper.find('[data-favorite]').text()).toBe('取消收藏');
+  expect(page.wrapper.find('[data-protected]').exists()).toBe(true); expect(page.wrapper.find('[data-favorite]').attributes('aria-pressed')).toBe('true');
   expect(page.wrapper.find('[data-resume-favorite]').exists()).toBe(false); page.wrapper.unmount();
 });

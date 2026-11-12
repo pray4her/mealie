@@ -102,6 +102,15 @@ test('family_content_and_fixture_runtime_cannot_enter_actual_artifact_content', 
     await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact/i);
   }
 });
+
+test('production_artifact_rejects_isolated_visual_review_data', async () => {
+  const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));
+  for (const forbidden of ['HOME_UI_REVIEW_V11_ONLY', 'home.ui-review.v11', 'static/ui-review/noodles.jpg', 'ui-review-owner']) {
+    await writeFile(join(dist, 'app.js'), `const leaked = '${forbidden}';`);
+    await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/review fixtures/i);
+  }
+});
 test('secret_fixture_is_rejected_without_echoing_value', async () => {
   const dir = await fixture(); const synthetic = 'SYNTHETIC-ONLY-DO-NOT-USE-0123456789';
   await writeFile(join(dir, 'src/leak.ts'), `const appsecret = '${synthetic}';`);
@@ -151,10 +160,12 @@ test('family_public_surface_rejects_default_reexports_helpers_and_test_entry', a
 });
 test('all_business_schemas_deny_every_clientdb_operation', async () => {
   const dir = await fixture(); const database = join(dir, 'uniCloud-alipay/database'); await mkdir(database, { recursive: true });
-  for (const collection of ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits', 'recipes', 'recipe_favorites', 'media_files', 'media_audit_traces']) {
+  const collections = ['families', 'family_members', 'family_invitations', 'mutation_receipts', 'request_limits', 'recipes', 'recipe_favorites', 'media_files', 'media_audit_traces'];
+  const schema = { permission: { read: false, create: false, update: false, delete: false } };
+  for (const collection of collections) await writeFile(join(database, collection + '.schema.json'), JSON.stringify(schema));
+  await expect(checkBoundaries({ root: dir })).resolves.toBeUndefined();
+  for (const collection of collections) {
     const path = join(database, collection + '.schema.json');
-    const schema = { permission: { read: false, create: false, update: false, delete: false } };
-    await writeFile(path, JSON.stringify(schema)); await expect(checkBoundaries({ root: dir })).resolves.toBeUndefined();
     for (const operation of ['read', 'create', 'update', 'delete']) {
       await writeFile(path, JSON.stringify({ permission: { ...schema.permission, [operation]: true } }));
       await expect(checkBoundaries({ root: dir })).rejects.toThrow(/permission/i);

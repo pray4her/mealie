@@ -90,11 +90,15 @@
     "list": [
       {
         "text": "菜谱",
-        "pagePath": "pages/recipes/index"
+        "pagePath": "pages/recipes/index",
+        "iconPath": "static/tab-recipes.png",
+        "selectedIconPath": "static/tab-recipes-selected.png"
       },
       {
         "text": "家庭",
-        "pagePath": "pages/family/home"
+        "pagePath": "pages/family/home",
+        "iconPath": "static/tab-family.png",
+        "selectedIconPath": "static/tab-family-selected.png"
       }
     ]
   }

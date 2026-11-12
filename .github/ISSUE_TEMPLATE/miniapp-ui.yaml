@@ -6,6 +6,7 @@ body:
     attributes:
       value: |
         请先阅读目标实施分支的 `docs/design/miniapp/README.md`、`sources.md` 和 `issue-design.md`。
+        组件开发遵循 `miniapp/AGENTS.md`，使用 wot-ui-v2、文档索引/全文及 CLI/MCP 核实 API 与版本。
         使用固定提交链接，明确已有业务与原型演示的差别。相关工单不自动构成阻塞。
         此表单不自动添加 ready-for-agent；确认来源、范围和真实依赖后再标记。
   - type: textarea
@@ -19,11 +20,12 @@ body:
     id: evidence
     attributes:
       label: Design evidence
-      description: 基线版本、固定提交链接、D-ID/S-ID、业务规则与当前代码；不能只引用聊天。
+      description: 基线版本、固定提交、D-ID/S-ID、业务与代码；组件须有版本及文档/查询依据（S-WOT-AI），不能只引用聊天或 skill。
       placeholder: |
         - 基线与预览：固定提交链接，D-01 / S-PREVIEW。
         - 业务规则：对应设计章节或已交付 issue。
         - 当前代码：实际基准提交、页面与契约。
+        - 组件依据：Wot 包版本、组件/API/token、官方链接或本地文档标题、CLI/MCP 查询；实施时补实际结果。
         - 原型适配：采用哪些特征，不采用哪些演示行为。
     validations:
       required: true
@@ -51,6 +53,7 @@ body:
         - [ ] 正常、加载、空、失败、权限失效和适用的恢复/冲突/媒体状态均可验收。
         - [ ] 320/375/390/430px、大字号、安全区及键盘场景无溢出或遮挡。
         - [ ] 主题、点击区域、标签与对比度符合基线，附真实渲染截图及差异记录。
+        - [ ] 组件 API/主题变量的来源与实际安装版本匹配，CLI 诊断不代替运行验收。
         - [ ] 现有业务回归与 task -d miniapp check 通过。
     validations:
       required: true

@@ -28,7 +28,7 @@ test('owner_sees_target_identity_and_can_remove_another_member', async () => {
   const f = await invitedFamilyFixture(); const page = mountPage(Members, { client: f.owner }); await page.show();
   expect(page.wrapper.find('[data-leave-family]').exists()).toBe(false);
   expect(page.wrapper.find('[data-owner-leave-hint]').exists()).toBe(true);
-  const row = page.wrapper.findAll('[data-member]').find(row => row.text().includes('member'))!;
+  const row = page.wrapper.findAll('[data-member]').find(row => row.find('.member-id').attributes('aria-label')?.includes('member'))!;
   await row.find('[data-remove-member]').trigger('click'); await flushPromises();
   expect(uni.showModal).toHaveBeenCalledWith(expect.objectContaining({ content: expect.stringContaining('member') }));
   expect(await f.member.family.current()).toBeNull(); expect(page.wrapper.findAll('[data-member]')).toHaveLength(1); page.wrapper.unmount();

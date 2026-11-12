@@ -104,6 +104,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
       || !Array.isArray(manifest.tabBar?.list) || manifest.tabBar.list.length !== tabs.length
       || manifest.tabBar.list.some((tab, index) => tab.pagePath !== tabs[index].pagePath || tab.text !== tabs[index].text)) throw new Error('Artifact routes must match the implemented account/family/recipe/import pages and native recipe/family tabs');
     for (const path of files) {
+      if (/[\\/]ui-review[\\/]/i.test(path) || /\.(?:js|json|wxml)$/.test(path) && /HOME_UI_REVIEW_V11_ONLY|home\.ui-review\.v11|static\/ui-review|ui-review-owner/.test(await readFile(path, 'utf8'))) throw new Error('Production artifact contains UI review fixtures');
       if (/(?:[\\/](?:vendor|tests|cloudfunctions)[\\/]|uniCloud-|\.zip$|\.tar\.gz$)/i.test(path.slice(root.length))) throw new Error('Artifact contains forbidden source');
       if (path.endsWith('.wxss')) {
         // shortcut: reject universal selectors here; use WeChat's compiler for full WXSS compatibility.

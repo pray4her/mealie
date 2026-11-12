@@ -4,8 +4,10 @@
 
 For the independent `miniapp/` WeChat client, read [the approved design baseline](docs/design/miniapp/README.md), [sources and decisions](docs/design/miniapp/sources.md), and [UI issue requirements](docs/design/miniapp/issue-design.md) before designing pages, refactoring UI, or creating UI issues. The Nuxt/Vuetify guidance below describes the original web application.
 
+For all miniapp UI/component implementation, refactoring, review, and debugging, also follow [miniapp/AGENTS.md](miniapp/AGENTS.md): load `wot-ui-v2`, consult the local `llms.txt` / `llms-full.txt` and available Wot CLI/MCP queries, verify the installed version, and record the component/API evidence used.
+
 - Use the approved v1 preview as the visual target; cite specific D-ID/S-ID decisions, business rules, and the actual implementation commit in each UI issue.
-- Use Refero for design research and reference locking; Vue/uni-app skills and current official documentation for implementation. Do not treat skills or mock data as runtime evidence.
+- Use Refero for design research and reference locking; Vue/uni-app/Wot skills and version-matched official documentation for implementation. Skills describe the workflow; documentation and CLI knowledge do not replace runtime evidence.
 - Preserve real authentication, family isolation, private media, recovery, and concurrency behavior. Prototype-only features do not become approved business requirements.
 - Add only genuine missing prerequisites as GitHub blockers. Existing-page UI refactors can start using delivered APIs and fixtures; future business modules are separate scope.
 - Use `.github/ISSUE_TEMPLATE/miniapp-ui.yaml`; require mobile/state/accessibility evidence and the miniapp's own validation commands before completion.
@@ -136,6 +138,8 @@ task docker:prod        # Build and run production Docker compose
    - Follow existing patterns in `tests/integration_tests/` and `tests/unit_tests/`
 
 ### Frontend
+
+**UI evidence before implementation:** Check the target client's installed dependencies, lockfile, existing components and integration before selecting controls or using props, events, slots, hooks or theme tokens. Use matching official documentation/Context7 and record the relevant source and version in the issue, plan or PR. Apply the Wot workflow in `miniapp/AGENTS.md` to `miniapp/`; use the existing Nuxt/Vuetify stack for `frontend/`.
 
 1. **Run code generation after backend schema changes:** `task dev:generate`
 

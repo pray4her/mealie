@@ -52,7 +52,10 @@ export function createImportsController({ api, auth, family, storage, newRequest
         if (!active(ctx)) {
           if (sameScope(ctx)) {
             const saved = storage.get(ctx.key);
-            if (saved && typeof saved === 'object' && 'kind' in saved && saved.kind === 'pending' && 'input' in saved && submitInput(saved.input).requestId === intent.input.requestId) storage.set(ctx.key, { kind: 'job', id: result.id });
+            if (saved && typeof saved === 'object' && 'kind' in saved && saved.kind === 'pending' && 'input' in saved && submitInput(saved.input).requestId === intent.input.requestId) {
+              const acknowledged: Recovery = { kind: 'job', id: result.id }; storage.set(ctx.key, acknowledged);
+              if (recovery.value?.kind === 'pending' && recovery.value.input.requestId === intent.input.requestId) recovery.value = acknowledged;
+            }
           }
           throw new AppError('FAMILY_REQUIRED');
         }

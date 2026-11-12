@@ -11,7 +11,7 @@ export default defineConfig({
     if (!id.includes('/@wot-ui/') && !id.includes('/@wot-ui+')) return;
     if (id.endsWith('.vue')) return preJs(preHtml(source, id), id);
     if (id.endsWith('.ts')) return preJs(source, id);
-  } }, vue({ template: { compilerOptions: { nodeTransforms: [node => {
+  } }, vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'page-meta', nodeTransforms: [node => {
     if (node.type === 1 && ['view', 'text', 'button', 'input', 'textarea'].includes(node.tag)) {
       node.tag = `Uni${node.tag[0].toUpperCase()}${node.tag.slice(1)}`; node.tagType = 1;
     }

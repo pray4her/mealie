@@ -13,5 +13,5 @@
     },
     "types": ["node", "vitest", "vite/client", "@dcloudio/types", "@uni-helper/uni-app-types"]
   },
-  "include": ["tests/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vitest.config.ts"]
+  "include": ["tests/**/*.ts", "src/**/*.ts", "src/**/*.vue", "review/**/*.ts", "vitest.config.ts", "vite.config.ts"]
 }
