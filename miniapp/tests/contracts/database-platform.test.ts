@@ -8,7 +8,7 @@ function fixture() {
   const transaction = { collection: vi.fn(() => ({ doc: vi.fn(() => doc), add })),
     commit: vi.fn(async (): Promise<unknown> => ({})), rollback: vi.fn(async () => ({})) };
   const ordinaryGet = vi.fn(async (): Promise<unknown> => ({ data: [{ _id: 'home', name: '我家' }] }));
-  const platform = { startTransaction: vi.fn(async () => transaction), collection: vi.fn(() => ({ doc: vi.fn(() => ({ get: ordinaryGet })) })) };
+  const platform = { startTransaction: vi.fn(async () => transaction), collection: vi.fn(() => ({ doc: vi.fn(() => ({ get: ordinaryGet })) })), command: { set: vi.fn((value: unknown) => ({ __set: value })) } };
   return { platform, transaction, get, doc, add, ordinaryGet };
 }
 
@@ -107,4 +107,12 @@ test('insert_uses_add_and_replace_cannot_upsert_or_mutate_id', async () => {
   f.doc.update.mockResolvedValue({ updated: 0 });
   await expect(database.transaction(tx => tx.replace('families', 'home', { _id: 'home' }))).rejects.toMatchObject({ kind: 'conflict' });
   await expect(database.transaction(tx => tx.insert('families', 'home', { _id: 'forged' }))).rejects.toMatchObject({ kind: 'unavailable' });
+});
+
+test('replace_sets_nested_objects_whole_instead_of_dot_path_merge', async () => {
+  const f = fixture(); const database = createDatabasePort(f.platform, { maxAttempts: 3, backoff: async () => {} });
+  const candidate = { title: '番茄炒蛋', baseServings: null, ingredients: [{ raw: '番茄 2个' }] };
+  await database.transaction(tx => tx.replace('import_jobs', 'home', { _id: 'home', candidate, attempts: 1 }));
+  expect(f.platform.command.set).toHaveBeenCalledWith(candidate);
+  expect(f.doc.update).toHaveBeenCalledWith({ candidate: { __set: candidate }, attempts: 1 });
 });

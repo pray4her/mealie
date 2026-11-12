@@ -13,6 +13,7 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' 
   let afterContent = () => {}; let transactions = 0; let commits = 0; let rollbacks = 0; let sdkImports = 0;
   const key = (collection: string, id: string) => collection + '/' + id;
   const database = {
+    command: { set: (value: unknown) => ({ __set: value }) },
     collection(collection: string) { return { doc(id: string) { return { field() { return { async get() {
       reads.push(id);
       return { data: collection === 'uni-id-users' && id === 'alice' ? [{ status: active ? 0 : 1, token: ['verified-token'], wx_openid: { mp___UNI__5FDC0D7: 'server-openid' } }] : [] };
@@ -22,7 +23,7 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' 
       return {
         collection(collection: string) { return {
           doc(id: string) { return { async get() { return { data: staged.get(key(collection, id)) ?? null }; },
-            async update(value: object) { const k = key(collection, id); if (!staged.has(k)) return { updated: 0 }; staged.set(k, { ...staged.get(k), ...value }); return { updated: 1 }; },
+            async update(value: object) { const k = key(collection, id); if (!staged.has(k)) return { updated: 0 }; const merged = { ...staged.get(k) }; for (const [field, item] of Object.entries(value)) merged[field] = item && typeof item === 'object' && '__set' in item ? (item as { __set: unknown }).__set : item; staged.set(k, merged); return { updated: 1 }; },
             async remove() { return { deleted: staged.delete(key(collection, id)) ? 1 : 0 }; } }; },
           async add(value: Record<string, unknown>) { const id = String(value._id); if (staged.has(key(collection, id))) throw new Error('fixture duplicate'); staged.set(key(collection, id), value); return { id }; },
         }; },

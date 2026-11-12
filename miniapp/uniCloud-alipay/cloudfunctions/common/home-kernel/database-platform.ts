@@ -14,6 +14,7 @@ interface PlatformTransaction {
 export interface DatabasePlatform {
   collection(name: CollectionName): { doc(id: string): { get(): Promise<unknown> } };
   startTransaction(): Promise<PlatformTransaction>;
+  command: { set(value: unknown): unknown };
 }
 export interface DatabaseOptions {
   maxAttempts: number;
@@ -72,7 +73,9 @@ export function createDatabasePort(platform: DatabasePlatform, options: Database
           },
           async replace(collection, id, value) {
             const { _id: _id, ...fields } = databaseRecord(value, id);
-            const result = resultObject(await sdk(() => transaction.collection(collection).doc(id).update(fields)));
+            // Alipay merges plain objects via dot paths, which cannot create subfields on a null value; set them whole.
+            const whole = Object.fromEntries(Object.entries(fields).map(([field, item]) => [field, item !== null && typeof item === 'object' && !Array.isArray(item) ? platform.command.set(item) : item]));
+            const result = resultObject(await sdk(() => transaction.collection(collection).doc(id).update(whole)));
             if (result.updated === 0) throw new DatabaseFault('conflict');
             if (result.updated !== 1) throw new DatabaseFault('unavailable');
           },

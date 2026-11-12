@@ -3,8 +3,8 @@ export type CollectionName = 'families' | 'family_members' | 'family_invitations
 export interface TransactionPort {
   get<T>(collection: CollectionName, id: string): Promise<T | null>;
   insert<T>(collection: CollectionName, id: string, value: T): Promise<void>;
-  /** Update an existing fixed-shape record, retaining platform merge semantics.
-   * Callers supply all mutable fields; omitted fields are preserved, never removed.
+  /** Update an existing fixed-shape record; omitted fields are preserved, never removed.
+   * Callers supply all mutable fields; nested object fields are set as whole values, not dot-path merged.
    * The value must retain the same _id, and a missing record is never inserted.
    */
   replace<T>(collection: CollectionName, id: string, value: T): Promise<void>;
