@@ -14,6 +14,7 @@ export async function checkSecrets({ root, artifacts = false }) {
     const source = (await readFile(path, 'utf8')).replace(/\bINVALID_APPSECRET\s*:\s*(['"])invalid-appsecret\1/g, '');
     if (/(?:appsecret|tokenSecret|passwordSecret|privateKey|apiKey)["']?\s*[:=]\s*["'][^"'\s]{12,}["']/i.test(source)
       || /sk-or-v1-[A-Za-z0-9_-]{16,}|OPENROUTER_API_KEY["']?\s*[:=]\s*["'][^"'\s]{12,}["']|VITE_\w*OPENROUTER/i.test(source)
+      || /JINA_API_KEY["']?\s*[:=]\s*["'][^"'\s]{12,}["']|jina_[A-Za-z0-9_-]{16,}|VITE_\w*JINA/i.test(source)
       || /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----/.test(source)
       || /VITE_\w*(?:SECRET|PRIVATE_KEY)\s*=\s*\S+/i.test(source)) throw new Error('Secret detected in ' + path); // No matched value or line contents.
     if (/v1\.[A-Za-z0-9_-]{1,32}\.[a-f0-9]{32}\.[A-Za-z0-9_-]{43}/.test(source)

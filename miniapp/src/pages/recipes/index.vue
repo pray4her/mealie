@@ -342,14 +342,14 @@ function resumeImport() { adding.value = false; const saved = recovery.value; if
             {{ copy.createRecipe }}
           </HomeAction>
           <HomeAction
-            label="AI 文本导入"
+            label="AI 导入"
             data-import
             block
             type="info"
             variant="plain"
             @click="importText"
           >
-            AI 文本导入
+            AI 导入
           </HomeAction>
           <HomeAction
             v-if="recovery?.kind === 'job'"

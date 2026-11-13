@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { flushPromises } from '@vue/test-utils';
 import { createHarness } from '../support/harness';
+import { defaultConfig, type Job } from '../../uniCloud-alipay/cloudfunctions/common/home-imports/model';
 import { createMemoryStorage, deferCall } from '../support/sdk-transport';
 import { mountPage } from '../support/uni-stubs';
 import Submit from '../../src/pages/imports/submit.vue';
@@ -12,10 +13,11 @@ import { AppError } from '../../src/shared/errors';
 const navigation: string[] = [];
 beforeEach(() => { navigation.length = 0; vi.stubGlobal('uni', { switchTab: ({ url }: { url: string }) => navigation.push(url), reLaunch: ({ url }: { url: string }) => navigation.push(url), redirectTo: ({ url }: { url: string }) => navigation.push(url), navigateTo: ({ url }: { url: string }) => navigation.push(url) }); });
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
-async function setup() {
-  const h = createHarness(); await h.seedIdentity({ uid: 'alice' }); const client = h.client('alice');
+async function setup(options: Parameters<typeof createHarness>[0] = {}) {
+  const h = createHarness(options); await h.seedIdentity({ uid: 'alice' }); const client = h.client('alice');
   await client.family.create({ requestId: 'imports-page-family-01', name: '家' }); return { h, client, storage: createMemoryStorage() };
 }
+const urlOptions = { importsConfig: () => ({ ...defaultConfig(), enabled: true, urlEnabled: true }) };
 test('lost_submission_replays_same_request_after_cold_start_then_retains_only_job_id', async () => {
   const f = await setup(); let lost = true; const submit = f.client.imports.submit.bind(f.client.imports); const sent: unknown[] = [];
   vi.spyOn(f.client.imports, 'submit').mockImplementation(async input => { sent.push(structuredClone(input)); const job = await submit(input); if (lost) { lost = false; throw new AppError('UNAVAILABLE'); } return job; });
@@ -80,4 +82,55 @@ test('opening_an_older_status_cannot_overwrite_an_unacknowledged_new_submission'
   const submit = mountPage(Submit, f); await submit.show(); await submit.wrapper.find('[data-text]').setValue('新菜谱'); await submit.wrapper.find('[data-submit]').trigger('click'); await flushPromises(); submit.wrapper.unmount();
   const status = mountPage(Status, f); await status.load({ id: old.id }); await status.show();
   expect(status.controllers.imports.restore()).toMatchObject({ kind: 'pending', input: { source: { text: '新菜谱' } } }); status.wrapper.unmount();
+});
+
+test('url_method_submits_and_navigates_to_status', async () => {
+  const f = await setup(urlOptions); const page = mountPage(Submit, f); await page.show();
+  expect(page.wrapper.find('[data-url]').exists()).toBe(false);
+  await page.wrapper.find('[data-method-url]').trigger('click'); await flushPromises();
+  expect(page.wrapper.find('[data-url]').exists()).toBe(true);
+  await page.wrapper.find('[data-url]').setValue('https://example.com/recipe');
+  await page.wrapper.find('[data-submit]').trigger('click'); await flushPromises();
+  expect(navigation.at(-1)).toMatch(/^\/pages\/imports\/status\?id=[a-f0-9]{32}$/);
+  expect((await f.h.rows<Job>('import_jobs'))[0]).toMatchObject({ sourceKind: 'url', sourceUrl: 'https://example.com/recipe', sourceText: null });
+  page.wrapper.unmount();
+});
+
+test('invalid_url_shows_field_error_and_never_submits', async () => {
+  const f = await setup(urlOptions); const page = mountPage(Submit, f); await page.show();
+  await page.wrapper.find('[data-method-url]').trigger('click'); await flushPromises();
+  await page.wrapper.find('[data-url]').setValue('http://localhost/recipe');
+  await page.wrapper.find('[data-submit]').trigger('click'); await flushPromises();
+  expect(page.wrapper.find('#url-error').exists()).toBe(true);
+  expect(navigation).toEqual([]);
+  expect(await f.h.rows('import_jobs')).toHaveLength(0);
+  page.wrapper.unmount();
+});
+
+test('lost_url_submission_replays_same_request_after_cold_start', async () => {
+  const f = await setup(urlOptions); let lost = true; const submit = f.client.imports.submit.bind(f.client.imports); const sent: unknown[] = [];
+  vi.spyOn(f.client.imports, 'submit').mockImplementation(async input => { sent.push(structuredClone(input)); const job = await submit(input); if (lost) { lost = false; throw new AppError('UNAVAILABLE'); } return job; });
+  const first = mountPage(Submit, f); await first.show();
+  await first.wrapper.find('[data-method-url]').trigger('click'); await flushPromises();
+  await first.wrapper.find('[data-url]').setValue('https://example.com/recipe');
+  await first.wrapper.find('[data-submit]').trigger('click'); await flushPromises();
+  expect(first.wrapper.find('[data-replay]').exists()).toBe(true); first.wrapper.unmount();
+  const second = mountPage(Submit, f); await second.show();
+  expect(second.wrapper.find('[data-replay]').exists()).toBe(true);
+  expect((second.wrapper.find('[data-url]').element as HTMLInputElement).value).toBe('https://example.com/recipe');
+  await second.wrapper.find('[data-replay]').trigger('click'); await flushPromises();
+  expect(sent).toHaveLength(2); expect(sent[1]).toEqual(sent[0]);
+  expect(await f.h.rows('import_jobs')).toHaveLength(1);
+  expect(navigation.at(-1)).toMatch(/^\/pages\/imports\/status\?id=[a-f0-9]{32}$/); second.wrapper.unmount();
+});
+
+test('unreadable_url_failure_offers_paste_text_fallback', async () => {
+  const f = await setup(urlOptions); const home = (await f.client.family.current())!;
+  const job = await f.client.imports.submit({ requestId: 'imports-page-url-fail-01', familyId: home.familyId, generation: home.generation, source: { kind: 'url', url: 'https://example.com/locked' } });
+  await f.h.runImports();
+  const status = mountPage(Status, f); await status.load({ id: job.id }); await status.show();
+  expect(status.wrapper.text()).toContain('粘贴正文');
+  await status.wrapper.find('[data-new]').trigger('click');
+  expect(navigation.at(-1)).toBe('/pages/imports/submit');
+  status.wrapper.unmount();
 });

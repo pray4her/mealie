@@ -1,11 +1,11 @@
 import { readonly, ref, watch } from 'vue';
-import type { ImportSubmit, ImportsApi, JobView } from 'home-contracts';
+import type { ImportInput, ImportSubmit, ImportsApi, JobView } from 'home-contracts';
 import type { AuthController } from '../auth/use-auth';
 import type { createFamilyController } from '../family/use-family';
 import type { SessionStorage } from '../../shared/session-boundary';
 import { AppError, errorCode } from '../../shared/errors';
 import { object, validId } from '../recipes/validation';
-import { parseJob, submitInput, textInput } from './api';
+import { importSource, parseJob, submitInput } from './api';
 
 type Recovery = { kind: 'pending'; input: ImportSubmit; savedAt: number } | { kind: 'job'; id: string };
 export function createImportsController({ api, auth, family, storage, newRequestId }: {
@@ -41,11 +41,11 @@ export function createImportsController({ api, auth, family, storage, newRequest
       recovery.value = value; return value;
     } catch { storage.remove(ctx.key); throw new AppError('UNAVAILABLE'); }
   }
-  function submit(text: string): Promise<JobView> {
+  function submit(source: ImportInput): Promise<JobView> {
     if (flight) return flight;
-    const ctx = current(); const previous = restore(); const sourceText = previous?.kind === 'pending' ? null : textInput(text);
+    const ctx = current(); const previous = restore(); const validated = previous?.kind === 'pending' ? null : importSource(source);
     const promise = Promise.resolve().then(async () => {
-      const intent: Recovery = previous?.kind === 'pending' ? previous : { kind: 'pending', savedAt: Date.now(), input: { requestId: await newRequestId(), familyId: ctx.familyId, generation: ctx.generation, source: { kind: 'text', text: sourceText! } } };
+      const intent: Recovery = previous?.kind === 'pending' ? previous : { kind: 'pending', savedAt: Date.now(), input: { requestId: await newRequestId(), familyId: ctx.familyId, generation: ctx.generation, source: validated! } };
       if (!active(ctx)) throw new AppError('FAMILY_REQUIRED'); storage.set(ctx.key, intent); recovery.value = intent;
       try {
         const result = parseJob(await api.submit(intent.input));

@@ -16,6 +16,24 @@ test('text_limit_uses_utf8_bytes_and_invalid_input_never_reaches_transport', asy
   const base = { requestId: 'imports-api-submit-01', familyId: 'home', generation: 'generation' };
   for (const text of ['', '\uD800', '字'.repeat(5462), 'bad\u0000text']) await expect(async () => api.submit({ ...base, source: { kind: 'text', text } })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
   expect(invoke).not.toHaveBeenCalled();
-  for (const source of [{ kind: 'image' as const, fileId: 'file' }, { kind: 'url' as const, url: 'https://example.invalid' }]) await expect(async () => api.submit({ ...base, source })).rejects.toMatchObject({ code: 'UNAVAILABLE' });
+  for (const source of [{ kind: 'image' as const, fileId: 'file' }]) await expect(async () => api.submit({ ...base, source })).rejects.toMatchObject({ code: 'UNAVAILABLE' });
   await api.submit({ ...base, source: { kind: 'text', text: '字'.repeat(5461) } }); expect(invoke).toHaveBeenCalledTimes(1);
+});
+
+test('url_source_reaches_transport_only_after_local_shape_validation', async () => {
+  const invoke = vi.fn(async (..._args: unknown[]): Promise<unknown> => job());
+  const api = createImportsApi({ invoke: async <T>(...args: Parameters<Invoke>): Promise<T> => await invoke(...args) as T, boundary: createSessionBoundary(createMemoryStorage()) });
+  const base = { requestId: 'imports-api-submit-url-01', familyId: 'home', generation: 'generation' };
+  for (const url of ['', '   ', 'not a url', 'ftp://example.com/', 'https://user:pass@example.com/', 'https://example.com:8080/', 'http://localhost/', 'http://printer.local/', 'http://metadata.google.internal/', 'https://example.com/ recipe', 'https://' + 'a'.repeat(2048) + '.com/']) {
+    await expect(async () => api.submit({ ...base, source: { kind: 'url', url } })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
+  }
+  expect(invoke).not.toHaveBeenCalled();
+  await api.submit({ ...base, source: { kind: 'url', url: ' https://example.com/recipe ' } });
+  expect(invoke).toHaveBeenCalledWith('imports-co', 'submit', { ...base, source: { kind: 'url', url: 'https://example.com/recipe' } });
+});
+
+test('source_unreadable_job_error_is_accepted_by_the_wire_parser', async () => {
+  const invoke = vi.fn(async (..._args: unknown[]): Promise<unknown> => ({ ...job(), state: 'failed', error: 'SOURCE_UNREADABLE', updatedAt: 3 }));
+  const api = createImportsApi({ invoke: async <T>(...args: Parameters<Invoke>): Promise<T> => await invoke(...args) as T, boundary: createSessionBoundary(createMemoryStorage()) });
+  await expect(api.get('a'.repeat(32))).resolves.toMatchObject({ state: 'failed', error: 'SOURCE_UNREADABLE' });
 });

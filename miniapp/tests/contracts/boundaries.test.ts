@@ -60,6 +60,10 @@ test('import_worker_cannot_export_public_entrypoints_and_provider_keys_cannot_en
   await writeFile(join(root, 'uniCloud-alipay/cloudfunctions/import-worker/index.obj.ts'), 'export async function _timing() {}');
   await writeFile(join(root, 'src/leak.ts'), "const key = process.env.OPENROUTER_API_KEY;");
   await expect(checkBoundaries({ root })).rejects.toThrow(/client|secret/i);
+  await writeFile(join(root, 'src/leak.ts'), "const key = process.env.JINA_API_KEY;");
+  await expect(checkBoundaries({ root })).rejects.toThrow(/client|secret/i);
+  await writeFile(join(root, 'src/leak.ts'), "const flag = process.env.IMPORTS_URL_ENABLED;");
+  await expect(checkBoundaries({ root })).rejects.toThrow(/client|secret/i);
 });
 test('dynamic_require_and_value_contract_imports_are_rejected', async () => {
   const dir = await fixture();
@@ -97,7 +101,7 @@ test('artifact_wxss_rejects_universal_selectors_before_wechat_compilation', asyn
 test('family_content_and_fixture_runtime_cannot_enter_actual_artifact_content', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
   await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));
-  for (const forbidden of ['home-imports', 'home-media', 'home-recipes', 'home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common']) {
+  for (const forbidden of ['home-imports', 'home-media', 'home-recipes', 'home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common', 'JINA_API_KEY']) {
     await writeFile(join(dist, 'app.js'), `const leaked = '${forbidden}';`);
     await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact/i);
   }
@@ -204,4 +208,12 @@ test('extra_plugin_cloud_object_is_rejected', async () => {
 test('second_provider_root_is_rejected', async () => {
   const other = await fixture(); await mkdir(join(other, 'uniCloud-aliyun'), { recursive: true });
   await expect(checkBoundaries({ root: other })).rejects.toThrow(/root|provider/i);
+});
+test('jina_reader_key_is_rejected_in_source_without_echoing_value', async () => {
+  const dir = await fixture(); const path = join(dir, 'src/error.js'); const synthetic = 'SYNTHETIC-ONLY-DO-NOT-USE-0123456789';
+  for (const source of [`const config = { JINA_API_KEY: '${synthetic}' };`, `const key = 'jina_${synthetic.replace(/-/g, '')}';`, `VITE_JINA_KEY=${synthetic}`]) {
+    await writeFile(path, source);
+    try { await checkSecrets({ root: dir }); throw new Error('Scanner incorrectly accepted fixture'); }
+    catch (error) { expect(String(error)).toMatch(/Secret detected/); expect(String(error)).not.toContain(synthetic); }
+  }
 });

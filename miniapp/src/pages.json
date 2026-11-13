@@ -60,7 +60,7 @@
     {
       "path": "pages/imports/submit",
       "style": {
-        "navigationBarTitleText": "文本导入"
+        "navigationBarTitleText": "AI 导入"
       }
     },
     {

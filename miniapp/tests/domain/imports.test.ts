@@ -169,7 +169,7 @@ test('expiry_during_provider_call_accounts_cost_but_cannot_save_expired_text', a
   expect((await f.h.rows<Job>('import_jobs')).find(row => row._id === job.id)).toMatchObject({ state: 'failed', error: 'INPUT_EXPIRED' }); expect(await f.h.rows('recipes')).toHaveLength(0);
   expect(await f.h.rows('ai_usage')).toMatchObject([{ costUsd: 0.001, settled: true }]);
 });
-test.each(['image', 'url'])('unsupported_%s_is_unavailable_without_reserving_quota', async kind => {
+test.each(['image'])('unsupported_%s_is_unavailable_without_reserving_quota', async kind => {
   const f = await setup(); await expect(f.client.imports.submit({ ...f.input(), source: { kind } } as never)).rejects.toMatchObject({ code: 'UNAVAILABLE' }); expect(await f.h.rows('import_jobs')).toHaveLength(0);
 });
 test.each(['', '字'.repeat(5462), 'bad\u0000text', '\uD800'])('invalid_text_never_creates_a_job_%#', async text => {

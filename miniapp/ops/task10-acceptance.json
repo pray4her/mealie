@@ -1,0 +1,212 @@
+{
+  "ticket": "task10",
+  "version": 1,
+  "status": "accepted",
+  "recordedAt": "2026-11-13T08:32:54.688Z",
+  "target": {
+    "provider": "alipay",
+    "cloudRoot": "uniCloud-alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceAppId": "2021007114656325",
+    "dcloudAppId": "__UNI__5FDC0D7",
+    "weixinAppId": "wx68649810a6f363f3"
+  },
+  "local": {
+    "status": "passed",
+    "mode": "automated",
+    "evidenceFile": "ops/task10-test-evidence.md",
+    "suites": 61,
+    "tests": 862,
+    "note": "2026-11-13 最终复跑：61 套件/862 项全部通过，exit 0，maxWorkers=2、testTimeout=120000；uni-id/内容装配、ESLint 零警告、客户端/云端/测试三组类型均 exit 0。构建与产物检查见 ops/task10-closeout.md。",
+    "scenarios": {
+      "ssrf-shape-and-dns": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "reader-contract-classification": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "url-submit-and-worker-read": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "capability-switch-and-idempotency": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "checkpoint-retry-no-reread": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "truncation-and-final-url-warnings": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "client-url-validation-and-wire": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "page-method-switch-recovery-fallback": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      },
+      "boundaries-and-secret-gates": {
+        "status": "passed",
+        "mode": "automated",
+        "evidenceFile": "ops/task10-test-evidence.md"
+      }
+    },
+    "artifactChecks": {
+      "boundaries": "passed",
+      "secrets": "passed",
+      "diffCheck": "passed"
+    }
+  },
+  "provider": {
+    "status": "passed",
+    "mode": "user-confirmed",
+    "evidenceFile": "ops/task10-closeout.md",
+    "scenarios": {
+      "real-jina-read-readable-url": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "real-jina-read-unreadable-url": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "real-openrouter-parse-cost-request-id": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "safe-errors-no-secret-logs": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      }
+    },
+    "observed": {
+      "mode": "real-cloud",
+      "evidenceFile": "ops/task10-real-2026-11-13/readable-usage.json",
+      "jobId": "88666cbc03798cb2b17f5e1e79879c4a",
+      "state": "succeeded",
+      "attempts": 1,
+      "recipeId": "5525f92495bf4f04d49782adcdddac49",
+      "costUsd": 0.00157224375
+    }
+  },
+  "cloud": {
+    "status": "passed",
+    "mode": "user-confirmed",
+    "evidenceFile": "ops/task10-closeout.md",
+    "scenarios": {
+      "url-enabled-both-objects": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "private-minute-timer-url-job": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "closed-page-completion": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "atomic-save-url-provenance": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "redirect-to-private-rejected": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "source-retention-cleanup": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      }
+    }
+  },
+  "device": {
+    "status": "passed",
+    "mode": "user-confirmed",
+    "evidenceFile": "ops/task10-closeout.md",
+    "scenarios": {
+      "method-switch-url-paste": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "url-submit-status": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "weak-network-url-replay": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "unreadable-fallback-paste-text": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "account-generation-isolation": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      },
+      "state-matrix-viewports-large-font": {
+        "status": "passed",
+        "mode": "user-confirmed",
+        "evidenceFile": "ops/task10-closeout.md"
+      }
+    }
+  },
+  "deployment": {
+    "status": "deployed-test-space",
+    "evidenceFile": "ops/task10-closeout.md",
+    "note": "HBuilderX 正确关联既有支付宝测试空间；import_jobs Schema 经 protocol-version 1 上传及下载回读；home-imports 修复经官方 TS 检查、编译及依赖更新。未发布微信版本。"
+  },
+  "acceptance": {
+    "mode": "user-confirmed",
+    "date": "2026-11-13",
+    "statement": "已完成全部检验，关闭工单，验收，生成git提交信息，提交并推送。",
+    "evidenceFile": "ops/task10-closeout.md",
+    "note": "用户确认完成全部检验并授权关闭、提交及推送；代理实测和用户确认分别记录，不伪造未采集的设备或供应商证据。"
+  },
+  "limitations": [
+    "用户确认的剩余设备、弱网、状态矩阵及安全检验未由代理逐项重新采集独立证据。",
+    "DNS 与最终地址校验是应用策略门；不将本票验收等同于托管 Reader 逐跳 SSRF 风险已消除。",
+    "真实截图是微信开发者工具模拟器；不能自动表述为实体手机验收。",
+    "task10 未接入旧 doctor 允许清单，未宣称 doctor READY。"
+  ],
+  "build": {
+    "status": "passed",
+    "mode": "hbuilderx-production",
+    "wechatUpload": false,
+    "files": {
+      "app.js": "087910a71491468d18e03cdbddc67dba4dfc2e194fe701335993b4b1ca575c91",
+      "common/vendor.js": "27a00983108d9ce1427e52fb773bac5627a433e13281f3a24625f9104cc2900e",
+      "app.json": "a0f35b5a6ef12562e0eee5d58b7e3f02e83063f2adf8f9c768961acf2a1e8883"
+    }
+  }
+}

@@ -57,7 +57,7 @@ export function createOpenRouterProvider(options: { apiKey(): string | undefined
       const choice = record(raw.choices[0]);
       if (choice.finish_reason === 'length') throw new ImportFailure('TRUNCATED', false, usage);
       if (choice.finish_reason !== 'stop') throw new Error();
-      const message = record(choice.message); if (typeof message.content !== 'string' || message.tool_calls || message.refusal) throw new Error();
+      const message = record(choice.message); if (typeof message.content !== 'string' || message.tool_calls != null && (!Array.isArray(message.tool_calls) || message.tool_calls.length > 0) || message.refusal) throw new Error();
       const result = record(JSON.parse(message.content));
       if (Object.keys(result).length !== 2 || !Object.hasOwn(result, 'recipe') || !Object.hasOwn(result, 'outcome')) throw new Error();
       if (result.outcome === 'unrecognized' || result.outcome === 'multiple') {

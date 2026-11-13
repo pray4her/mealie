@@ -37,7 +37,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
       if (!permission || ['read', 'create', 'update', 'delete'].some(key => permission[key] !== false)) throw new Error('Identity clientDB permission open: ' + path);
     }
     if (/\.[jt]s$|\.vue$/.test(path) && !path.includes('uni_modules')) {
-      if (/OPENROUTER_API_KEY|IMPORTS_(?:ENABLED|RESERVE_USD|USER_USD|FAMILY_USD|GLOBAL_USD)/.test(source)) throw new Error('Client secret/configuration boundary violation: ' + path);
+      if (/JINA_API_KEY|OPENROUTER_API_KEY|IMPORTS_(?:ENABLED|URL_ENABLED|RESERVE_USD|USER_USD|FAMILY_USD|GLOBAL_USD)/.test(source)) throw new Error('Client secret/configuration boundary violation: ' + path);
       const code = path.endsWith('.vue') ? [...source.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m => m[1]).join('\n') : source;
       const ast = ts.createSourceFile(path, code, ts.ScriptTarget.Latest, true);
       const check = (specifier, typeOnly) => {
@@ -111,7 +111,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
         const css = (await readFile(path, 'utf8')).replace(/\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g, '');
         if ([...css.matchAll(/([^{}]+)\{/g)].some(([, selector]) => /(?:^|[\s>+~,(|])\*/.test(selector))) throw new Error('WXSS universal selector unsupported: ' + path);
       }
-      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|home-media|home-imports|uni-sec-check|uni-open-bridge|cloudfunctions\/common|OPENROUTER_API_KEY|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
+      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|home-media|home-imports|uni-sec-check|uni-open-bridge|cloudfunctions\/common|JINA_API_KEY|OPENROUTER_API_KEY|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
     }
   }
 }

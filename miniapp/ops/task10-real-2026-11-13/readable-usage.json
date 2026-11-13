@@ -1,0 +1,11 @@
+{
+  "_id": "8a92c63fbae461a29f9b0780bbe09868b30797e799ca7de8c5ad2dd0ef00a7df",
+  "attempt": 1,
+  "costUsd": 0.00157224375,
+  "currency": "USD",
+  "inputTokens": 4429,
+  "jobId": "88666cbc03798cb2b17f5e1e79879c4a",
+  "outputTokens": 1732,
+  "providerRequestId": "gen-1794557763-KONR1gWB5X15W29dLFId",
+  "settled": true
+}

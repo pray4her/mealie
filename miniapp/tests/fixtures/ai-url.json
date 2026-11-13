@@ -1,0 +1,8 @@
+{
+  "readable": { "status": 200, "body": { "code": 200, "status": 20000, "data": { "url": "https://example.com/recipe", "title": "盐汤", "content": "盐汤：盐适量，加水煮开。" } } },
+  "moved": { "status": 200, "body": { "code": 200, "status": 20000, "data": { "url": "https://example.com/final", "title": "盐汤", "content": "盐汤：盐适量，加水煮开。" } } },
+  "blank": { "status": 200, "body": { "code": 200, "status": 20000, "data": { "url": "https://example.com/recipe", "title": "", "content": "   " } } },
+  "blocked": { "status": 403, "body": "" },
+  "rateLimited": { "status": 429, "body": "" },
+  "redirectPrivate": { "status": 200, "body": { "code": 200, "status": 20000, "data": { "url": "http://169.254.169.254/latest/meta-data/", "title": "meta", "content": "secret" } } }
+}

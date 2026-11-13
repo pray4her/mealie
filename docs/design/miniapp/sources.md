@@ -119,6 +119,17 @@
 - 方法：本次无可用 Refero MCP，复用既有参考锁及 Refero craft 的表单/焦点/命中区/图片和颜色职责规则，并实际查看预览；没有声称新增 Refero 数据库研究。Web Interface Guidelines 仅辅助 HTML 表单/焦点检查，不能替代微信语义；平台裁决以 S-WECHAT / S-UNI 为准。
 - 结果入口：[逐页规范](page-specs.md)、[审阅结论及验证边界](review-2026-11-10.md)。本次通过的原型自检和 CLI 基础诊断不升级为真机、云业务或生产视觉通过。
 
+## S-URL-IMPORT：2026-11-12 网址导入读取服务核实
+
+**2026-11-13 收尾更新：** 用户确认全部检验完成并授权验收、关闭 #10、提交与推送；历史 needs-info 状态由[最终验收记录](../../../miniapp/ops/task10-closeout.md)取代。生产客户端已完成真实微信登录、托管网页读取、OpenRouter 解析及菜谱保存，并保留原始截图与计费回读。Reader 新增 `X-Base: final`（默认 initial，只有显式 final 才能将 `data.url` 用作最终地址）、`X-Assert-Status-Code: 200` 与目标 HTTP 错误 warning 拒绝。参数依据为[官方 crawler-options](https://github.com/jina-ai/reader/blob/main/src/dto/crawler-options.ts)。逐跳托管 SSRF 保证仍不作声明；来源、用户确认与独立实测边界见最终记录。
+
+- 授权与范围：Issue #10（needs-info）要求公开菜谱网址由**真正读取指定网页**的托管服务获取正文，复用既有 AI 文本导入解析保存，失败降级粘贴正文，不建自建抓取器、不伪造菜谱。用户经 AskUserQuestion 确认外部前置：**Jina Reader（r.jinaai.cn 国内过渡域名）托管读取 + 现有 OpenRouter 解析**。本轮只实现本票，不自动 git 提交、不关闭既有服务、不发布微信版本。
+- Jina Reader 契约（官方 jina-ai/reader 仓库，2026-11-12 核对）：`GET https://r.jinaai.cn/<网址>`（端点为官方国内过渡域名，[jina-ai/reader#1237](https://github.com/jina-ai/reader/issues/1237)：jina.ai 整域国内 DNS 污染，官方以 r.jinaai.cn/s.jinaai.cn 过渡，接口/参数/认证一致），头 `Accept: application/json`、`X-Timeout`、`X-Retain-Images: none`、`X-Max-Tokens`（**截断**长页，≥500 生效）；`X-Token-Budget` 会**拒绝**超预算页，故不用以免误判可读长页。JSON 返回 `code===200`、`data.url`（重定向后最终地址）、`data.title`、`data.content`。尊重登录/付费墙/反爬，不绕过访问控制；失败请求不计费。免费档无 key 20 RPM、免费 key 500 RPM + 10M tokens。读取证据 = 最终 URL + 非空正文，绝非模型自称。
+- OpenRouter web 插件经核实是联网**搜索**（不读取指定网页），不满足验收，未采用。截图降级属 #9（未交付），不做假入口；失败降级仅「粘贴正文」（复用 submit 页默认文本模式）。
+- 本地出口探测 `https://r.jina.ai/https://example.com` 曾出现 `ECONNREFUSED`（环境出口受限/DNS 异常）。2026-11-12 经官方 issue 核实后，端点切换为官方国内过渡域名 `r.jinaai.cn`（[jina-ai/reader#1237](https://github.com/jina-ai/reader/issues/1237)），非第三方代理替换。真实读取必须在部署者云端核实，本地 fixture 不替代，Issue 保留 needs-info。
+- SSRF 残余边界：Jina 独立解析域名，我方提交形状门 + worker DNS 前置/后置校验是策略门不是 socket pin；不自建抓取所以无云侧 socket 可 pin，如实记录不声称已消除。reader 不计入 USD 预算（Jina 侧计费），`ai_usage` 仍只记录 OpenRouter。
+- 实施与验证入口：[部署与验收](../../../miniapp/ops/task10-deployment.md)、[本地证据](../../../miniapp/ops/task10-test-evidence.md)。代码遵循已批准家常 v1 基线（复用 HomeAction/scope-tab、原生 input 例外、不新增 wd-*），未引入装饰渐变/大色块/无目的阴影。
+
 ## 设计方法与适用 skills
 
 - `refero-design`：研究、参考锁定、来源职责、决策记录和渲染 QA。
@@ -156,5 +167,6 @@
 | D-10 | UI/组件实施前查证 API，交付记录版本与具体来源 | S-USER / S-WOT-AI / S-CODE | 文档、CLI、skill 各有职责；当前能力由安装包和实际验证确认 |
 | D-11 | 令牌按背景配对、正文与控件随微信字号适配、验证真实内部节点语义 | S-A11Y / S-WECHAT / S-REVIEW | 修正候选色及原型/代码的可访问性缺口，不改变 v1 视觉方向 |
 | D-12 | 明确逐页任务、表单字段错误、弹层关闭、原请求恢复和主次/危险操作 | S-BUSINESS / S-WOT / S-WECHAT / S-REVIEW | 把既有原则变成实施约束，保留平台能力和各业务票的交付边界 |
+| D-13 | 网址导入用 Jina Reader 托管读取 + 现有 OpenRouter 解析，失败降级粘贴正文 | S-URL-IMPORT / S-BUSINESS / S-CODE | 真正读取指定网页、不建自建抓取器、不伪造；截图留待 #9；保留家庭鉴权与恢复语义 |
 
 新的重大决定追加 D-ID；记录来源和影响。现有决定变更时保留原因和用户确认状态，不静默覆盖。

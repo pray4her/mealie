@@ -200,3 +200,13 @@ test('unavailable_native_alert_does_not_break_explicit_leave_confirmation', asyn
     accept = true; await page.wrapper.find('[data-back]').trigger('click'); await flushPromises(); expect(navigation.at(-1)).toBe('/pages/recipes/index');
   } finally { page.wrapper.unmount(); }
 });
+
+test('url_method_unsaved_input_triggers_leave_confirmation_and_confirm_navigates', async () => {
+  const f = await fixture(); const page = mountPage(Submit, f); await page.show();
+  try {
+    await page.wrapper.find('[data-method-url]').trigger('click'); await flushPromises();
+    await page.wrapper.find('[data-url]').setValue('https://example.com/recipe');
+    await page.wrapper.find('[data-back]').trigger('click'); await flushPromises(); expect(modal).toHaveBeenCalled(); expect(navigation).toEqual([]);
+    accept = true; await page.wrapper.find('[data-back]').trigger('click'); await flushPromises(); expect(navigation.at(-1)).toBe('/pages/recipes/index');
+  } finally { page.wrapper.unmount(); }
+});

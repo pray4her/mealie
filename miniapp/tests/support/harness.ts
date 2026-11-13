@@ -15,10 +15,10 @@ import { requireFamily } from 'home-family';
 import type { RecipesApi } from 'home-contracts';
 import type { RecipeRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-recipes/repository';
 import { createImportsService, runImportWorker } from '../../uniCloud-alipay/cloudfunctions/common/home-imports';
-import type { ImportConfig, Job, Provider } from '../../uniCloud-alipay/cloudfunctions/common/home-imports';
+import type { ImportConfig, Job, Provider, Resolver, UrlReaderPort } from '../../uniCloud-alipay/cloudfunctions/common/home-imports';
 import { defaultConfig } from '../../uniCloud-alipay/cloudfunctions/common/home-imports/model';
 
-export function createHarness(options: { now?: number; content?: ContentPort; storage?: StoragePort; review?: MediaReviewPort; importsProvider?: Provider; importsConfig?: () => ImportConfig; recentlyVisited?: () => Promise<boolean>; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
+export function createHarness(options: { now?: number; content?: ContentPort; storage?: StoragePort; review?: MediaReviewPort; importsProvider?: Provider; importsConfig?: () => ImportConfig; importsReader?: UrlReaderPort; importsResolver?: Resolver; recentlyVisited?: () => Promise<boolean>; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
   let now = options.now ?? 1_800_000_000_000;
   const memory = createMemoryDatabase();
   const files = new Map<string, Buffer>();
@@ -98,6 +98,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
   };
   return {
     async runImports() { return runImportWorker({ database: memory.database, now: () => now, newId: () => (++nextId).toString(16).padStart(32, '0'), config: importsConfig,
+      reader: options.importsReader, resolve: options.importsResolver,
       reads: {
         async due(time) { return (await memory.rows<Job>('import_jobs')).filter(row => ['queued', 'running'].includes(row.state) && row.nextRunAt <= time).sort((a, b) => a.nextRunAt - b.nextRunAt).slice(0, 4).map(row => row._id); },
         async expired(time) { return (await memory.rows<Job>('import_jobs')).filter(row => row.purgeAt > 0 && row.purgeAt <= time).slice(0, 20).map(row => row._id); },

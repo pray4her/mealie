@@ -10,9 +10,20 @@ import type { UsageResult } from './quota';
 import { ImportFailure, unknownUsage } from './provider';
 import type { Provider } from './provider';
 import type { ImportReads } from './reads';
+import type { UrlReaderPort } from './reader';
+import type { Resolver, ValidatedSource } from './urls';
+import { validatePublicSource } from './urls';
 
 export interface WorkerDeps { database: DatabasePort; reads: ImportReads; now(): number; newId(): string; config(): ImportConfig; provider: Provider;
+  reader?: UrlReaderPort; resolve?: Resolver;
   content(job: Job): ContentPort; activeUser(uid: string): Promise<boolean>; recentlyVisited(job: Job): Promise<boolean> }
+function truncateUtf8(value: string, limit: number): { text: string; truncated: boolean } {
+  const buf = Buffer.from(value, 'utf8');
+  if (buf.length <= limit) return { text: value, truncated: false };
+  let cut = limit;
+  while (cut > 0 && (buf[cut] & 0xc0) === 0x80) cut--;
+  return { text: buf.subarray(0, cut).toString('utf8'), truncated: true };
+}
 export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: number; cleaned: number }> {
   const started = deps.now(); let processed = 0; let cleaned = 0;
   async function read(id: string) { return deps.database.transaction(tx => tx.get<Job>('import_jobs', id)); }
@@ -27,13 +38,13 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
   }
   async function end(tx: TransactionPort, job: Job, error: ImportError) {
     await settleCheckpoint(tx, job);
-    await tx.replace('import_jobs', job._id, { ...job, state: 'failed', error, sourceText: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
+    await tx.replace('import_jobs', job._id, { ...job, state: 'failed', error, sourceText: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
   }
   for (const id of await deps.reads.expired(deps.now())) {
     await commit(() => deps.database.transaction(async tx => {
       const job = await tx.get<Job>('import_jobs', id); if (!job || job.purgeAt <= 0 || job.purgeAt > deps.now()) return;
       if (!terminal(job.state)) await end(tx, job, 'INPUT_EXPIRED');
-      else await tx.replace('import_jobs', id, { ...job, sourceText: null, candidate: null, purgeAt: 0 });
+      else await tx.replace('import_jobs', id, { ...job, sourceText: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0 });
     }), async () => { await read(id); }); cleaned++;
   }
   for (const id of await deps.reads.due(deps.now())) {
@@ -45,7 +56,7 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
       if (job.purgeAt <= deps.now()) { await end(tx, job, 'INPUT_EXPIRED'); return null; }
       if (!await member(tx, job)) { await end(tx, job, 'MEMBERSHIP_CHANGED'); return null; }
       if (!job.candidate && job.attempts >= 3) { await end(tx, job, 'PROVIDER_UNAVAILABLE'); return null; }
-      if (!job.candidate && !deps.config().enabled) return null;
+      const config = deps.config(); if (!job.candidate && (!config.enabled || ((job.sourceKind ?? 'text') === 'url' && !config.urlEnabled))) return null;
       const row: Job = { ...job, state: 'running', lease, leaseUntil: deps.now() + 90000, nextRunAt: deps.now() + 90000, updatedAt: deps.now() };
       await tx.replace('import_jobs', id, row); return row;
     });
@@ -76,8 +87,32 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
         }));
         if (!began) continue;
         usageId = attemptId;
-        if (claimed.sourceText === null) throw new ImportFailure('INPUT_EXPIRED');
-        const parsed = await deps.provider.parse(claimed.sourceText); usage = parsed.usage;
+        usage = { ...unknownUsage(), costUsd: 0 };
+        let text = claimed.sourceText;
+        if (text === null) {
+          if ((claimed.sourceKind ?? 'text') !== 'url' || !claimed.sourceUrl) throw new ImportFailure('INPUT_EXPIRED');
+          if (!deps.reader) throw new ImportFailure('SOURCE_UNREADABLE');
+          let validated: ValidatedSource;
+          try { validated = await validatePublicSource(claimed.sourceUrl, deps.resolve); }
+          catch (error) { throw new ImportFailure('SOURCE_UNREADABLE', !(error instanceof AppError)); }
+          const result = await deps.reader.read(validated);
+          try { await validatePublicSource(result.sourceUrl, deps.resolve); }
+          catch (error) { throw new ImportFailure('SOURCE_UNREADABLE', !(error instanceof AppError)); }
+          if (!result.read || result.content === null) throw new ImportFailure('SOURCE_UNREADABLE');
+          const warnings: string[] = [];
+          const trimmed = truncateUtf8(result.content, 16384);
+          text = trimmed.text;
+          if (trimmed.truncated) warnings.push('网页正文超过 16 KiB，已截断，请核对保存后的菜谱。');
+          if (result.sourceUrl !== validated.url) warnings.push('实际读取地址与提交网址不同：' + result.sourceUrl);
+          // Checkpoint reader output so provider retries never pay for a second read.
+          const storedText = await commit(() => deps.database.transaction(async tx => {
+            const job = await tx.get<Job>('import_jobs', id); if (!owns(job, lease)) { await settle(tx, attemptId, usage); return false; }
+            await tx.replace('import_jobs', id, { ...job, sourceText: text, sourceWarnings: warnings, updatedAt: deps.now() }); return true;
+          }), async () => { const job = await read(id); return owns(job, lease) && job.sourceText !== null; });
+          if (!storedText) { await recordUsage(attemptId, usage); continue; }
+        }
+        usage = unknownUsage();
+        const parsed = await deps.provider.parse(text); usage = parsed.usage;
         try { candidate = recipeInput(parsed.recipe); } catch { throw new ImportFailure('INVALID_OUTPUT', false, usage); }
         const checked = candidate;
         // Persist validated fields before audit so an interrupted audit never needs another AI call.
@@ -105,8 +140,9 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
         const ctx = await member(tx, job); if (!ctx) { await end(tx, job, 'MEMBERSHIP_CHANGED'); return; }
         await guardMutation(tx, ctx);
         const recipeId = hash(['import-recipe-v1', id]).slice(0, 32);
-        await insertRecipe(tx, ctx, candidate as RecipeInput, recipeId, deps.now(), { kind: 'text', url: null, importJobId: id, warnings: [] });
-        await tx.replace('import_jobs', id, { ...job, state: 'succeeded', recipeId, sourceText: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
+        const sourceKind = job.sourceKind ?? 'text';
+        await insertRecipe(tx, ctx, candidate as RecipeInput, recipeId, deps.now(), { kind: sourceKind, url: sourceKind === 'url' ? job.sourceUrl ?? null : null, importJobId: id, warnings: job.sourceWarnings ?? [] });
+        await tx.replace('import_jobs', id, { ...job, state: 'succeeded', recipeId, sourceText: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
       }), async () => { const job = await read(id); if (!job || !terminal(job.state)) throw new AppError('UNAVAILABLE'); });
     } catch (error) {
       const failure = error instanceof ImportFailure ? error : new ImportFailure(error instanceof AppError && error.code === 'QUOTA_EXCEEDED' ? 'BUDGET_EXCEEDED' : 'PROVIDER_UNAVAILABLE', false, usage);
