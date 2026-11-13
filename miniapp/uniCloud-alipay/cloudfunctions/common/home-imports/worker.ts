@@ -13,9 +13,12 @@ import type { ImportReads } from './reads';
 import type { UrlReaderPort } from './reader';
 import type { Resolver, ValidatedSource } from './urls';
 import { validatePublicSource } from './urls';
+import { requireImportMedia, releaseImportMedia, readImportImage, cleanupImportMedia } from 'home-media';
+import type { StoragePort } from 'home-media';
+import type { ProviderInput } from './provider';
 
 export interface WorkerDeps { database: DatabasePort; reads: ImportReads; now(): number; newId(): string; config(): ImportConfig; provider: Provider;
-  reader?: UrlReaderPort; resolve?: Resolver;
+  reader?: UrlReaderPort; resolve?: Resolver; storage?: StoragePort;
   content(job: Job): ContentPort; activeUser(uid: string): Promise<boolean>; recentlyVisited(job: Job): Promise<boolean> }
 function truncateUtf8(value: string, limit: number): { text: string; truncated: boolean } {
   const buf = Buffer.from(value, 'utf8');
@@ -38,13 +41,14 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
   }
   async function end(tx: TransactionPort, job: Job, error: ImportError) {
     await settleCheckpoint(tx, job);
-    await tx.replace('import_jobs', job._id, { ...job, state: 'failed', error, sourceText: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
+    await releaseImportMedia(tx, job.sourceMediaId, job._id, deps.now());
+    await tx.replace('import_jobs', job._id, { ...job, state: 'failed', error, sourceText: null, sourceMediaId: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
   }
   for (const id of await deps.reads.expired(deps.now())) {
     await commit(() => deps.database.transaction(async tx => {
       const job = await tx.get<Job>('import_jobs', id); if (!job || job.purgeAt <= 0 || job.purgeAt > deps.now()) return;
       if (!terminal(job.state)) await end(tx, job, 'INPUT_EXPIRED');
-      else await tx.replace('import_jobs', id, { ...job, sourceText: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0 });
+      else { await releaseImportMedia(tx, job.sourceMediaId, job._id, deps.now()); await tx.replace('import_jobs', id, { ...job, sourceText: null, sourceMediaId: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0 }); }
     }), async () => { await read(id); }); cleaned++;
   }
   for (const id of await deps.reads.due(deps.now())) {
@@ -56,7 +60,7 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
       if (job.purgeAt <= deps.now()) { await end(tx, job, 'INPUT_EXPIRED'); return null; }
       if (!await member(tx, job)) { await end(tx, job, 'MEMBERSHIP_CHANGED'); return null; }
       if (!job.candidate && job.attempts >= 3) { await end(tx, job, 'PROVIDER_UNAVAILABLE'); return null; }
-      const config = deps.config(); if (!job.candidate && (!config.enabled || ((job.sourceKind ?? 'text') === 'url' && !config.urlEnabled))) return null;
+      const config = deps.config(); if (!job.candidate && (!config.enabled || ((job.sourceKind ?? 'text') === 'url' && !config.urlEnabled) || (job.sourceKind === 'image' && !config.imageEnabled))) return null;
       const row: Job = { ...job, state: 'running', lease, leaseUntil: deps.now() + 90000, nextRunAt: deps.now() + 90000, updatedAt: deps.now() };
       await tx.replace('import_jobs', id, row); return row;
     });
@@ -88,7 +92,18 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
         if (!began) continue;
         usageId = attemptId;
         usage = { ...unknownUsage(), costUsd: 0 };
+        let providerInput: ProviderInput;
         let text = claimed.sourceText;
+        if (claimed.sourceKind === 'image') {
+          try {
+            if (!claimed.sourceMediaId || !deps.storage) throw new Error();
+            const row = await deps.database.transaction(async tx => {
+              const ctx = await member(tx, claimed); if (!ctx) throw new ImportFailure('MEMBERSHIP_CHANGED');
+              return requireImportMedia(tx, ctx, claimed.sourceMediaId!, deps.now(), claimed._id);
+            });
+            providerInput = await readImportImage(deps.storage, row);
+          } catch (error) { if (error instanceof ImportFailure) throw error; throw new ImportFailure(claimed.purgeAt <= deps.now() ? 'INPUT_EXPIRED' : 'IMAGE_UNREADABLE'); }
+        } else {
         if (text === null) {
           if ((claimed.sourceKind ?? 'text') !== 'url' || !claimed.sourceUrl) throw new ImportFailure('INPUT_EXPIRED');
           if (!deps.reader) throw new ImportFailure('SOURCE_UNREADABLE');
@@ -111,8 +126,21 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
           }), async () => { const job = await read(id); return owns(job, lease) && job.sourceText !== null; });
           if (!storedText) { await recordUsage(attemptId, usage); continue; }
         }
+        providerInput = text;
+        }
+        const canCall = await deps.database.transaction(async tx => {
+          const job = await tx.get<Job>('import_jobs', id); if (!owns(job, lease)) return false;
+          if (job.purgeAt <= deps.now()) throw new ImportFailure('INPUT_EXPIRED');
+          const ctx = await member(tx, job); if (!ctx) throw new ImportFailure('MEMBERSHIP_CHANGED');
+          if (job.sourceKind === 'image') {
+            try { await requireImportMedia(tx, ctx, job.sourceMediaId!, deps.now(), job._id); }
+            catch { throw new ImportFailure('IMAGE_UNREADABLE'); }
+          }
+          return true;
+        });
+        if (!canCall) { await recordUsage(attemptId, usage); continue; }
         usage = unknownUsage();
-        const parsed = await deps.provider.parse(text); usage = parsed.usage;
+        const parsed = await deps.provider.parse(providerInput); usage = parsed.usage;
         try { candidate = recipeInput(parsed.recipe); } catch { throw new ImportFailure('INVALID_OUTPUT', false, usage); }
         const checked = candidate;
         // Persist validated fields before audit so an interrupted audit never needs another AI call.
@@ -138,11 +166,16 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
         if (!owns(job, lease)) return;
         if (job.purgeAt <= deps.now()) { await end(tx, job, 'INPUT_EXPIRED'); return; }
         const ctx = await member(tx, job); if (!ctx) { await end(tx, job, 'MEMBERSHIP_CHANGED'); return; }
+        if (job.sourceKind === 'image') {
+          try { await requireImportMedia(tx, ctx, job.sourceMediaId!, deps.now(), job._id); }
+          catch { await end(tx, job, 'IMAGE_UNREADABLE'); return; }
+        }
         await guardMutation(tx, ctx);
         const recipeId = hash(['import-recipe-v1', id]).slice(0, 32);
         const sourceKind = job.sourceKind ?? 'text';
         await insertRecipe(tx, ctx, candidate as RecipeInput, recipeId, deps.now(), { kind: sourceKind, url: sourceKind === 'url' ? job.sourceUrl ?? null : null, importJobId: id, warnings: job.sourceWarnings ?? [] });
-        await tx.replace('import_jobs', id, { ...job, state: 'succeeded', recipeId, sourceText: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
+        await releaseImportMedia(tx, job.sourceMediaId, job._id, deps.now());
+        await tx.replace('import_jobs', id, { ...job, state: 'succeeded', recipeId, sourceText: null, sourceMediaId: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, lease: null, leaseUntil: 0, updatedAt: deps.now() } satisfies Job);
       }), async () => { const job = await read(id); if (!job || !terminal(job.state)) throw new AppError('UNAVAILABLE'); });
     } catch (error) {
       const failure = error instanceof ImportFailure ? error : new ImportFailure(error instanceof AppError && error.code === 'QUOTA_EXCEEDED' ? 'BUDGET_EXCEEDED' : 'PROVIDER_UNAVAILABLE', false, usage);
@@ -155,6 +188,7 @@ export async function runImportWorker(deps: WorkerDeps): Promise<{ processed: nu
       }), async () => { await read(id); });
     }
   }
+  if (deps.storage && deps.reads.mediaCleanup && deps.now() - started < 105000) cleaned += await cleanupImportMedia({ database: deps.database, storage: deps.storage, now: deps.now, ids: await deps.reads.mediaCleanup(deps.now()) });
   return { processed, cleaned };
   async function recordUsage(id: string, result: UsageResult) {
     await commit(() => deps.database.transaction(tx => settle(tx, id, result)), async () => { await deps.database.transaction(tx => tx.get('ai_usage', id)); });

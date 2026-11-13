@@ -4,6 +4,8 @@ import type { DatabasePlatform } from 'home-kernel';
 import { createWeixinContentPort } from 'home-family';
 import { createImportReads, createJinaReader, createOpenRouterProvider, dnsResolver, importConfig, runImportWorker } from 'home-imports';
 import type { ImportReadPlatform } from 'home-imports';
+import { createStoragePort } from 'home-media';
+import type { StoragePlatform } from 'home-media';
 
 interface UserDatabase { collection(name: string): { doc(uid: string): { field(fields: Record<string, boolean>): { get(): Promise<unknown> } } } }
 // uniCloud invokes this private lifecycle method; no public worker method or URL exists.
@@ -16,6 +18,7 @@ export async function _timing() {
     const row: unknown = result.data[0]; return row && typeof row === 'object' && !Array.isArray(row) ? row as Record<string, unknown> : null;
   }
   return runImportWorker({ database, now, newId: () => randomBytes(16).toString('hex'), config: () => importConfig(process.env),
+    storage: createStoragePort((globalThis as unknown as { uniCloud: StoragePlatform }).uniCloud, now),
     reads: createImportReads(platform as unknown as ImportReadPlatform), provider: createOpenRouterProvider({ apiKey: () => process.env.OPENROUTER_API_KEY }),
     reader: createJinaReader({ apiKey: () => process.env.JINA_API_KEY }), resolve: dnsResolver,
     async activeUser(uid) { const row = await user(uid); return !!row && (row.status === undefined || row.status === 0); },

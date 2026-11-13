@@ -1,5 +1,5 @@
 {
   "name": "import-worker", "version": "0.0.0", "private": true,
-  "dependencies": { "home-kernel": "file:../common/home-kernel", "home-family": "file:../common/home-family", "home-imports": "file:../common/home-imports" },
+  "dependencies": { "home-kernel": "file:../common/home-kernel", "home-family": "file:../common/home-family", "home-imports": "file:../common/home-imports", "home-media": "file:../common/home-media" },
   "cloudfunction-config": { "keepRunningAfterReturn": false, "timeout": 120, "triggers": [{ "name": "import-every-minute", "type": "timer", "config": "0 * * * * * *" }] }
 }

@@ -7,7 +7,7 @@ export type MediaRecord = {
   purpose: MediaPurpose; mime: MediaMime; bytes: number; sha256: string | null; fileId: string | null; cloudPath: string | null;
   state: MediaState; review: MediaView['review']; uploadExpiresAt: number; createdAt: number; updatedAt: number;
   leaseUntil: number; attempt: string | null; traceId: string | null; reviewExpiresAt: number | null;
-  recipeId: string | null; cleanupAt: number | null; garbagePaths: string[];
+  recipeId: string | null; importJobId?: string | null; cleanupAt: number | null; garbagePaths: string[];
 };
 export function mediaView(row: MediaRecord): MediaView {
   return { mediaId: row._id, state: row.state, uploadExpiresAt: row.uploadExpiresAt, review: row.review, retryable: row.state === 'review-error' || row.state === 'uploaded' };

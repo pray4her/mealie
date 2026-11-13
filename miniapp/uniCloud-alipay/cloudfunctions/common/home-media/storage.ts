@@ -4,12 +4,19 @@ export interface StoragePlatform {
   uploadFile(input: { cloudPath: string; fileContent: Buffer }): Promise<{ fileID: string }>;
   downloadFile(input: { fileID: string }): Promise<{ fileContent?: Buffer }>;
   getTempFileURL(input: { fileList: string[]; maxAge: number }): Promise<{ fileList?: { fileID: string; tempFileURL?: string; status?: number }[] }>;
+  deleteFile(input: { fileList: string[] }): Promise<{ fileList?: { fileID: string; status?: number }[] }>;
 }
-export function createStoragePort(platform: StoragePlatform, now: () => number): StoragePort {
+export function createStoragePort(platform: StoragePlatform, now: () => number, spaceId = 'env-00jy7289et7b'): StoragePort {
   function scoped(id: string) {
     if (!/^cloud:\/\/[^/]+\/task07-private\/[a-f0-9]{32}\/[a-f0-9]{32}\.(?:png|jpg)$/.test(id)) throw new AppError('UNAVAILABLE');
   }
   return {
+    async remove(paths) {
+      const ids = [...new Set(paths.map(path => path.startsWith('cloud://') ? path : 'cloud://' + spaceId + '/' + path))];
+      for (const id of ids) { scoped(id); if (!id.startsWith('cloud://' + spaceId + '/')) throw new AppError('UNAVAILABLE'); }
+      const result = await platform.deleteFile({ fileList: ids });
+      if (!Array.isArray(result.fileList) || ids.some(id => !result.fileList!.some(row => row.fileID === id && (row.status === undefined || row.status === 0)))) throw new AppError('UNAVAILABLE');
+    },
     async upload(path, bytes) {
       if (!/^task07-private\/[a-f0-9]{32}\/[a-f0-9]{32}\.(?:png|jpg)$/.test(path)) throw new AppError('UNAVAILABLE');
       const result = await platform.uploadFile({ cloudPath: path, fileContent: bytes }); scoped(result.fileID);

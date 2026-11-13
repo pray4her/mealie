@@ -6,6 +6,7 @@ import { hash, jobId, jobView, terminal } from './model';
 import type { ImportConfig, Job } from './model';
 import { reserve, settleCheckpoint } from './quota';
 import { normalizePublicUrl } from './urls';
+import { requireImportMedia, releaseImportMedia, importMediaExpiry } from 'home-media';
 export { runImportWorker } from './worker';
 export { createOpenRouterProvider } from './provider';
 export { createImportReads } from './reads';
@@ -61,20 +62,24 @@ export function createImportsService(deps: { database: DatabasePort; now(): numb
     submit(raw) { return call(async () => {
       const input = exact(raw, ['requestId', 'familyId', 'generation', 'source']); mutationScope(input, ctx);
       const isUrl = !!input.source && typeof input.source === 'object' && (input.source as Record<string, unknown>).kind === 'url';
-      const sourceText = isUrl ? null : textSource(input.source);
+      const isImage = !!input.source && typeof input.source === 'object' && (input.source as Record<string, unknown>).kind === 'image';
+      const sourceMediaId = isImage ? validId(exact(input.source, ['kind', 'mediaId']).mediaId) : null;
+      const sourceText = isUrl || isImage ? null : textSource(input.source);
       const sourceUrl = isUrl ? urlSource(input.source) : null;
-      const id = jobId(ctx.uid, ctx.familyId, ctx.generation, (input as ImportSubmit).requestId); const payloadHash = isUrl ? hash(['url', sourceUrl]) : hash(['text', sourceText]);
+      const id = jobId(ctx.uid, ctx.familyId, ctx.generation, (input as ImportSubmit).requestId); const payloadHash = isImage ? hash(['image', sourceMediaId]) : isUrl ? hash(['url', sourceUrl]) : hash(['text', sourceText]);
       async function previous(tx: TransactionPort) {
         await confirm(tx); const row = await tx.get<Job>('import_jobs', id);
         if (row && (row.uid !== ctx.uid || row.familyId !== ctx.familyId || row.generation !== ctx.generation || row.payloadHash !== payloadHash)) throw new AppError('CONFLICT'); return row;
       }
       return recover(() => deps.database.transaction(async tx => {
         const replay = await previous(tx); if (replay) return jobView(replay);
-        const config = deps.config(); if (!config.enabled || (isUrl && !config.urlEnabled)) throw new AppError('UNAVAILABLE');
+        const config = deps.config(); if (!config.enabled || (isUrl && !config.urlEnabled) || (isImage && !config.imageEnabled)) throw new AppError('UNAVAILABLE');
         const current = await confirm(tx); await guardMutation(tx, current); const timestamp = deps.now();
+        const media = sourceMediaId ? await requireImportMedia(tx, ctx, sourceMediaId, timestamp) : null;
         const taskBuckets = await reserve(tx, ctx, timestamp, config, true);
+        if (media) await tx.replace('media_files', media._id, { ...media, importJobId: id, cleanupAt: importMediaExpiry(media), updatedAt: timestamp });
         const job: Job = { _id: id, uid: ctx.uid, familyId: ctx.familyId, generation: ctx.generation, requestId: input.requestId as string, payloadHash,
-          state: 'queued', attempts: 0, recipeId: null, error: null, createdAt: timestamp, updatedAt: timestamp, sourceText, sourceKind: isUrl ? 'url' : 'text', sourceUrl, sourceWarnings: null, purgeAt: timestamp + 7 * 86400000,
+          state: 'queued', attempts: 0, recipeId: null, error: null, createdAt: timestamp, updatedAt: timestamp, sourceText, sourceKind: isImage ? 'image' : isUrl ? 'url' : 'text', sourceMediaId, sourceUrl, sourceWarnings: null, purgeAt: media ? importMediaExpiry(media) : timestamp + 7 * 86400000,
           nextRunAt: timestamp, lease: null, leaseUntil: 0, candidate: null, usageId: null, taskBuckets, visitedAt: timestamp };
         await tx.insert('import_jobs', id, job); return jobView(job);
       }), () => deps.database.transaction(async tx => { const row = await previous(tx); if (!row) throw new AppError('UNAVAILABLE'); return jobView(row); }));
@@ -91,7 +96,8 @@ export function createImportsService(deps: { database: DatabasePort; now(): numb
         const job = await own(tx, id); if (terminal(job.state)) return jobView(job);
         await guardMutation(tx, await confirm(tx));
         await settleCheckpoint(tx, job);
-        const result: Job = { ...job, state: 'cancelled', sourceText: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, updatedAt: deps.now(), lease: null, leaseUntil: 0 };
+        await releaseImportMedia(tx, job.sourceMediaId, job._id, deps.now());
+        const result: Job = { ...job, state: 'cancelled', sourceText: null, sourceMediaId: null, sourceUrl: null, sourceWarnings: null, candidate: null, purgeAt: 0, updatedAt: deps.now(), lease: null, leaseUntil: 0 };
         await tx.replace('import_jobs', id, result); return jobView(result);
       }), read);
     }); },

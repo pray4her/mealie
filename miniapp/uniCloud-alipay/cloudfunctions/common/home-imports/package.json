@@ -1,4 +1,4 @@
 {
   "name": "home-imports", "version": "0.0.0", "private": true, "main": "index.ts",
-  "dependencies": { "home-contracts": "file:../home-contracts", "home-kernel": "file:../home-kernel", "home-family": "file:../home-family", "home-recipes": "file:../home-recipes" }
+  "dependencies": { "home-contracts": "file:../home-contracts", "home-kernel": "file:../home-kernel", "home-family": "file:../home-family", "home-recipes": "file:../home-recipes", "home-media": "file:../home-media" }
 }

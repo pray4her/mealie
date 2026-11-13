@@ -1,0 +1,3 @@
+[
+  { "IndexName": "import_cleanup_id", "MgoKeySchema": { "MgoIndexKeys": [{ "Name": "purpose", "Direction": "1" }, { "Name": "cleanupAt", "Direction": "1" }, { "Name": "_id", "Direction": "1" }], "MgoIsUnique": false } }
+]

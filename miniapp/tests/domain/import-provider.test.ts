@@ -1,8 +1,16 @@
 import { expect, test } from 'vitest';
 import { createOpenRouterProvider } from '../../uniCloud-alipay/cloudfunctions/common/home-imports/provider';
 import type { HttpRequest } from '../../uniCloud-alipay/cloudfunctions/common/home-imports/provider';
+import { png } from '../support/media-fixtures';
 const recipe = { title: '盐汤', description: null, baseServings: null, prepMinutes: 0, cookMinutes: null, ingredients: [{ raw: '盐适量', name: '盐', quantity: null, unit: null, note: null }], steps: ['煮'], tags: [] };
 const response = (content: unknown = { outcome: 'recipe', recipe }, finish_reason = 'stop') => JSON.stringify({ id: 'gen-request-1', usage: { prompt_tokens: 200, completion_tokens: 100, cost: 0.003 }, choices: [{ finish_reason, message: { content: JSON.stringify(content) } }] });
+test('vision_request_contains_verified_image_data_and_preserves_unknown_quantity_and_unit', async () => {
+  let payload: Record<string, unknown> = {};
+  const provider = createOpenRouterProvider({ apiKey: () => 'fixture', request: async body => { payload = JSON.parse(body); return { status: 200, body: response() }; } });
+  const result = await provider.parse({ kind: 'image', mime: 'image/png', base64: png.toString('base64') });
+  expect(payload.messages).toMatchObject([{ role: 'system' }, { role: 'user', content: [{ type: 'text' }, { type: 'image_url', image_url: { url: 'data:image/png;base64,' + png.toString('base64') } }] }]);
+  expect(result.recipe.ingredients[0]).toMatchObject({ raw: '盐适量', quantity: null, unit: null });
+});
 test('provider_pins_model_strict_schema_and_passes_user_text_only_as_data', async () => {
   let payload: Record<string, unknown> = {};
   const provider = createOpenRouterProvider({ apiKey: () => 'fixture', request: async body => { payload = JSON.parse(body); return { status: 200, body: response() }; } });

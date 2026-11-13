@@ -38,13 +38,23 @@ test('storage_adapter_scopes_writes_checks_responses_and_reports_actual_expiry',
   const path = 'task07-private/' + 'a'.repeat(32) + '/' + 'b'.repeat(32) + '.png'; const id = 'cloud://mock/' + path; const calls: unknown[] = [];
   let url = 'https://mock.invalid/file?expire_at=' + (now / 1000 + 900);
   const platform: StoragePlatform = { async uploadFile(input) { calls.push(input.cloudPath); return { fileID: id }; }, async downloadFile() { return { fileContent: png }; },
-    async getTempFileURL(input) { calls.push(input); return { fileList: [{ fileID: id, tempFileURL: url }] }; } };
+    async getTempFileURL(input) { calls.push(input); return { fileList: [{ fileID: id, tempFileURL: url }] }; }, async deleteFile(input) { return { fileList: input.fileList.map(fileID => ({ fileID, status: 0 })) }; } };
   const adapter = createStoragePort(platform, () => now);
   expect(await adapter.upload(path, png)).toBe(id); expect(await adapter.read(id)).toEqual(png);
   expect(await adapter.sign(id)).toEqual({ url, expiresAt: now + 900000 });
   expect(calls).toContainEqual({ fileList: [id], maxAge: 600 });
   for (const bad of ['https://attacker.invalid/x', 'cloud://mock/elsewhere/x']) await expect(adapter.read(bad)).rejects.toBeDefined();
   for (const bad of ['https://mock.invalid/no-expiry', 'https://mock.invalid/?expire_at=1', 'http://mock.invalid/?expire_at=2000000000']) { url = bad; await expect(adapter.sign(id)).rejects.toBeDefined(); }
+});
+test('storage_cleanup_reconstructs_orphan_ids_only_in_trusted_space_and_validates_each_result', async () => {
+  const path = 'task07-private/' + 'a'.repeat(32) + '/' + 'b'.repeat(32) + '.png'; const id = 'cloud://mock/' + path; const removed: string[][] = [];
+  let failed = false;
+  const platform: StoragePlatform = { async uploadFile() { return { fileID: id }; }, async downloadFile() { return { fileContent: png }; }, async getTempFileURL() { return {}; },
+    async deleteFile(input) { removed.push(input.fileList); return { fileList: input.fileList.map(fileID => ({ fileID, status: failed ? 1 : 0 })) }; } };
+  const adapter = createStoragePort(platform, () => now, 'mock');
+  await adapter.remove([path, id]); expect(removed).toEqual([[id]]);
+  for (const bad of ['cloud://other/' + path, '../' + path, 'task07-private/another.png']) await expect(adapter.remove([bad])).rejects.toBeDefined();
+  failed = true; await expect(adapter.remove([id])).rejects.toBeDefined();
 });
 test('weixin_v2_review_uses_server_openid_and_does_not_load_sdk_when_disabled', async () => {
   const calls: unknown[] = [];

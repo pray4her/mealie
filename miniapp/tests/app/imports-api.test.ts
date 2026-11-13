@@ -16,7 +16,7 @@ test('text_limit_uses_utf8_bytes_and_invalid_input_never_reaches_transport', asy
   const base = { requestId: 'imports-api-submit-01', familyId: 'home', generation: 'generation' };
   for (const text of ['', '\uD800', '字'.repeat(5462), 'bad\u0000text']) await expect(async () => api.submit({ ...base, source: { kind: 'text', text } })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
   expect(invoke).not.toHaveBeenCalled();
-  for (const source of [{ kind: 'image' as const, fileId: 'file' }]) await expect(async () => api.submit({ ...base, source })).rejects.toMatchObject({ code: 'UNAVAILABLE' });
+  for (const mediaId of ['file', 'cloud://space/file.png', 'https://example.com/file.png']) await expect(async () => api.submit({ ...base, source: { kind: 'image', mediaId } })).rejects.toMatchObject({ code: 'INVALID_INPUT' });
   await api.submit({ ...base, source: { kind: 'text', text: '字'.repeat(5461) } }); expect(invoke).toHaveBeenCalledTimes(1);
 });
 

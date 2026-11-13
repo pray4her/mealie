@@ -26,6 +26,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     async upload(path, bytes) { const id = 'cloud://mock/' + path; files.set(id, Buffer.from(bytes)); return id; },
     async read(id) { const bytes = files.get(id); if (!bytes) throw new AppError('NOT_FOUND'); return Buffer.from(bytes); },
     async sign(id) { if (!files.has(id)) throw new AppError('NOT_FOUND'); return { url: 'https://mock.invalid/media/' + encodeURIComponent(id) + '?expire_at=' + Math.floor((now + 600000) / 1000), expiresAt: now + 600000 }; },
+    async remove(paths) { for (const path of paths) files.delete(path.startsWith('cloud://') ? path : 'cloud://mock/' + path); },
   };
   let nextId = 0;
   const nicknames = new Map<string, string>();
@@ -98,10 +99,11 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
   };
   return {
     async runImports() { return runImportWorker({ database: memory.database, now: () => now, newId: () => (++nextId).toString(16).padStart(32, '0'), config: importsConfig,
-      reader: options.importsReader, resolve: options.importsResolver,
+      reader: options.importsReader, resolve: options.importsResolver, storage,
       reads: {
         async due(time) { return (await memory.rows<Job>('import_jobs')).filter(row => ['queued', 'running'].includes(row.state) && row.nextRunAt <= time).sort((a, b) => a.nextRunAt - b.nextRunAt).slice(0, 4).map(row => row._id); },
         async expired(time) { return (await memory.rows<Job>('import_jobs')).filter(row => row.purgeAt > 0 && row.purgeAt <= time).slice(0, 20).map(row => row._id); },
+        async mediaCleanup(time) { return (await memory.rows<import('../../uniCloud-alipay/cloudfunctions/common/home-media').MediaRecord>('media_files')).filter(row => row.purpose === 'import-input' && row.cleanupAt !== null && row.cleanupAt <= time).sort((a, b) => a.cleanupAt! - b.cleanupAt!).slice(0, 20).map(row => row._id); },
       },
       provider: options.importsProvider ?? { async parse() { return { recipe: { title: '盐汤', description: null, baseServings: null, prepMinutes: null, cookMinutes: null,
         ingredients: [{ raw: '盐适量', name: '盐', quantity: null, unit: null, note: null }], steps: ['加水煮开。'], tags: [] }, usage: { inputTokens: 20, outputTokens: 40, costUsd: 0.001, providerRequestId: 'fixture-request' } }; } },

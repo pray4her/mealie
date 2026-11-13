@@ -11,34 +11,39 @@ import { useRecipesPage } from '../../features/recipes/use-recipes-page';
 import { textInput, urlInput } from '../../features/imports/api';
 import { useFieldIssues } from '../../shared/use-field-issues';
 import { useLeaveGuard } from '../../shared/use-leave-guard';
+import { useImportImage } from '../../features/imports/use-import-image';
+import { errorCode } from '../../shared/errors';
 const { rootFontSize } = usePageTypography();
-const method = ref<'text' | 'url'>('text');
+const method = ref<'text' | 'url' | 'image'>('text');
 const text = ref(''); const baseline = ref(''); const url = ref(''); const urlBaseline = ref(''); const details = ref(false);
 const acknowledgedJob = ref('');
 const fields = reactive(useFieldIssues()); const form = ref<FormInstance>(); let initializedScope = ''; let initializedUid: string | undefined;
 let submittingSource: ImportInput | undefined; let submittedRequest: { requestId: string; source: ImportInput } | null = null;
 const sameSource = (a: ImportInput, b: ImportInput) => JSON.stringify(a) === JSON.stringify(b);
-const currentSource = (): ImportInput => method.value === 'text' ? { kind: 'text', text: text.value } : { kind: 'url', url: url.value };
+const currentSource = (): ImportInput => method.value === 'text' ? { kind: 'text', text: text.value } : method.value === 'url' ? { kind: 'url', url: url.value } : { kind: 'image', mediaId: image.item.value?.mediaId || '' };
 const page = useRecipesPage(async () => {
   const nextScope = scope();
   const saved = page.imports.restore();
   if (initializedScope !== nextScope) {
     const pending = saved?.kind === 'pending' ? saved.input : null;
-    method.value = pending?.source.kind === 'url' ? 'url' : 'text';
+    method.value = pending?.source.kind ?? 'text';
     text.value = pending?.source.kind === 'text' ? pending.source.text : '';
     url.value = pending?.source.kind === 'url' ? pending.source.url : '';
     baseline.value = text.value; urlBaseline.value = url.value; initializedScope = nextScope; initializedUid = page.auth.identity.value?.uid;
     submittedRequest = pending ? { requestId: pending.requestId, source: pending.source } : null;
+    if (pending?.source.kind === 'image') image.restore(pending.source.mediaId);
   }
 });
+const image = useImportImage(page);
+const { item: imageItem, path: imagePath, message: imageMessage, busy: imageBusy, status: imageStatus, canSubmit: imageCanSubmit, canRetry: imageCanRetry } = image;
 const { confirmed, busy, message, imports } = page; const { recovery } = imports;
 const scope = () => { const view = page.family.view.value; return view ? view.uid + ':' + view.familyId + ':' + view.generation : ''; };
-function reset() { method.value = 'text'; text.value = ''; baseline.value = ''; url.value = ''; urlBaseline.value = ''; initializedScope = ''; acknowledgedJob.value = ''; submittedRequest = null; submittingSource = undefined; fields.errors = {}; fields.focused = ''; }
+function reset() { method.value = 'text'; text.value = ''; baseline.value = ''; url.value = ''; urlBaseline.value = ''; image.clear(); initializedScope = ''; acknowledgedJob.value = ''; submittedRequest = null; submittingSource = undefined; fields.errors = {}; fields.focused = ''; }
 watch(recovery, saved => {
   if (saved?.kind === 'pending' && submittingSource && sameSource(saved.input.source, submittingSource)) submittedRequest = { requestId: saved.input.requestId, source: saved.input.source };
   else if (saved?.kind === 'job' && submittedRequest) {
     if (sameSource(currentSource(), submittedRequest.source)) {
-      if (submittedRequest.source.kind === 'text') { text.value = ''; baseline.value = ''; } else { url.value = ''; urlBaseline.value = ''; }
+      if (submittedRequest.source.kind === 'text') { text.value = ''; baseline.value = ''; } else if (submittedRequest.source.kind === 'url') { url.value = ''; urlBaseline.value = ''; } else image.clear();
       fields.errors = {}; acknowledgedJob.value = saved.id;
     }
     submittedRequest = null;
@@ -48,15 +53,17 @@ watch([page.auth.phase, () => page.auth.identity.value?.uid, page.family.phase, 
   if (phase === 'anonymous' || phase === 'signing-out' || initializedScope && (uid && uid !== initializedUid || familyPhase === 'ready' && scope() !== initializedScope)) reset();
 }, { flush: 'sync' });
 onUnload(reset);
-const leave = useLeaveGuard(() => text.value !== baseline.value || url.value !== urlBaseline.value, () => (!initializedScope || page.auth.phase.value === 'unavailable' || page.auth.identity.value?.uid === initializedUid)
+const leave = useLeaveGuard(() => text.value !== baseline.value || url.value !== urlBaseline.value || !!imageItem.value, () => (!initializedScope || page.auth.phase.value === 'unavailable' || page.auth.identity.value?.uid === initializedUid)
   && (page.family.phase.value !== 'ready' || !initializedScope || scope() === initializedScope), () => initializedScope);
 function issues() {
+  if (method.value === 'image') return imageCanSubmit.value ? [] : [{ path: ['image'], message: '请先选择一张菜谱图片，完成上传并通过审核。' }];
   try { if (method.value === 'text') textInput(text.value); else urlInput(url.value); return []; }
   catch { return [{ path: [method.value], message: method.value === 'text' ? '请输入一道菜的有效原文，不超过 16 KiB（中文约 5400 字）。' : '请输入公开可访问的菜谱网址（http/https，不超过 2048 字符）。' }]; }
 }
 const schema: FormSchema = { validate: issues };
 function changed() { acknowledgedJob.value = ''; fields.clear(method.value); form.value?.reset(); }
-function choose(next: 'text' | 'url') { if (method.value === next) return; method.value = next; acknowledgedJob.value = ''; fields.errors = {}; fields.focused = ''; form.value?.reset(); }
+function choose(next: 'text' | 'url' | 'image') { if (method.value === next) return; method.value = next; acknowledgedJob.value = ''; fields.errors = {}; fields.focused = ''; form.value?.reset(); }
+function chooseImage() { changed(); image.choose(); }
 function openAcknowledgedJob() { if (page.isCurrent() && acknowledgedJob.value) uni.navigateTo({ url: '/pages/imports/status?id=' + acknowledgedJob.value }); }
 async function validate() { const before = scope(); await form.value?.validate(method.value); if (page.isCurrent() && before === scope()) fields.set(issues(), () => method.value); }
 function submit(replay = false) { void page.act(async current => {
@@ -66,9 +73,13 @@ function submit(replay = false) { void page.act(async current => {
   submittingSource = source;
   let job;
   try { job = await imports.submit(source); }
+  catch (error) {
+    if (source.kind === 'image' && current() && ['INVALID_INPUT', 'NOT_FOUND', 'CONFLICT'].includes(errorCode(error))) { image.clear(); fields.errors.image = '图片已失效或不可用于此任务，请重新选择并上传。'; return; }
+    throw error;
+  }
   finally { submittingSource = undefined; }
   if (current()) {
-    if (method.value === 'text') { text.value = ''; baseline.value = ''; } else { url.value = ''; urlBaseline.value = ''; }
+    if (method.value === 'text') { text.value = ''; baseline.value = ''; } else if (method.value === 'url') { url.value = ''; urlBaseline.value = ''; } else image.clear();
     leave.disable(); uni.redirectTo({ url: '/pages/imports/status?id=' + job.id });
   }
 }); }
@@ -90,7 +101,7 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
         AI 导入
       </text>
       <text class="notice">
-        粘贴一道菜的文字或提供公开菜谱网址，交由第三方 AI 处理；解析成功后自动保存到家庭菜谱。请勿提供隐私或敏感信息。
+        提供一道菜的文字、菜谱图片或公开网址，交由第三方 AI 处理；解析成功后自动保存到家庭菜谱。请勿提供隐私或敏感信息。
       </text>
       <HomeAction
         :label="details ? '收起处理说明' : '查看处理与保留说明'"
@@ -105,7 +116,8 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
         v-if="details"
         class="notice"
       >
-        <text>仅支持一道菜；图片导入暂不可用。网址导入先经 Jina Reader 读取公开网页，再交 OpenRouter 解析；需登录、付费或拒绝访问的网页无法读取，失败后可粘贴正文重试。原文或网页正文不超过 16 KiB，云端最多保留七天。</text>
+        <text>仅支持一道菜。图片每次一张 JPEG/PNG，不超过 1 MiB，须包含可读的食材和做法；上传后先进行微信内容审核，确认导入后才交 OpenRouter 识别。只有成品照片无法还原菜谱，未知数量和单位保留为空；原图不会作为菜谱封面。</text>
+        <text>网址先经 Jina Reader 读取公开网页，再交 OpenRouter 解析；需登录、付费或拒绝访问的网页无法读取。文字不超过 16 KiB，原始素材最多保留七天，任务结束后提前清理。</text>
         <text>可能等待约一分钟开始；取得任务后，关闭页面后任务继续。AI 可能出错，请在自动保存后核对并编辑。</text>
       </view>
       <view
@@ -138,6 +150,18 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
           粘贴正文
         </HomeAction>
         <HomeAction
+          label="图片导入"
+          data-method-image
+          type="info"
+          variant="text"
+          :pressed="method === 'image'"
+          :disabled="busy || imageBusy || recovery?.kind === 'pending'"
+          :custom-class="method === 'image' ? 'scope-tab scope-tab--active' : 'scope-tab'"
+          @click="choose('image')"
+        >
+          图片导入
+        </HomeAction>
+        <HomeAction
           label="网址导入"
           data-method-url
           type="info"
@@ -152,7 +176,7 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
       </view>
       <wd-form
         ref="form"
-        :model="{ text, url }"
+        :model="{ text, url, image: imageItem?.mediaId || '' }"
         :schema="schema"
         error-type="none"
         :disabled="busy || recovery?.kind === 'pending'"
@@ -195,7 +219,7 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
           </text>
         </wd-form-item>
         <wd-form-item
-          v-else
+          v-else-if="method === 'url'"
           prop="url"
           layout="vertical"
           custom-class="home-form-item"
@@ -231,6 +255,96 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
             {{ fields.errors.url }}
           </text>
         </wd-form-item>
+        <wd-form-item
+          v-else
+          prop="image"
+          layout="vertical"
+          custom-class="home-form-item"
+        >
+          <view id="image">
+            <text class="field-label">
+              菜谱照片或截图
+            </text>
+            <text class="helper">
+              一张图片，包含一道菜的食材和做法。JPEG/PNG，不超过 1 MiB。
+            </text>
+            <image
+              v-if="imagePath"
+              data-import-preview
+              class="import-preview"
+              :src="imagePath"
+              mode="aspectFit"
+              aria-label="所选菜谱图片预览"
+            />
+            <HomeAction
+              v-if="imagePath"
+              label="查看所选原图"
+              type="info"
+              variant="text"
+              @click="image.preview"
+            >
+              查看原图
+            </HomeAction>
+            <HomeAction
+              label="选择菜谱图片"
+              data-choose-import-image
+              type="info"
+              :disabled="busy || imageBusy || recovery?.kind === 'pending'"
+              @click="chooseImage"
+            >
+              {{ imageItem ? '重新选择图片' : '从相册选择或拍照' }}
+            </HomeAction>
+            <text
+              v-if="imageStatus"
+              aria-role="status"
+            >
+              {{ imageStatus }}
+            </text>
+            <text
+              v-if="imageItem?.review === 'mock'"
+              class="helper"
+            >
+              模拟审核，仅用于本地测试
+            </text>
+            <HomeAction
+              v-if="imageItem"
+              label="刷新图片审核状态"
+              data-refresh-import-image
+              type="info"
+              variant="text"
+              :disabled="busy || imageBusy"
+              @click="image.refresh"
+            >
+              刷新状态
+            </HomeAction>
+            <HomeAction
+              v-if="imageCanRetry"
+              label="重试图片上传或审核"
+              data-retry-import-image
+              type="info"
+              variant="text"
+              :disabled="busy || imageBusy || recovery?.kind === 'pending'"
+              @click="image.retry"
+            >
+              重试图片处理
+            </HomeAction>
+            <text
+              v-if="imageMessage"
+              class="field-error"
+              aria-role="alert"
+            >
+              {{ imageMessage }}
+            </text>
+            <text
+              v-if="fields.errors.image"
+              id="image-error"
+              class="field-error"
+              aria-role="alert"
+            >
+              {{ fields.errors.image }}
+            </text>
+          </view>
+        </wd-form-item>
       </wd-form>
       <text
         v-if="recovery?.kind === 'pending'"
@@ -255,7 +369,7 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
         v-else
         label="同意第三方 AI 处理并导入"
         data-submit
-        :disabled="busy"
+        :disabled="busy || imageBusy || method === 'image' && !imageCanSubmit"
         :loading="busy"
         @click="submit()"
       >
@@ -303,5 +417,6 @@ async function back() { if (await leave.confirm()) uni.switchTab({ url: '/pages/
 </template>
 <style scoped>
 .home-textarea { min-height: 14rem; }
-.method-tabs { display: flex; align-items: stretch; gap: 24px; border-bottom: 1px solid var(--home-line); margin-top: 16px; }
+.method-tabs { display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px 24px; border-bottom: 1px solid var(--home-line); margin-top: 16px; }
+.import-preview { display: block; width: 100%; height: 12rem; margin: 12px 0; background: var(--home-bg); }
 </style>

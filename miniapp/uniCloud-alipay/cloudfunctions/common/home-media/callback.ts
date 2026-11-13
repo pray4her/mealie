@@ -23,7 +23,7 @@ export async function receiveReview(deps: { database: DatabasePort; now(): numbe
       const current = accountActive && ctx?.familyId === row.familyId && ctx.generation === row.generation;
       if (current && ctx) await guardMutation(tx, ctx);
       const state = !current ? 'failed' : row.reviewExpiresAt === null || row.reviewExpiresAt <= deps.now() || verdict === 'error' ? 'review-error' : verdict === 'pass' ? 'ready' : 'rejected';
-      await tx.replace('media_files', row._id, { ...row, state, updatedAt: deps.now(), cleanupAt: deps.now() + 86_400_000 });
+      await tx.replace('media_files', row._id, { ...row, state, updatedAt: deps.now(), cleanupAt: row.purpose === 'import-input' && state === 'ready' ? row.createdAt + 7 * 86_400_000 : deps.now() + 86_400_000 });
     }
     await tx.replace('media_audit_traces', id, { ...trace, verdict });
   });

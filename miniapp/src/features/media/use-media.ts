@@ -6,6 +6,7 @@ import type { SessionStorage } from '../../shared/session-boundary';
 import { AppError, errorCode } from '../../shared/errors';
 import { object, parseImagesMutation, validId } from '../recipes/validation';
 import { parseMediaRequest } from './api';
+import { readImageSelection } from './image-file';
 
 type UploadIntent = { input: MediaUploadRequest; mediaId: string | null };
 type Draft = { familyId: string; generation: string; recipeId: string; imageIds: string[]; requests: UploadIntent[]; pending: RecipeImagesMutation | null };
@@ -102,17 +103,10 @@ export function createMediaController(options: { api: MediaApi; recipes: Recipes
       ctx = fresh;
     }
     if (!draft || draft.pending || draft.imageIds.length + draft.requests.filter(request => request.mediaId === null).length >= 20) throw new AppError('CONFLICT');
-    const path = chosen.tempFilePaths[0]; const file = Array.isArray(chosen.tempFiles) ? chosen.tempFiles[0] : null;
-    if (!path) return;
-    if (!file || typeof file === 'string' || !Number.isSafeInteger(file.size) || file.size < 1 || file.size > 1_048_576) throw new AppError('INVALID_INPUT');
-    const base64 = await new Promise<string>((resolve, reject) => uni.getFileSystemManager().readFile({ filePath: path, encoding: 'base64',
-      success: result => typeof result.data === 'string' && result.data.length <= 1_398_104 ? resolve(result.data) : reject(new AppError('INVALID_INPUT')),
-      fail: () => reject(new AppError('UNAVAILABLE')) }));
+    const { base64, mime, bytes } = await readImageSelection(chosen);
     if (!active(ctx) || !isCurrent() || !draft) return;
-    const mime = base64.startsWith('iVBORw0KGgo') ? 'image/png' : base64.startsWith('/9j/') ? 'image/jpeg' : null;
-    if (!mime) throw new AppError('INVALID_INPUT');
     const requestId = await options.newRequestId(); if (!active(ctx) || !isCurrent() || !draft) return;
-    const upload: UploadIntent = { input: { requestId, familyId: ctx.familyId, generation: ctx.generation, purpose: 'recipe-image', mime, bytes: file.size }, mediaId: null };
+    const upload: UploadIntent = { input: { requestId, familyId: ctx.familyId, generation: ctx.generation, purpose: 'recipe-image', mime, bytes }, mediaId: null };
     draft.requests.push(upload); persist(ctx);
     const requested = await options.api.requestUpload(upload.input); if (!active(ctx) || !isCurrent() || !draft) return;
     upload.mediaId = requested.mediaId; draft.imageIds.push(requested.mediaId); persist(ctx); items.value.push(requested);

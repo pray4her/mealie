@@ -62,7 +62,7 @@ export function createImportsController({ api, auth, family, storage, newRequest
         // Acknowledgment removes the original text; only the scoped recovery ID remains.
         const saved: Recovery = { kind: 'job', id: result.id }; storage.set(ctx.key, saved); recovery.value = saved; job.value = result; return result;
       } catch (error) {
-        if (active(ctx) && ['CONFLICT', 'INVALID_INPUT'].includes(errorCode(error))) { storage.remove(ctx.key); recovery.value = null; } throw error;
+        if (active(ctx) && (['CONFLICT', 'INVALID_INPUT'].includes(errorCode(error)) || intent.input.source.kind === 'image' && errorCode(error) === 'NOT_FOUND')) { storage.remove(ctx.key); recovery.value = null; } throw error;
       }
     }).finally(() => { if (flight === promise) flight = null; });
     flight = promise; return promise;

@@ -6,11 +6,12 @@ import { object, validId } from '../recipes/validation';
 import { membershipInput } from '../family/membership-validation';
 
 export const importErrors: Record<ImportError, string> = {
-  UNRECOGNIZED: '未能识别一道完整菜谱，请补充食材和做法后重新导入。', MULTIPLE_RECIPES: '文本包含多道菜，请每次只导入一道菜。',
-  INVALID_OUTPUT: 'AI 返回的菜谱格式不符合要求，请调整原文后重新导入。', TRUNCATED: 'AI 结果过长被截断，请缩短原文后重新导入。',
-  PROVIDER_UNAVAILABLE: 'AI 服务暂时不可用，请稍后重新导入。', AUDIT_REJECTED: '菜谱未通过内容审核，请修改原文后重新导入。',
+  UNRECOGNIZED: '未能识别一道完整菜谱，请提供包含食材和做法的清晰素材后重新导入。', MULTIPLE_RECIPES: '素材包含多道菜，请每次只导入一道菜。',
+  INVALID_OUTPUT: 'AI 返回的菜谱格式不符合要求，请调整素材后重新导入。', TRUNCATED: 'AI 结果过长被截断，请减少内容或分开导入。',
+  PROVIDER_UNAVAILABLE: 'AI 服务暂时不可用，请稍后重新导入。', AUDIT_REJECTED: '菜谱未通过内容审核，请修改内容或更换素材后重新导入。',
   AUDIT_UNAVAILABLE: '内容审核暂时不可用，请重新打开小程序后重新导入。', AUDIT_VISIT_REQUIRED: '微信审核需要近两小时访问过小程序，请现在重新导入。',
-  MEMBERSHIP_CHANGED: '家庭成员身份已变化，任务无法继续，请确认家庭后重新导入。', BUDGET_EXCEEDED: 'AI 预算已用尽，请稍后重新导入。', INPUT_EXPIRED: '任务原文已到七天保留上限，请重新导入。',
+  MEMBERSHIP_CHANGED: '家庭成员身份已变化，任务无法继续，请确认家庭后重新导入。', BUDGET_EXCEEDED: 'AI 预算已用尽，请稍后重新导入。', INPUT_EXPIRED: '任务原始素材已到保留上限，请重新导入。',
+  IMAGE_UNREADABLE: '图片无法读取或已损坏，请重新选择清晰完整的菜谱图片。',
   SOURCE_UNREADABLE: '无法读取这个网址（可能需登录、付费或拒绝访问）。请复制网页正文，用“粘贴正文”重新导入。',
 };
 export function textInput(value: unknown): string {
@@ -33,7 +34,7 @@ export function urlInput(value: unknown): string {
 }
 export function importSource(raw: unknown): ImportInput {
   if (raw && typeof raw === 'object' && 'kind' in raw) {
-    if (raw.kind === 'image') throw new AppError('UNAVAILABLE');
+    if (raw.kind === 'image') { const row = object(raw, ['kind', 'mediaId']); return { kind: 'image', mediaId: validId(row.mediaId) }; }
     if (raw.kind === 'url') { const row = object(raw, ['kind', 'url']); return { kind: 'url', url: urlInput(row.url) }; }
   }
   const row = object(raw, ['kind', 'text']);

@@ -14,11 +14,13 @@ export { handleReviewNotification, receiveReview } from './callback';
 export type { MediaRecord } from './model';
 export { mediaRecord } from './model';
 export { bindRecipeMedia } from './binding';
+export { requireImportMedia, releaseImportMedia, importMediaExpiry, readImportImage, cleanupImportMedia } from './imports';
 
 export interface StoragePort {
   upload(path: string, bytes: Buffer): Promise<string>;
   read(fileId: string): Promise<Buffer>;
   sign(fileId: string): Promise<Omit<MediaLink, 'mediaId'>>;
+  remove(paths: string[]): Promise<void>;
 }
 export interface MediaReviewPort { mode: MediaView['review']; submit(row: MediaRecord, url: string): Promise<string> }
 export interface MediaDeps {
@@ -61,7 +63,7 @@ export function createMediaService(deps: MediaDeps, ctx: FamilyContext): MediaAp
         purpose: input.purpose as MediaRecord['purpose'], mime: input.mime as MediaRecord['mime'], bytes: input.bytes as number,
         sha256: null, fileId: null, cloudPath: null, state: 'requested', review: deps.review.mode, uploadExpiresAt: deps.now() + 300_000,
         createdAt: deps.now(), updatedAt: deps.now(), leaseUntil: 0, attempt: null, traceId: null, reviewExpiresAt: null, recipeId: null,
-        cleanupAt: deps.now() + 86_400_000, garbagePaths: [] };
+        cleanupAt: deps.now() + (input.purpose === 'import-input' ? 7 : 1) * 86_400_000, garbagePaths: [] };
       await tx.insert('media_files', id, row); return mediaView(row);
     });
     try { return await finish(await execute()); }
@@ -164,7 +166,7 @@ export function createMediaService(deps: MediaDeps, ctx: FamilyContext): MediaAp
   async function read(raw: unknown): Promise<MediaLink> {
     const input = await prepare(raw, ['mediaId']); const id = mediaId(input.mediaId);
     const row = await deps.database.transaction(async tx => { await confirm(tx); return visibleMedia(tx, ctx, id); });
-    if (row.state !== 'ready' || !row.fileId) throw new AppError('INVALID_INPUT');
+    if (row.purpose !== 'recipe-image' || row.state !== 'ready' || !row.fileId) throw new AppError('INVALID_INPUT');
     const link = await deps.storage.sign(row.fileId);
     await deps.revalidateIdentity();
     await deps.database.transaction(async tx => { await confirm(tx); const current = await visibleMedia(tx, ctx, id); if (current.state !== 'ready' || current.fileId !== row.fileId) throw new AppError('CONFLICT'); });

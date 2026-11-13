@@ -74,7 +74,7 @@ test('timed_out_review_requires_explicit_retry_and_late_trace_cannot_win', async
 });
 test.each(['remove', 'revoke', 'rejoin'] as const)('delayed_upload_%s_cannot_advance_and_leaves_cleanup', async mode => {
   const entered = deferCall(); const wait = deferCall();
-  const f = await mediaFixture({ storage: { async upload(path) { entered.resolve(null); await wait.promise; return 'cloud://mock/' + path; }, async read() { return png; }, async sign() { throw new Error(); } } });
+  const f = await mediaFixture({ storage: { async upload(path) { entered.resolve(null); await wait.promise; return 'cloud://mock/' + path; }, async read() { return png; }, async sign() { throw new Error(); }, async remove() {} } });
   const media = await f.member.media.requestUpload({ ...f.memberScope, requestId: request(), purpose: 'recipe-image', mime: 'image/png', bytes: png.length });
   const pending = f.member.media.upload({ ...f.memberScope, mediaId: media.mediaId, base64: png.toString('base64') }); await entered.promise;
   if (mode === 'revoke') f.h.revokeToken('member');
