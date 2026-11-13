@@ -1,0 +1,80 @@
+{
+  "ticket": 9,
+  "title": "feat(miniapp): AI 菜谱照片与截图导入 — 真实验收",
+  "date": "2026-11-14",
+  "branch": "miniapp-dev",
+  "baseline": "eb6721cb9",
+  "uncommittedChanges": [
+    "uniCloud-alipay/cloudfunctions/common/home-media/callback.ts（支付宝云 composed response + 微信初始 URL 明文 signature 验证）",
+    "tests/contracts/media.test.ts（+2 回调契约测试）",
+    "src/manifest.json / ops/project-target.json（正式 AppID wxdf2ca9836263776e）",
+    "eslint.config.mjs（ignores 增加 review/** 临时自动化目录）",
+    "vitest.config.ts（testTimeout 5s→20s，用户批准的本机 I/O 校准）"
+  ],
+  "environment": {
+    "weixinAppId": "wxdf2ca9836263776e",
+    "provider": "alipay",
+    "space": "mealie / env-00jy7289et7b",
+    "devtools": "2.02.2609250，enableGPU:false（黑屏修复，见 acceptance.md）",
+    "automator": "miniprogram-automator 0.13.0",
+    "visionModel": "deepseek/deepseek-v4.1-flash-1017"
+  },
+  "method": {
+    "drive": "review/task09-flow.cjs / task09-flow2.cjs：调用页面编译后的事件处理器（review/extract-handlers.cjs 提取 id），与 WXML tap 走同一 guarded handler",
+    "picker": "mockWxMethod('chooseImage')，真实样本字节先写入模拟器沙箱（模拟器 FS 不读 PC 路径）；仅原生选择器被模拟",
+    "real": "wx.login/uni-id、base64 上传、云存储、微信 media_check_async + 消息推送回调、OpenRouter 视觉、配额 reserve/settle、菜谱保存",
+    "observe": "automator 截图 + 页面 data + unicloud database run-jql 云端回读（readback.jql / readback.json）"
+  },
+  "criteria": [
+    {
+      "id": "real-vision-no-fabrication",
+      "status": "verified-real",
+      "evidence": ["07-review-ready.png", "09-job-succeeded.png", "10-recipe-detail.png", "readback.json recipes[0]"],
+      "notes": "土豆炖牛腩：17 项食材数量/单位与原图一致；盐/冰糖/热水 quantity=null unit=null（适量/少许仅 note）；7 步骤逐字一致；baseServings/prepMinutes/cookMinutes=null；原图不作封面（暂无图片）"
+    },
+    {
+      "id": "isolation-temp-links-no-bucket-key",
+      "status": "verified-contract-and-code",
+      "evidence": ["tests/contracts/media.test.ts（8 过）", "tests/contracts/boundaries.test.ts（25 过）", "home-media/storage.ts  scoped task07-private 路径与受控临时链接"],
+      "notes": "真实跨账号未执行（仅一个正式账号）；clientDB 全拒绝与存储作用域由契约测试覆盖"
+    },
+    {
+      "id": "clear-failures",
+      "status": "partial-real",
+      "real": ["非菜谱成品照片 → UNRECOGNIZED，页面明确导入失败（12-job-failed.png，job 03e3b5e7…）", ">1MiB → 客户端真实校验拒绝，不上传（05-oversize-rejected.png）"],
+      "contract": ["审核拒绝、过期素材：契约测试覆盖（真实微信拒绝无法用安全样本强制；7 天过期等待不现实）"],
+      "evidence": ["12-job-failed.png", "05-oversize-rejected.png", "readback.json jobs[0]", "tests/domain/image-imports.test.ts", "tests/contracts/media.test.ts"]
+    },
+    {
+      "id": "idempotency-quota",
+      "status": "verified-contract-and-readback",
+      "evidence": ["readback.json ai_usage（reservedUsd=1、settled、costUsd）", "tests/domain/imports.test.ts（31 过）"],
+      "notes": "被强杀尝试的 heldUsd 不释放为已识别缺陷，见 openItems"
+    }
+  ],
+  "jobs": {
+    "success": { "id": "fba67f84bca49d663484031d0ca5fd36", "state": "succeeded", "attempts": 2, "recipeId": "8d580aeb9a9d1d0e73f7b6aa1b020049", "title": "土豆炖牛腩", "costUsd": 0.0009650715624 },
+    "failed": { "id": "03e3b5e731545332d2b57b5eea8f33d5", "state": "failed", "error": "UNRECOGNIZED", "attempts": 1, "recipeId": null, "costUsd": 0.0001300068 }
+  },
+  "media": [
+    { "id": "af407b3b1626744c77566d1928192860", "bytes": 413500, "review": "weixin", "traceId": "6af7433b-5b92f780-3a665c65", "job": "fba67f84bca49d663484031d0ca5fd36" },
+    { "id": "ee4ab3aeaabf7bedaf7fcc8749c6158f", "bytes": 96130, "review": "weixin", "traceId": "6af74597-695ea450-3fe72963", "job": "03e3b5e731545332d2b57b5eea8f33d5" }
+  ],
+  "totalVisionCostUsd": 0.0010950783624,
+  "budgetUsd": 1,
+  "screenshots": ["00-login.png", "01-login.png", "02-onboarding.png", "03-home.png", "04-add-sheet.png", "05-oversize-rejected.png", "06-review-pending.png", "07-review-ready.png", "08-job-running.png", "09-job-succeeded.png", "10-recipe-detail.png", "11-dish-review-ready.png", "12-job-failed.png"],
+  "validation": {
+    "command": "task -d miniapp check",
+    "exitCode": 0,
+    "tests": "881/881（63 文件）",
+    "steps": ["assemble-uni-id --check", "assemble-content-check --check", "eslint --max-warnings 0", "vue-tsc ×2 + tsc cloud", "vitest run", "build:weixin", "check-boundaries --artifacts", "check-secrets"],
+    "calibration": "testTimeout 20000（用户批准）：本机全量跑时 I/O 密集 preview/assembly 测试 5s 超时（最慢 13s），隔离运行均通过；非断言失败"
+  },
+  "openItems": [
+    "import-worker attempt1 强杀已由云日志确认：01:06:00.773 canCall 提交后无后续 SDK 请求直至 120s 被杀（标称 5s/45s 超时未生效），catch/settle 未执行；租约过期后 01:08:00 定时器重试成功。跟进：timeout 120→300 + 排查运行时定时器行为",
+    "被强杀尝试当日 quota_buckets heldUsd $1 不释放（quota.ts settle 仅 cost 已知时释放）；跟进：回收过期租约时结算旧预留；影响以当日 bucket 为界",
+    "模拟器后台节流会拖慢状态页轮询：验收/演示时保持开发者工具前台",
+    "dist/task09-callback-secrets.json 已按用户指令删除（2026-11-14）"
+  ],
+  "git": "未提交（未获授权）"
+}

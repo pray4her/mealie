@@ -24,6 +24,20 @@ test('safe_mode_callback_verifies_signature_decrypts_appid_and_supports_handshak
   expect(await handleReviewNotification(notification('<xml><Event>wxa_media_check</Event><appid>wx-synthetic</appid><trace_id>trace-123</trace_id><errcode>0</errcode><result><suggest>risky</suggest></result></xml>'), config, () => now, deliver)).toMatchObject({ statusCode: 200 });
   expect(calls.at(-1)).toEqual(['trace-123', 'reject']);
 });
+test('callback_response_uses_alipay_composed_response_so_urlization_returns_raw_body', async () => {
+  const deliver = async () => {};
+  expect(await handleReviewNotification(notification('challenge', { method: 'GET' }), config, () => now, deliver)).toMatchObject({ mpserverlessComposedResponse: true, statusCode: 200, body: 'challenge' });
+  expect(await handleReviewNotification(notification(message()), config, () => now, deliver)).toMatchObject({ mpserverlessComposedResponse: true, statusCode: 200, body: 'success' });
+});
+test('initial_url_verification_uses_plaintext_signature_and_returns_echostr_as_is', async () => {
+  const deliver = async () => {};
+  const timestamp = String(Math.floor(now / 1000)); const nonce = 'synthetic-nonce'; const echostr = 'plain-echostr-123';
+  const signature = createHash('sha1').update([config.token, timestamp, nonce].sort().join('')).digest('hex');
+  const event = { httpMethod: 'GET', queryStringParameters: { timestamp, nonce, signature, echostr } };
+  expect(await handleReviewNotification(event, config, () => now, deliver)).toMatchObject({ mpserverlessComposedResponse: true, statusCode: 200, body: echostr });
+  const forged = { httpMethod: 'GET', queryStringParameters: { timestamp, nonce, signature: '0'.repeat(40), echostr } };
+  expect((await handleReviewNotification(forged, config, () => now, deliver)).statusCode).toBe(403);
+});
 test('forged_replayed_expired_wrong_app_and_malformed_callbacks_cannot_deliver', async () => {
   let called = 0; const deliver = async () => { called++; };
   const forged = notification(message()); forged.queryStringParameters.msg_signature = '0'.repeat(40);

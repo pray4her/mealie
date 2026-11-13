@@ -1,0 +1,6 @@
+db.multiSend(
+  db.collection('import_jobs').field({ _id: true, state: true, error: true, recipeId: true, attempts: true, usageId: true, sourceMediaId: true, sourceKind: true, createdAt: true }).orderBy('createdAt', 'desc').limit(6).getTemp(),
+  db.collection('ai_usage').field({ _id: true, jobId: true, attempt: true, currency: true, reservedUsd: true, costUsd: true, inputTokens: true, outputTokens: true, providerRequestId: true, settled: true }).orderBy('createdAt', 'desc').limit(6).getTemp(),
+  db.collection('media_files').field({ _id: true, purpose: true, state: true, review: true, bytes: true, mime: true, importJobId: true, traceId: true, reviewExpiresAt: true, cleanupAt: true, createdAt: true }).orderBy('createdAt', 'desc').limit(6).getTemp(),
+  db.collection('recipes').field({ _id: true, title: true, createdAt: true }).orderBy('createdAt', 'desc').limit(3).getTemp()
+)

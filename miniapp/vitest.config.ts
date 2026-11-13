@@ -25,5 +25,6 @@ export default defineConfig({
     'home-recipes': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-recipes/index.ts', import.meta.url)),
     'home-imports': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-imports/index.ts', import.meta.url)),
   } },
-  test: { environment: 'node', include: ['tests/**/*.test.ts'] },
+  // 5s default times out on I/O-heavy assembly/preview tests on slow Windows disks.
+  test: { environment: 'node', include: ['tests/**/*.test.ts'], testTimeout: 20000 },
 });

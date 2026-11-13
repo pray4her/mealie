@@ -4,7 +4,7 @@ import ts from 'typescript-eslint';
 import vue from 'eslint-plugin-vue';
 import parser from 'vue-eslint-parser';
 export default [
-  { ignores: ['node_modules/**', 'dist/**', 'vendor/**', 'src/uni_modules/**', 'uniCloud-alipay/cloudfunctions/uni-id-co/**', '.type-probes/**', 'tests/fixtures/**'] },
+  { ignores: ['node_modules/**', 'dist/**', 'vendor/**', 'src/uni_modules/**', 'uniCloud-alipay/cloudfunctions/uni-id-co/**', '.type-probes/**', 'tests/fixtures/**', 'review/**'] },
   js.configs.recommended,
   ...ts.configs.recommended,
   ...vue.configs['flat/recommended'],

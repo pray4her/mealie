@@ -35,11 +35,20 @@ function xmlField(xml: string, key: string): string {
   if (matches.length !== 1) throw new AppError('FORBIDDEN'); return matches[0][1] ?? matches[0][2];
 }
 export async function handleReviewNotification(event: HttpEvent, config: CallbackConfig, now: () => number, deliver: (traceId: string, verdict: Verdict) => Promise<void>) {
-  const response = (statusCode: number, body: string) => ({ statusCode, headers: { 'Content-Type': 'text/plain' }, body });
+  const response = (statusCode: number, body: string) => ({ mpserverlessComposedResponse: true, statusCode, headers: { 'Content-Type': 'text/plain' }, body });
   try {
     if (!config.token || !config.encodingAESKey || !/^[A-Za-z0-9+/]{43}$/.test(config.encodingAESKey) || !config.appId) throw new AppError('UNAVAILABLE');
     const query = event.queryStringParameters ?? {};
-    const { timestamp, nonce, msg_signature: signature } = query;
+    const { timestamp, nonce } = query;
+    if (event.httpMethod === 'GET' && typeof query.signature === 'string' && query.msg_signature === undefined) {
+      if (typeof timestamp !== 'string' || !/^\d{10}$/.test(timestamp) || Math.abs(Number(timestamp) * 1000 - now()) > 300_000
+        || typeof nonce !== 'string' || nonce.length < 1 || nonce.length > 128 || !/^[a-f0-9]{40}$/.test(query.signature)
+        || typeof query.echostr !== 'string' || query.echostr.length > 65_536) throw new AppError('FORBIDDEN');
+      const expected = createHash('sha1').update([config.token, timestamp, nonce].sort().join('')).digest();
+      if (!timingSafeEqual(expected, Buffer.from(query.signature, 'hex'))) throw new AppError('FORBIDDEN');
+      return response(200, query.echostr);
+    }
+    const { msg_signature: signature } = query;
     if (typeof timestamp !== 'string' || !/^\d{10}$/.test(timestamp) || Math.abs(Number(timestamp) * 1000 - now()) > 300_000
       || typeof nonce !== 'string' || nonce.length < 1 || nonce.length > 128 || typeof signature !== 'string' || !/^[a-f0-9]{40}$/.test(signature)) throw new AppError('FORBIDDEN');
     let encrypted: unknown;
