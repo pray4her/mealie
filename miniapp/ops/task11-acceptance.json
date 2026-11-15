@@ -2,7 +2,7 @@
   "ticket": 11,
   "date": "2026-11-15",
   "branch": "worktree-issue-11-planning",
-  "git": { "committed": false, "pushed": false, "issueClosed": false, "merged": false },
+  "git": { "committed": true, "commit": "c6558c63e", "pushed": false, "issueClosed": false, "merged": false },
   "cloud": {
     "provider": "alipay",
     "spaceId": "env-00jy7289et7b",

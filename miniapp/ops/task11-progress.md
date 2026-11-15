@@ -181,7 +181,7 @@ Vitest：**71 套件 / 1548 项全通过**，Duration 33.54s。**未触发超时
 - 规范同步：`docs/design/miniapp/page-specs.md` 路由数 11→13（+#11 计划两页），P-12 增补实施与证据段及未验项/观察项。
 - 计划归档：`docs/superpowers/plans/2026-11-15-miniapp-issue11.md`。
 - 验收汇总：`ops/task11-acceptance.json`（`git:{committed:false,pushed:false,issueClosed:false,merged:false}`）。
-- 变更集快照：206 个修改（含 #1–#10 遗留的 uni_modules 组装产物与 #11 实现）、28 个未跟踪（planning 功能/测试/云模块/ops 证据/review 脚本/计划文档）。**本轮未提交、未推送、未关单、未合并**；提交需用户另行授权。
+- 变更集快照：206 个修改（含 #1–#10 遗留的 uni_modules 组装产物与 #11 实现）、28 个未跟踪（planning 功能/测试/云模块/ops 证据/review 脚本/计划文档）。**用户授权后已提交 `c6558c63e`（171 文件，+7873/−60）**；未推送、未关单、未合并。`.qoder/` 与 `review/task11-browser.cjs`（H5 探针）按要求保持未跟踪；dist/ 被 gitignore 排除。uni_modules/uni-id-co/vendor 组装产物为门禁 `assemble --check` 所需的确定性生成物，随本提交入库（先例 #2）。
 - 生产提醒：release 产物 `urlCheck` 会被 build 重置为 true；上线前须恢复并配置 MP 后台合法域名 `api.bspapp.com` / `api.next.bspapp.com`；release 包不含空间配置的问题需在发布流程中解决（dev 编译注入，见上文）。
 
 ## 待提交清单（累计，本轮不提交）
