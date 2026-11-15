@@ -1,0 +1,4 @@
+db.multiSend(
+  db.collection('meal_plans').where({ familyId: '9ab1b26b1d49ba76d4502a5771250313' }).orderBy('date', 'asc').orderBy('createdAt', 'asc').getTemp(),
+  db.collection('mutation_receipts').where({ operation: 'plan-add-v1' }).limit(5).getTemp()
+)

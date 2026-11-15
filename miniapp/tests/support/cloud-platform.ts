@@ -4,7 +4,27 @@ import { createRequire } from 'node:module';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 const realRequire = createRequire(import.meta.url);
-export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' | 'imports-co' = 'family-co', commitAcknowledgement: 'object' | 'void' = 'object') {
+type Row = Record<string, unknown>;
+type CommitEvent = { reads: readonly string[]; writes: readonly string[] };
+type CommitHook = (event: CommitEvent) => void | Promise<void>;
+export interface CloudFixtureOptions { optimistic?: boolean; queryResult?: unknown }
+function matches(row: Row, filter: Row): boolean {
+  return Object.entries(filter).every(([field, expected]) => {
+    if (field === 'and' || field === 'or') {
+      const clauses = expected as Row[];
+      return field === 'and' ? clauses.every(clause => matches(row, clause)) : clauses.some(clause => matches(row, clause));
+    }
+    if (!expected || typeof expected !== 'object') return row[field] === expected;
+    return Object.entries(expected).every(([operator, value]) => {
+      const actual = row[field] as string | number; const bound = value as string | number;
+      if (operator === 'gt') return actual > bound;
+      if (operator === 'gte') return actual >= bound;
+      if (operator === 'lte') return actual <= bound;
+      throw new Error('Unsupported fixture query operator');
+    });
+  });
+}
+export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' | 'imports-co' | 'planning-co' = 'family-co', commitAcknowledgement: 'object' | 'void' = 'object', options: CloudFixtureOptions = {}) {
   const files = new Map<string, Buffer>();
   const rows = new Map<string, Record<string, unknown>>();
   const checks: { token: string; autoRefresh: boolean }[] = [];
@@ -12,22 +32,56 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' 
   let active = true; let contentResult: unknown = { errCode: 0, errMsg: '', result: { suggest: 'pass', label: '正常' } };
   let afterContent = () => {}; let transactions = 0; let commits = 0; let rollbacks = 0; let sdkImports = 0;
   const key = (collection: string, id: string) => collection + '/' + id;
+  const projections: { collection: string; id: string; fields: Row }[] = [];
+  let beforeCommit: CommitHook = () => {}; let afterCommit: CommitHook = () => {}; let afterQuery = () => {};
   const database = {
-    command: { set: (value: unknown) => ({ __set: value }) },
-    collection(collection: string) { return { doc(id: string) { return { field() { return { async get() {
-      reads.push(id);
-      return { data: collection === 'uni-id-users' && id === 'alice' ? [{ status: active ? 0 : 1, token: ['verified-token'], wx_openid: { mp___UNI__5FDC0D7: 'server-openid' } }] : [] };
-    } }; } }; } }; },
+    command: { set: (value: unknown) => ({ __set: value }),
+      gt: (value: unknown) => ({ gt: value }), gte: (value: unknown) => ({ gte: value }), lte: (value: unknown) => ({ lte: value }),
+      and: (value: Row[]) => ({ and: value }), or: (value: Row[]) => ({ or: value }) },
+    collection(collection: string) {
+      let filter: Row = {}; let fields: Record<string, boolean> | undefined; let count = Infinity;
+      const order: [string, 'asc' | 'desc'][] = [];
+      const project = (row: Row) => fields ? Object.fromEntries(Object.entries(row).filter(([field]) => fields![field])) : row;
+      return {
+        where(value: Row) { filter = value; return this; }, field(value: Record<string, boolean>) { fields = value; return this; },
+        orderBy(field: string, direction: 'asc' | 'desc') { order.push([field, direction]); return this; }, limit(value: number) { count = value; return this; },
+        async get() {
+          const data = [...rows.entries()].filter(([k, row]) => k.startsWith(collection + '/') && matches(row, filter)).map(([, row]) => row);
+          data.sort((a, b) => { for (const [field, direction] of order) { const x = a[field] as string | number; const y = b[field] as string | number; if (x !== y) return (x < y ? -1 : 1) * (direction === 'asc' ? 1 : -1); } return 0; });
+          const result = { data: data.slice(0, count).map(project) }; afterQuery();
+          return Object.hasOwn(options, 'queryResult') ? options.queryResult : result;
+        },
+        doc(id: string) { return {
+          field(value: Record<string, boolean>) { fields = value; projections.push({ collection, id, fields: value }); return this; },
+          async get() {
+            reads.push(id);
+            const row = collection === 'uni-id-users' && id === 'alice'
+              ? { status: active ? 0 : 1, token: ['verified-token'], wx_openid: { mp___UNI__5FDC0D7: 'server-openid' } } : rows.get(key(collection, id));
+            return { data: row ? [project(row)] : [] };
+          },
+        }; },
+      };
+    },
     async startTransaction() {
-      transactions++; const staged = new Map(rows);
+      transactions++; const snapshot = new Map(rows); const staged = new Map(snapshot);
+      const readKeys = new Set<string>(); const writeKeys = new Set<string>();
       return {
         collection(collection: string) { return {
-          doc(id: string) { return { async get() { return { data: staged.get(key(collection, id)) ?? null }; },
-            async update(value: object) { const k = key(collection, id); if (!staged.has(k)) return { updated: 0 }; const merged = { ...staged.get(k) }; for (const [field, item] of Object.entries(value)) merged[field] = item && typeof item === 'object' && '__set' in item ? (item as { __set: unknown }).__set : item; staged.set(k, merged); return { updated: 1 }; },
-            async remove() { return { deleted: staged.delete(key(collection, id)) ? 1 : 0 }; } }; },
-          async add(value: Record<string, unknown>) { const id = String(value._id); if (staged.has(key(collection, id))) throw new Error('fixture duplicate'); staged.set(key(collection, id), value); return { id }; },
+          doc(id: string) { const k = key(collection, id); return {
+            async get() { readKeys.add(k); return { data: staged.get(k) ?? null }; },
+            async update(value: object) { readKeys.add(k); if (!staged.has(k)) return { updated: 0 }; const merged = { ...staged.get(k) }; for (const [field, item] of Object.entries(value)) merged[field] = item && typeof item === 'object' && '__set' in item ? (item as { __set: unknown }).__set : item; staged.set(k, merged); writeKeys.add(k); return { updated: 1 }; },
+            async remove() { readKeys.add(k); writeKeys.add(k); return { deleted: staged.delete(k) ? 1 : 0 }; },
+          }; },
+          async add(value: Record<string, unknown>) { const id = String(value._id); const k = key(collection, id); readKeys.add(k); if (staged.has(k)) throw new Error('fixture duplicate'); staged.set(k, value); writeKeys.add(k); return { id }; },
         }; },
-        async commit() { commits++; rows.clear(); for (const [key, value] of staged) rows.set(key, value); if (commitAcknowledgement === 'object') return {}; },
+        async commit() {
+          commits++; const event = { reads: [...readKeys], writes: [...writeKeys] }; await beforeCommit(event);
+          // Fixture-only optimistic validation, NOT a provider conflict code or cloud acceptance.
+          if (options.optimistic && [...readKeys].some(k => rows.get(k) !== snapshot.get(k))) throw new Error('Fixture optimistic collision');
+          // Apply only this transaction's writes: read-only commits must never restore stale rows.
+          for (const k of writeKeys) { const value = staged.get(k); if (value) rows.set(k, value); else rows.delete(k); }
+          await afterCommit(event); if (commitAcknowledgement === 'object') return {};
+        },
         async rollback() { rollbacks++; return {}; },
       };
     },
@@ -51,6 +105,8 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' 
     return module.exports;
   }
   const entry = load(resolve('uniCloud-alipay/cloudfunctions', entryName, 'index.obj.ts')) as {
+    add: (this: object, ...args: unknown[]) => Promise<unknown>;
+    remove: (this: object, ...args: unknown[]) => Promise<unknown>;
     submit: (this: object, ...args: unknown[]) => Promise<unknown>;
     cancel: (this: object, ...args: unknown[]) => Promise<unknown>;
     requestUpload: (this: object, ...args: unknown[]) => Promise<unknown>;
@@ -75,5 +131,7 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' 
     transferOwner: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
   };
   const context = { getUniIdToken: () => 'verified-token', getClientInfo: () => ({ appId: '__UNI__5FDC0D7', uniPlatform: 'mp-weixin' }), getUniCloudRequestId: () => 'platform-request' };
-  return { entry, context, checks, contentCalls, contexts, reads, rows, get transactions() { return transactions; }, get commits() { return commits; }, get rollbacks() { return rollbacks; }, get sdkImports() { return sdkImports; }, revoke() { active = false; }, restore() { active = true; }, setContent(value: unknown) { contentResult = value; }, afterContent(fn: () => void) { afterContent = fn; } };
+  return { entry, context, checks, contentCalls, contexts, reads, rows, projections,
+    beforeCommit(fn: CommitHook) { beforeCommit = fn; }, afterCommit(fn: CommitHook) { afterCommit = fn; }, afterQuery(fn: () => void) { afterQuery = fn; },
+    get transactions() { return transactions; }, get commits() { return commits; }, get rollbacks() { return rollbacks; }, get sdkImports() { return sdkImports; }, revoke() { active = false; }, restore() { active = true; }, setContent(value: unknown) { contentResult = value; }, afterContent(fn: () => void) { afterContent = fn; } };
 }

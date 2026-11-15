@@ -1,0 +1,102 @@
+{
+  "ticket": 11,
+  "project": "E:/pray4her/mealie/.qoder/worktrees/issue-11-planning/miniapp/dist/dev/mp-weixin",
+  "startedAt": "2026-11-15T13:34:32.905Z",
+  "steps": [
+    {
+      "step": "01-tab-planning",
+      "ok": true,
+      "selectedDate": "2026-11-15",
+      "meals": 4,
+      "entries": 2,
+      "viewport": {
+        "width": 375,
+        "height": 639
+      }
+    },
+    {
+      "step": "02-add-form",
+      "ok": true,
+      "title": "土豆炖牛腩",
+      "date": "2026-11-15 · 选择日期",
+      "servings": ""
+    },
+    {
+      "step": "03-saved-first",
+      "ok": true,
+      "title": "土豆炖牛腩"
+    },
+    {
+      "step": "03b-listed",
+      "ok": true,
+      "entries": 3
+    },
+    {
+      "step": "04-same-meal-second",
+      "ok": true,
+      "entries": 4,
+      "hasFraction": true
+    },
+    {
+      "step": "05-other-meal",
+      "ok": true,
+      "entries": 5
+    },
+    {
+      "step": "06-cross-week",
+      "ok": true,
+      "before": "2026-11-15 · 选日期",
+      "nextWeek": "2026-11-22 · 选日期",
+      "picked": "2027-01-01",
+      "shown": "2027-01-01 · 选日期"
+    },
+    {
+      "step": "06b-today",
+      "ok": true,
+      "restored": "2026-11-15 · 选日期"
+    },
+    {
+      "step": "07-edit-entry",
+      "ok": true,
+      "id": "cd4d2388241c814ba842e44bf31461d6",
+      "snapshot": "土豆炖牛腩",
+      "recipeLocked": true,
+      "newServings": "3"
+    },
+    {
+      "step": "08-remove-confirm",
+      "ok": true,
+      "entriesBefore": 5,
+      "cancelKeptEntry": true,
+      "modalCopy": {
+        "title": "移除这项安排？",
+        "content": "2026-11-15 · 其他 · 土豆炖牛腩。移除后不可撤销，未保存的输入将丢失。",
+        "confirmText": "确认移除",
+        "cancelText": "继续编辑"
+      }
+    },
+    {
+      "step": "09-detail-entry",
+      "ok": true,
+      "recipeId": "8d580aeb9a9d1d0e73f7b6aa1b020049",
+      "skippedSearch": true,
+      "planIds": 4,
+      "sourceLink": true
+    },
+    {
+      "step": "11-invalid-input",
+      "ok": true,
+      "kept": "0",
+      "fieldErrors": 1,
+      "stillForm": true
+    }
+  ],
+  "screenshots": [],
+  "evidenceBoundary": [
+    "WeChat devtools simulator with a real logged-in account and the real alipay test space; not a physical device.",
+    "Single real account: two-account concurrency is covered by domain tests, not observed here.",
+    "Cross-midnight instant is not reproducible on demand; covered by domain tests."
+  ],
+  "finishedAt": "2026-11-15T13:35:46.948Z",
+  "pass": true
+}

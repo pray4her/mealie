@@ -1,0 +1,31 @@
+{
+  "requestId": "d65f0fb3-7d41-4776-8df1-2bd5ced58529",
+  "countedAt": "2026-11-15T13:05:41.583Z",
+  "schemaCount": 23,
+  "names": [
+    "meal_plans",
+    "ai_usage",
+    "quota_buckets",
+    "import_jobs",
+    "media_audit_traces",
+    "media_files",
+    "recipe_favorites",
+    "recipes",
+    "family_invitations",
+    "request_limits",
+    "mutation_receipts",
+    "family_members",
+    "families",
+    "uni-id-users",
+    "uni-id-roles",
+    "uni-id-permissions",
+    "uni-id-log",
+    "uni-id-device",
+    "opendb-verify-codes",
+    "opendb-tempdata",
+    "opendb-open-data",
+    "opendb-frv-logs",
+    "opendb-device"
+  ],
+  "shoppingCollections": []
+}

@@ -1,0 +1,9 @@
+{
+  "readAt": "2026-11-15T14:06:51.004Z",
+  "requestId": "58d58652-fe88-400b-859a-4578c0159870",
+  "familyId": "9ab1b26b1d49ba76d4502a5771250313",
+  "recipeCountInFamily": 1,
+  "planRows": 4,
+  "missingRecipeRefs": [],
+  "conclusion": "no deleted/missing recipe sample in this family; source-unavailable scene remains unverified in real cloud (covered by ui-review edit-source-unavailable / index-source-unavailable scenes and domain tests)"
+}

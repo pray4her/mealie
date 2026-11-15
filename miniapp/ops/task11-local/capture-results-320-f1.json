@@ -1,0 +1,445 @@
+{
+  "width": "320",
+  "font": 1,
+  "project": "E:/pray4her/mealie/.qoder/worktrees/issue-11-planning/miniapp/dist/ui-review-v3/mp-weixin",
+  "autoPort": "9422",
+  "platform": "WeChat devtools simulator / ui-review fixture",
+  "startedAt": "2026-11-15T09:23:40.432Z",
+  "cases": [
+    {
+      "name": "index-empty",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "index-populated",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 1,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 2,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 3,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 4,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "index-long",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "index-source-unavailable",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "index-pagination",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "index-read-failure",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "index-week-cross",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-search",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-search-no-match",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-search-empty-family",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-form",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 2,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 3,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-field-error",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 2,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-conflict",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-remove-confirm",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-source-unavailable",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 1,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 2,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-committed",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "edit-pending",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 504
+      },
+      "rootFontSize": "16px"
+    },
+    {
+      "name": "index-pending",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 320,
+        "height": 455
+      },
+      "rootFontSize": "16px"
+    }
+  ],
+  "screenshots": [
+    "wechat-index-empty-320-f1.png",
+    "wechat-index-populated-320-f1.png",
+    "wechat-index-long-320-f1.png",
+    "wechat-index-source-unavailable-320-f1.png",
+    "wechat-index-pagination-320-f1.png",
+    "wechat-index-read-failure-320-f1.png",
+    "wechat-index-week-cross-320-f1.png",
+    "wechat-edit-search-320-f1.png",
+    "wechat-edit-search-no-match-320-f1.png",
+    "wechat-edit-search-empty-family-320-f1.png",
+    "wechat-edit-form-320-f1.png",
+    "wechat-edit-field-error-320-f1.png",
+    "wechat-edit-conflict-320-f1.png",
+    "wechat-edit-remove-confirm-320-f1.png",
+    "wechat-edit-source-unavailable-320-f1.png",
+    "wechat-edit-committed-320-f1.png",
+    "wechat-edit-pending-320-f1.png",
+    "wechat-index-pending-320-f1.png"
+  ],
+  "evidenceBoundary": [
+    "ui-review mock client: no cloud, no real identity, no real WeChat API proof.",
+    "Font scale is injected via mockWxMethod, not a physical system setting.",
+    "Simulator screenshots, not a physical device.",
+    "Logical width comes from the IDE device selector; every case records the measured viewport."
+  ],
+  "baseInfo": {
+    "reported": {
+      "fontSizeSetting": 16
+    },
+    "applied": {
+      "fontSizeScaleFactor": 1,
+      "fontSizeSetting": 16
+    }
+  },
+  "finishedAt": "2026-11-15T09:25:21.068Z",
+  "pass": true
+}

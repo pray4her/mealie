@@ -1,10 +1,14 @@
-import type { AppClient, FamilyView, JobView, MediaView, Recipe } from 'home-contracts';
+import type { AppClient, FamilyView, JobView, MediaView, Recipe, PlanEntry } from 'home-contracts';
+import { beijingToday, parseLocalDate } from '../src/features/planning/dates';
+import { parsePlanIntent, parsePlanList } from '../src/features/planning/validation';
+import { validId } from '../src/features/recipes/validation';
 import { AppError } from '../src/shared/errors';
 
 // This module is aliased only by --mode ui-review; it never contacts a cloud object.
 export const reviewMarker = 'HOME_UI_REVIEW_V11_ONLY';
 const key = 'home.ui-review.v11';
-type Scenario = { auth?: 'anonymous' | 'failure'; family?: 'missing' | 'failure' | 'member' | 'forbidden'; recipes?: 'empty' | 'failure' | 'conflict' | 'long'; media?: 'failure'; job?: JobView['state']; delay?: number };
+type PlanningScenario = { seed?: 'empty' | 'populated' | 'long' | 'pagination'; date?: string; read?: 'failure'; write?: 'failure' | 'lost-ack' | 'conflict'; source?: 'unavailable' };
+type Scenario = { planning?: PlanningScenario; auth?: 'anonymous' | 'failure'; family?: 'missing' | 'failure' | 'member' | 'forbidden'; recipes?: 'empty' | 'failure' | 'conflict' | 'long'; media?: 'failure'; job?: JobView['state']; delay?: number };
 const scenario = (): Scenario => uni.getStorageSync(key) || {};
 const family: FamilyView = { uid: 'ui-review-owner', familyId: 'ui-review-family', generation: 'ui-review-generation', role: 'owner', name: '林家的厨房' };
 const now = Date.UTC(2026, 10, 10, 19);
@@ -27,7 +31,69 @@ export function createProductionClient(): AppClient {
   const view = (): FamilyView => ({ ...family, role: scenario().family === 'member' ? 'member' : 'owner' });
   async function pause() { const delay = scenario().delay; if (delay) await new Promise(resolve => setTimeout(resolve, delay)); }
   async function authorize() { await pause(); if (!signedIn || scenario().auth === 'anonymous') throw new AppError('AUTH_REQUIRED'); if (scenario().family === 'forbidden') throw new AppError('FORBIDDEN'); }
-  function get(id: string) { const row = rows.find(r => r.id === id); if (!row) throw new AppError('NOT_FOUND'); return row; }
+  function get(id: string) { const row = rows.find(r => r.id === id); if (!row || scenario().planning?.source === 'unavailable') throw new AppError('NOT_FOUND'); return row; }
+  const plans = new Map<string, PlanEntry>(); let planSequence = 0; let cursorSequence = 0;
+  const competingEdits = new Set<string>();
+  const receipts = new Map<string, { payload: string; result: PlanEntry | null }>();
+  const cursors = new Map<string, { from: string; to: string; date: string; createdAt: number; id: string }>();
+  let seeded: string | null = null;
+  // Seed only this review client's memory, lazily on first planning access: the devtools simulator wipes
+  // storage across a restart, so a scenario written after boot must still take effect.
+  // Pending intents are created by real UI writes, never seeded.
+  // The signature covers the whole scenario, not just the seed name: a write-driven scene leaves rows
+  // behind, so returning to the same seed name must still reset (one client per scenario, as the tests do).
+  function ensureSeed() {
+    const current = scenario();
+    const signature = JSON.stringify(current);
+    if (seeded === signature) return;
+    seeded = signature;
+    const seed = current.planning;
+    const name = seed?.seed ?? 'empty';
+    plans.clear(); competingEdits.clear(); receipts.clear(); cursors.clear(); planSequence = 0; cursorSequence = 0;
+    if (!seed || name === 'empty') return;
+    const date = parseLocalDate(seed.date ?? beijingToday(Date.now()));
+    const meals = ['breakfast', 'lunch', 'dinner', 'other'] as const;
+    for (let i = 0; i < (name === 'pagination' ? 21 : 4); i++) {
+      const source = rows[i % rows.length]; const id = (++planSequence).toString(16).padStart(32, 'a');
+      plans.set(id, { id, familyId: family.familyId, createdBy: family.uid, recipeId: source.id,
+        titleSnapshot: source.title + (name === 'long' ? '，一家人周末认真准备的暖心家常菜，搭配新鲜时蔬和香浓汤汁，慢慢品尝这顿温暖又美味、充满心意的晚餐' : ''),
+        date, meal: name === 'pagination' ? 'dinner' : meals[i % 4], targetServings: i % 2 ? 2.5 : null,
+        version: 1, createdAt: now + planSequence, updatedAt: now + planSequence, sourceAvailable: true, coverImageId: source.imageIds[0] ?? null });
+    }
+  }
+  function planningRead() { if (scenario().planning?.read === 'failure') throw new AppError('UNAVAILABLE'); }
+  async function planningAccess() { await authorize(); if (!currentFamily || scenario().family === 'missing') throw new AppError('FAMILY_REQUIRED'); ensureSeed(); }
+  function plan(id: string) { const row = plans.get(validId(id)); if (!row) throw new AppError('NOT_FOUND'); return row; }
+  function project(row: PlanEntry): PlanEntry {
+    const source = scenario().planning?.source === 'unavailable' ? undefined : rows.find(recipe => recipe.id === row.recipeId && recipe.familyId === row.familyId);
+    return clone({ ...row, sourceAvailable: !!source, coverImageId: source?.imageIds[0] ?? null });
+  }
+  async function planningWrite(kind: 'add' | 'update' | 'remove', value: unknown): Promise<PlanEntry | null> {
+    const intent = parsePlanIntent({ kind, input: value }); const input = intent.input;
+    await planningAccess();
+    if (input.familyId !== family.familyId || input.generation !== family.generation) throw new AppError('FAMILY_REQUIRED');
+    const key = kind + ':' + input.requestId; const payload = JSON.stringify(intent); const receipt = receipts.get(key);
+    if (receipt) { if (receipt.payload !== payload) throw new AppError('CONFLICT'); return clone(receipt.result); }
+    if (scenario().planning?.write === 'failure') throw new AppError('UNAVAILABLE');
+    if (scenario().planning?.write === 'conflict' && intent.kind !== 'add' && !competingEdits.has(intent.input.id)) {
+      const row = plan(intent.input.id); competingEdits.add(row.id);
+      plans.set(row.id, { ...row, version: row.version + 1, targetServings: 3.5, updatedAt: row.updatedAt + 1 });
+    }
+    let result: PlanEntry | null;
+    if (intent.kind === 'add') {
+      const source = get(intent.input.recipeId); const id = (++planSequence).toString(16).padStart(32, 'a');
+      result = { id, familyId: family.familyId, createdBy: family.uid, recipeId: source.id, titleSnapshot: source.title,
+        date: intent.input.date, meal: intent.input.meal, targetServings: intent.input.targetServings, version: 1, createdAt: now + planSequence, updatedAt: now + planSequence,
+        sourceAvailable: true, coverImageId: source.imageIds[0] ?? null }; plans.set(id, result);
+    } else {
+      const row = plan(intent.input.id); if (row.version !== intent.input.version) throw new AppError('CONFLICT');
+      if (intent.kind === 'remove') { plans.delete(row.id); result = null; }
+      else { result = { ...row, date: intent.input.date, meal: intent.input.meal, targetServings: intent.input.targetServings, version: row.version + 1, updatedAt: row.updatedAt + 1 }; plans.set(row.id, result); }
+    }
+    const snapshot = result ? project(result) : null; receipts.set(key, { payload, result: clone(snapshot) });
+    if (scenario().planning?.write === 'lost-ack') throw new AppError('UNAVAILABLE');
+    return clone(snapshot);
+  }
   const image = (mediaId: string): MediaView => ({ mediaId, state: 'ready', uploadExpiresAt: now + 86400000, review: 'disabled', retryable: false });
   const job = () => { const state = scenario().job || currentJob.state; return { ...currentJob, state, attempts: state === 'queued' ? 0 : 1, recipeId: state === 'succeeded' ? rows[0].id : null, error: state === 'failed' ? 'PROVIDER_UNAVAILABLE' as const : null }; };
   return {
@@ -55,6 +121,22 @@ export function createProductionClient(): AppClient {
       async update(input) { await authorize(); if (scenario().recipes === 'conflict') throw new AppError('CONFLICT'); const row = get(input.id); Object.assign(row, input.recipe, { version: row.version + 1 }); return clone(row); },
       async favorite(input) { await authorize(); get(input.id).isFavorite = input.enabled; },
       async bindImages(input) { await authorize(); const row = get(input.id); row.imageIds = input.imageIds; row.version++; return clone(row); },
+    },
+    planning: {
+      async add(input) { return (await planningWrite('add', input))!; },
+      async update(input) { return (await planningWrite('update', input))!; },
+      async remove(input) { await planningWrite('remove', input); },
+      async get(id) { await planningAccess(); planningRead(); return project(plan(id)); },
+      async list(input) {
+        const query = parsePlanList(input); await planningAccess(); planningRead(); const after = query.cursor ? cursors.get(query.cursor) : undefined;
+        if (query.cursor && (!after || after.from !== query.from || after.to !== query.to)) throw new AppError('INVALID_INPUT');
+        const all = [...plans.values()].filter(row => row.date >= query.from && row.date <= query.to && (!after || row.date > after.date
+          || row.date === after.date && (row.createdAt > after.createdAt || row.createdAt === after.createdAt && row.id > after.id)))
+          .sort((a, b) => a.date.localeCompare(b.date) || a.createdAt - b.createdAt || a.id.localeCompare(b.id));
+        const page = all.slice(0, query.limit); let nextCursor: string | null = null;
+        if (all.length > query.limit) { nextCursor = 'review-plan-cursor-' + ++cursorSequence; const last = page[page.length - 1]; cursors.set(nextCursor, { from: query.from, to: query.to, date: last.date, createdAt: last.createdAt, id: last.id }); }
+        return { items: page.map(project), nextCursor };
+      },
     },
     media: {
       async status(input) { await authorize(); if (scenario().media === 'failure') throw new AppError('UNAVAILABLE'); return input.mediaIds.map(image); },

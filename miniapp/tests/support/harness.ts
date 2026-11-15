@@ -17,6 +17,9 @@ import type { RecipeRecord } from '../../uniCloud-alipay/cloudfunctions/common/h
 import { createImportsService, runImportWorker } from '../../uniCloud-alipay/cloudfunctions/common/home-imports';
 import type { ImportConfig, Job, Provider, Resolver, UrlReaderPort } from '../../uniCloud-alipay/cloudfunctions/common/home-imports';
 import { defaultConfig } from '../../uniCloud-alipay/cloudfunctions/common/home-imports/model';
+import { createPlanningService } from 'home-planning';
+import type { PlanRecord, PlanningReads } from 'home-planning';
+import type { PlanningApi } from 'home-contracts';
 
 export function createHarness(options: { now?: number; content?: ContentPort; storage?: StoragePort; review?: MediaReviewPort; importsProvider?: Provider; importsConfig?: () => ImportConfig; importsReader?: UrlReaderPort; importsResolver?: Resolver; recentlyVisited?: () => Promise<boolean>; invitationEnvironment?: () => { FAMILY_INVITATION_KEY_VERSION?: string; FAMILY_INVITATION_KEYS?: string } } = {}) {
   let now = options.now ?? 1_800_000_000_000;
@@ -82,6 +85,20 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     return { async create(input) { return (await service()).create(input); }, async get(id) { return (await service()).get(id); },
       async list(input) { return (await service()).list(input); }, async update(input) { return (await service()).update(input); }, async favorite(input) { return (await service()).favorite(input); }, async bindImages(input) { return (await service()).bindImages(input); } };
   };
+  const planningReads: PlanningReads = { async list(familyId, from, to, limit, after) {
+    return (await memory.rows<PlanRecord>('meal_plans')).filter(row => row.familyId === familyId && row.date >= from && row.date <= to
+      && (!after || row.date > after.date || (row.date === after.date && (row.createdAt > after.createdAt || (row.createdAt === after.createdAt && row._id > after.id)))))
+      .sort((a, b) => a.date.localeCompare(b.date) || a.createdAt - b.createdAt || a._id.localeCompare(b._id)).slice(0, limit + 1)
+      .map(({ _id, familyId, date, createdAt }) => ({ _id, familyId, date, createdAt }));
+  } };
+  const planning = (uid: Id): PlanningApi => {
+    const service = async () => createPlanningService({ database: memory.database, reads: planningReads, now: () => now,
+      newId: () => (++nextId).toString(16).padStart(32, '0'),
+      async revalidateIdentity() { await guard(tokenFor(uid), clientInfo, { refresh: false }); },
+    }, await requireFamily(memory.database, await guard(tokenFor(uid), clientInfo)));
+    return { async add(input) { return (await service()).add(input); }, async list(input) { return (await service()).list(input); },
+      async get(id) { return (await service()).get(id); }, async update(input) { return (await service()).update(input); }, async remove(input) { await (await service()).remove(input); } };
+  };
   const media = (uid: Id): import('home-contracts').MediaApi => {
     const service = async () => createMediaService({ database: memory.database, storage, review: options.review ?? { mode: 'disabled', async submit() { throw new Error('disabled'); } },
       now: () => now, newId: () => (++nextId).toString(16).padStart(32, '0'), sessionHash: digest(tokenFor(uid)),
@@ -122,7 +139,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     revokeToken(uid: Id) { const row = records.get(uid); if (row) row.tokens = []; },
     closeAccount(uid: Id) { records.delete(uid); },
     client(uid: Id): AppClient {
-      return { imports: imports(uid), media: media(uid), recipes: recipes(uid), family: family(uid), account: {
+      return { planning: planning(uid), imports: imports(uid), media: media(uid), recipes: recipes(uid), family: family(uid), account: {
         async signInWeixin() { return guard(tokenFor(uid), clientInfo); },
         async session() { return guard(uid ? tokenFor(uid) : undefined, clientInfo); },
         async signOut() { await guard(tokenFor(uid), clientInfo, { refresh: false }); const row = records.get(uid); if (row) row.tokens = []; },
@@ -130,7 +147,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     },
     advance(ms: number) { now += ms; },
     async rows<T>(collection: string): Promise<T[]> {
-      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'recipe_favorites' || collection === 'media_files' || collection === 'media_audit_traces' || collection === 'import_jobs' || collection === 'quota_buckets' || collection === 'ai_usage') return memory.rows<T>(collection);
+      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'meal_plans' || collection === 'recipe_favorites' || collection === 'media_files' || collection === 'media_audit_traces' || collection === 'import_jobs' || collection === 'quota_buckets' || collection === 'ai_usage') return memory.rows<T>(collection);
       if (collection !== 'uni-id-users') throw new Error('Unsupported fixture collection');
       return [...records].map(([uid, row]) => ({ uid, ...row })) as T[];
     },

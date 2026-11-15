@@ -1,0 +1,50 @@
+{
+  "ticket": 11,
+  "date": "2026-11-15",
+  "branch": "worktree-issue-11-planning",
+  "git": { "committed": false, "pushed": false, "issueClosed": false, "merged": false },
+  "cloud": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "spaceName": "mealie",
+    "uploaded": ["home-contracts", "home-kernel", "home-recipes", "home-planning", "planning-co", "meal_plans.schema.json", "meal_plans.index.json", "mutation_receipts.schema.json"],
+    "forbiddenActionsNotTaken": ["production release", "WeChat version upload", "database init/clear", "environment variable changes", "new space creation"],
+    "deploymentLedger": "ops/task11-deployment.md"
+  },
+  "localGate": {
+    "command": "task -d miniapp check",
+    "status": "passed earlier this session (71 suites / 1548 tests); final re-run recorded in ops/task11-progress.md"
+  },
+  "uiReviewEvidence": {
+    "kind": "WeChat devtools simulator screenshots against isolated ui-review fixture (mock client, no cloud, no real identity)",
+    "widths": [320, 375, 390, 430],
+    "scenesPerWidth": 18,
+    "largeFont": { "scale": 1.4, "widths": [390, 320], "scenesPerWidth": 6, "rootFontSize": "22.4px", "method": "boot-time mock shim in review artifact only; NOT a physical system setting" },
+    "results": ["ops/task11-local/capture-results-320-f1.json", "ops/task11-local/capture-results-375-f1.json", "ops/task11-local/capture-results-390-f1.json", "ops/task11-local/capture-results-430-f1.json", "ops/task11-local/capture-results-390-f1.4.json", "ops/task11-local/capture-results-320-f1.4.json"],
+    "allPass": true,
+    "screenshotCount": 84
+  },
+  "realCloudEvidence": {
+    "kind": "WeChat devtools simulator with a real logged-in WeChat account and the real alipay test space; NOT a physical device",
+    "bundle": "dist/dev/mp-weixin (production-client.ts; release publish does not inject the space config in this toolchain, dev compile does - same client code, see ledger)",
+    "login": "user scanned / signed in with their real account; agent never forged identity",
+    "flow": { "file": "ops/task11-real-2026-11-15/flow-results.json", "pass": true, "steps": "12/12" },
+    "readback": { "file": "ops/task11-real-2026-11-15/readback.json", "verified": ["local YYYY-MM-DD date strings preserved", "same meal multiple independent _id rows", "titleSnapshot equals recipe title", "targetServings 2.5 and null preserved", "version increments on edit", "mutation receipt payloadHash is 64-hex"] },
+    "conflict": { "file": "ops/task11-real-2026-11-15/conflict.json", "pass": true, "method": "two stacked edit instances of one entry, same account; top commits, lower saves stale version -> CONFLICT with draft kept; reload confirmation answered, server value loaded, save succeeds" },
+    "shoppingIndependence": { "file": "ops/task11-real-2026-11-15/collections.json", "method": "read-only collection inventory (23 schemas, no shopping collections) plus write-scope fence test (only family_members/meal_plans/mutation_receipts/request_limits written; recipes read-only)", "note": "real shopping-list interaction belongs to #12/#14 and is not faked here" },
+    "sourceUnavailable": { "file": "ops/task11-real-2026-11-15/source-availability.json", "verified": false, "reason": "no deleted/missing recipe sample exists in the logged-in family; covered by ui-review source-unavailable scenes and domain tests only" }
+  },
+  "boundaries": [
+    "Simulator evidence, not physical-device evidence.",
+    "Single real account: two-account concurrency is covered by domain tests, not observed live.",
+    "Cross-midnight instant is not reproducible on demand; covered by domain tests (Beijing 00:05 case).",
+    "Large font is a boot-time mock shim in the review artifact; devtools reports an inverted fontSizeScaleFactor and uni caches base info at boot, so neither IDE text size nor post-boot mocks can express it.",
+    "Native modal buttons are not automatable on this devtools build (native().confirmModal/cancelModal are no-ops); remove/reload confirmations were driven by an intercepted showModal that records the app's real copy; a real native dialog screenshot is kept as rendering evidence.",
+    "urlCheck=false is development-only; production must restore it and configure MP backend request domains api.bspapp.com / api.next.bspapp.com.",
+    "meal_plans index presence is evidenced by the upload receipt only; the CLI has no index readback channel."
+  ],
+  "openObservations": [
+    "Week strip does not auto-scroll the selected day into view (selected date still shown in the date button); non-blocking.",
+    "A pure validation error also surfaces the retry-read action (message-driven); misleading but harmless; non-blocking."
+  ]
+}

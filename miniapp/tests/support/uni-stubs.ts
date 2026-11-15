@@ -31,6 +31,10 @@ const Textarea = defineComponent({ props: { value: { type: String, default: '' }
     onInput: (event: Event) => { if (!props.disabled) { const value = (event.target as HTMLTextAreaElement).value; emit('update:modelValue', value); emit('input', { detail: { value } }); } },
   });
 } });
+// Event adapter only: it does not simulate the platform date sheet, focus or layout.
+const Picker = defineComponent({ props: { disabled: Boolean }, emits: ['change', 'cancel'], setup(props, { slots, emit }) {
+  return () => h('div', { 'aria-disabled': props.disabled, onChange: (event: CustomEvent<{ value: string }>) => { if (!props.disabled) emit('change', { detail: event.detail }); }, onCancel: () => emit('cancel') }, slots.default?.());
+} });
 export function mountPage(component: Component, { client, storage = createMemoryStorage(), controllers }: { client: AppClient; storage?: SessionStorage; controllers?: ReturnType<typeof provideAppClient> }) {
   const platform = { ...uni };
   Object.assign(uni, { getSystemInfoSync: () => ({ windowWidth: 390, windowHeight: 844, screenHeight: 844, safeAreaInsets: { bottom: 0 }, fontSizeSetting: 16 }), getDeviceInfo: () => ({}), getAppBaseInfo: () => ({ fontSizeSetting: 16 }), getWindowInfo: () => ({ windowWidth: 390, screenHeight: 844, safeAreaInsets: { bottom: 0 } }) }, platform);
@@ -38,9 +42,9 @@ export function mountPage(component: Component, { client, storage = createMemory
   const wrapper = mount(component, { global: { plugins: [{ install(app) {
     if (controllers) { context = controllers; app.provide(appClientKey, controllers); }
     else context = provideAppClient(app, client, { storage, newRequestId: async () => `fixture-request-${++request}` });
-  } }], components: { WdButton, WdPopup, WdCell, WdCellGroup }, stubs: { UniView: View, UniText: Text, UniButton: Button, UniInput: Input, UniTextarea: Textarea } } });
+  } }], components: { WdButton, WdPopup, WdCell, WdCellGroup }, stubs: { UniView: View, UniText: Text, UniButton: Button, UniInput: Input, UniTextarea: Textarea, UniPicker: Picker } } });
   const hooks = (wrapper.vm.$ as typeof wrapper.vm.$ & { uniTestHooks?: Record<string, ((value: never) => unknown)[]> }).uniTestHooks ?? {};
   async function drive(name: string, value?: unknown) { let result: unknown; for (const fn of hooks[name] ?? []) result = await fn(value as never); await flushPromises(); return result; }
-  const unmount = wrapper.unmount.bind(wrapper); wrapper.unmount = () => { if (!controllers) { context.imports.dispose(); context.recipes.dispose(); context.media.dispose(); context.membership.dispose(); context.family.dispose(); context.invitations.dispose(); } unmount(); };
+  const unmount = wrapper.unmount.bind(wrapper); wrapper.unmount = () => { if (!controllers) { context.planning.dispose(); context.imports.dispose(); context.recipes.dispose(); context.media.dispose(); context.membership.dispose(); context.family.dispose(); context.invitations.dispose(); } unmount(); };
   return { wrapper, controllers: context, auth: context.auth, family: context.family, navigation, show: () => drive('show'), hide: () => drive('hide'), unload: () => drive('unload'), load: (query: Record<string, string>) => drive('load', query), share: () => drive('share') as Promise<{ title: string; path: string; imageUrl: string }> };
 }

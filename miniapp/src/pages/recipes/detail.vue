@@ -33,6 +33,7 @@ function failImage(mediaId: string) {
   failedImages.value[mediaId] = true; mediaMessage.value = '图片加载失败，菜谱内容仍可阅读。';
 }
 const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edit?id=' + recipe.value.id }); };
+const plan = () => { if (page.isCurrent() && recipe.value && !busy.value) uni.navigateTo({ url: '/pages/planning/edit?recipeId=' + recipe.value.id }); };
 </script>
 <template>
   <page-meta :root-font-size="rootFontSize" />
@@ -146,6 +147,15 @@ const edit = () => { if (recipe.value) uni.navigateTo({ url: '/pages/recipes/edi
           @click="page.act(async () => { if (recipe) await recipes.favorite(recipe.id, !recipe.isFavorite); })"
         >
           {{ recipe.isFavorite ? copy.unfavoriteRecipe : copy.favoriteRecipe }}
+        </HomeAction>
+        <HomeAction
+          label="安排一餐"
+          type="info"
+          data-plan
+          :disabled="busy"
+          @click="plan"
+        >
+          安排一餐
         </HomeAction>
         <HomeAction
           :label="copy.editRecipe"

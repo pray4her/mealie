@@ -68,6 +68,18 @@
       "style": {
         "navigationBarTitleText": "导入任务"
       }
+    },
+    {
+      "path": "pages/planning/index",
+      "style": {
+        "navigationBarTitleText": "用餐计划"
+      }
+    },
+    {
+      "path": "pages/planning/edit",
+      "style": {
+        "navigationBarTitleText": "安排一餐"
+      }
     }
   ],
   "globalStyle": {
@@ -93,6 +105,12 @@
         "pagePath": "pages/recipes/index",
         "iconPath": "static/tab-recipes.png",
         "selectedIconPath": "static/tab-recipes-selected.png"
+      },
+      {
+        "text": "计划",
+        "pagePath": "pages/planning/index",
+        "iconPath": "static/tab-planning.png",
+        "selectedIconPath": "static/tab-planning-selected.png"
       },
       {
         "text": "家庭",

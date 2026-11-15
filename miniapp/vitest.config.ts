@@ -11,8 +11,8 @@ export default defineConfig({
     if (!id.includes('/@wot-ui/') && !id.includes('/@wot-ui+')) return;
     if (id.endsWith('.vue')) return preJs(preHtml(source, id), id);
     if (id.endsWith('.ts')) return preJs(source, id);
-  } }, vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'page-meta', nodeTransforms: [node => {
-    if (node.type === 1 && ['view', 'text', 'button', 'input', 'textarea'].includes(node.tag)) {
+  } }, vue({ template: { compilerOptions: { isCustomElement: tag => ['page-meta', 'scroll-view'].includes(tag), nodeTransforms: [node => {
+    if (node.type === 1 && ['view', 'text', 'button', 'input', 'textarea', 'picker'].includes(node.tag)) {
       node.tag = `Uni${node.tag[0].toUpperCase()}${node.tag.slice(1)}`; node.tagType = 1;
     }
   }] } } })],
@@ -23,6 +23,7 @@ export default defineConfig({
     'home-family': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-family/index.ts', import.meta.url)),
     'home-media': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-media/index.ts', import.meta.url)),
     'home-recipes': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-recipes/index.ts', import.meta.url)),
+    'home-planning': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-planning/index.ts', import.meta.url)),
     'home-imports': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-imports/index.ts', import.meta.url)),
   } },
   // 5s default times out on I/O-heavy assembly/preview tests on slow Windows disks.

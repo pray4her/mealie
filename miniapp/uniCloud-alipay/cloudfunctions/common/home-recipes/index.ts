@@ -10,7 +10,7 @@ import type { RecipeCursor, RecipeReads, RecipeRecord } from './repository';
 import { insertRecipe } from './create';
 export { insertRecipe } from './create';
 export { recipeInput, auditText } from './validation';
-export { createRecipeReads } from './repository';
+export { createRecipeReads, readRecipe } from './repository';
 export type { RecipeReadPlatform, RecipeReads } from './repository';
 
 export interface RecipeDeps { database: DatabasePort; reads: RecipeReads; content: ContentPort; now(): number; newId(): string; revalidateIdentity(): Promise<void> }

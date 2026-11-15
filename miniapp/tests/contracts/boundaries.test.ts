@@ -6,7 +6,7 @@ import { assembleUniId } from '../../scripts/assemble-uni-id.mjs';
 import { checkSecrets } from '../../scripts/check-secrets.mjs';
 import { doctor } from '../../scripts/doctor.mjs';
 import { testDirectory } from '../support/temp-directory';
-const tabBar = { list: [{ pagePath: 'pages/recipes/index', text: '菜谱' }, { pagePath: 'pages/family/home', text: '家庭' }] };
+const tabBar = { list: [{ pagePath: 'pages/recipes/index', text: '菜谱' }, { pagePath: 'pages/planning/index', text: '计划' }, { pagePath: 'pages/family/home', text: '家庭' }] };
 async function fixture() {
   const dir = await testDirectory('boundary-');
   await assembleUniId({ archivePath: resolve('vendor/uni-id/upstream.zip'), lockPath: resolve('vendor/uni-id/lock.json'), targetPath: dir });
@@ -29,7 +29,7 @@ async function fixture() {
   const callback = join(dir, 'uniCloud-alipay/cloudfunctions/media-review-callback'); await mkdir(callback, { recursive: true });
   await writeFile(join(callback, 'index.ts'), 'export async function main() {}');
   await writeFile(join(callback, 'package.json'), '{"name":"media-review-callback","private":true}');
-  for (const [name, methods] of [['imports-co', ['submit', 'get', 'cancel']], ['import-worker', ['_timing']]] as const) {
+  for (const [name, methods] of [['imports-co', ['submit', 'get', 'cancel']], ['import-worker', ['_timing']], ['planning-co', ['add', 'list', 'get', 'update', 'remove']]] as const) {
     const folder = join(dir, 'uniCloud-alipay/cloudfunctions', name); await mkdir(folder, { recursive: true });
     await writeFile(join(folder, 'index.obj.ts'), methods.map(method => 'export async function ' + method + '() {}').join('\n'));
     await writeFile(join(folder, 'package.json'), JSON.stringify({ name, private: true }));
@@ -73,23 +73,23 @@ test('dynamic_require_and_value_contract_imports_are_rejected', async () => {
 });
 test('vendor_and_tests_must_not_enter_build_artifact', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit'], tabBar }));
   await writeFile(join(dist, 'app.js'), 'const leak="vendor/uni-id/upstream.zip";');
   await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact/i);
 });
 
-test('artifact_routes_are_exactly_the_implemented_account_family_recipe_and_import_pages', async () => {
+test('artifact_routes_are_exactly_thirteen_implemented_pages_and_three_native_tabs', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  const path = join(dist, 'app.json'); const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'];
+  const path = join(dist, 'app.json'); const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit'];
   await writeFile(path, JSON.stringify({ pages, tabBar })); await expect(checkBoundaries({ root: dir, artifacts: true })).resolves.toBeUndefined();
-  for (const manifest of [{ pages }, { pages: pages.slice(0, 2), tabBar }, { pages: [...pages, 'pages/family/invites'], tabBar }, { pages, tabBar, subPackages: [{ root: 'future', pages: ['invite'] }] }, { pages, tabBar: { list: [] } }, { pages, tabBar: { custom: true, ...tabBar } }, { pages, tabBar: { list: [...tabBar.list, { pagePath: 'pages/plans/index', text: '计划' }] } }, { pages, tabBar: { list: [tabBar.list[0], tabBar.list[0]] } }, { pages, tabBar: { list: [{ ...tabBar.list[0], pagePath: 'pages/recipes/index?id=1' }, tabBar.list[1]] } }]) {
+  for (const manifest of [{ pages }, { pages: pages.slice(0, 2), tabBar }, { pages: [...pages, 'pages/family/invites'], tabBar }, { pages, tabBar, subPackages: [{ root: 'future', pages: ['invite'] }] }, { pages, tabBar: { list: [] } }, { pages, tabBar: { custom: true, ...tabBar } }, { pages, tabBar: { list: [...tabBar.list, { pagePath: 'pages/plans/index', text: '计划' }] } }, { pages, tabBar: { list: [tabBar.list[0], tabBar.list[0], tabBar.list[2]] } }, { pages, tabBar: { list: [{ ...tabBar.list[0], pagePath: 'pages/recipes/index?id=1' }, tabBar.list[1], tabBar.list[2]] } }, { pages: [...pages].reverse(), tabBar }, { pages, tabBar: { list: [...tabBar.list].reverse() } }, { pages: pages.slice(0, 11), tabBar }, { pages, tabBar: { list: [tabBar.list[0], tabBar.list[2]] } }]) {
     await writeFile(path, JSON.stringify(manifest)); await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact.*route/i);
   }
 });
 
 test('artifact_wxss_rejects_universal_selectors_before_wechat_compilation', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit'], tabBar }));
   const path = join(dist, 'app.wxss');
   for (const source of ['.actions > * { flex: 1; }', '@media (max-width: 359px) { * { margin: 0; } }', '.page :is(*) { color: red; }']) {
     await writeFile(path, source); await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/WXSS.*universal/i);
@@ -100,8 +100,8 @@ test('artifact_wxss_rejects_universal_selectors_before_wechat_compilation', asyn
 
 test('family_content_and_fixture_runtime_cannot_enter_actual_artifact_content', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));
-  for (const forbidden of ['home-imports', 'home-media', 'home-recipes', 'home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common', 'JINA_API_KEY']) {
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit'], tabBar }));
+  for (const forbidden of ['home-planning', 'home-imports', 'home-media', 'home-recipes', 'home-family', 'home-kernel', 'uni-sec-check', 'uni-open-bridge', 'tests/support/harness', 'cloudfunctions/common', 'JINA_API_KEY']) {
     await writeFile(join(dist, 'app.js'), `const leaked = '${forbidden}';`);
     await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/artifact/i);
   }
@@ -109,7 +109,7 @@ test('family_content_and_fixture_runtime_cannot_enter_actual_artifact_content', 
 
 test('production_artifact_rejects_isolated_visual_review_data', async () => {
   const dir = await fixture(); const dist = join(dir, 'dist/build/mp-weixin'); await mkdir(dist, { recursive: true });
-  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status'], tabBar }));
+  await writeFile(join(dist, 'app.json'), JSON.stringify({ pages: ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit'], tabBar }));
   for (const forbidden of ['HOME_UI_REVIEW_V11_ONLY', 'home.ui-review.v11', 'static/ui-review/noodles.jpg', 'ui-review-owner']) {
     await writeFile(join(dist, 'app.js'), `const leaked = '${forbidden}';`);
     await expect(checkBoundaries({ root: dir, artifacts: true })).rejects.toThrow(/review fixtures/i);
@@ -198,6 +198,26 @@ test('recipe_object_rejects_helpers_default_exports_and_future_methods', async (
   for (const extra of ['export async function seed() {}', 'export async function remove() {}', 'export default {}', "export { helper } from './helper';"]) {
     await writeFile(path, valid + '\n' + extra);
     await expect(checkBoundaries({ root: dir })).rejects.toThrow(/public|export|method/i);
+  }
+});
+test('planning_object_rejects_unallowed_methods_default_reexports_and_extra_objects', async () => {
+  const root = await fixture(); const path = join(root, 'uniCloud-alipay/cloudfunctions/planning-co/index.obj.ts');
+  const valid = await readFile(path, 'utf8');
+  await expect(checkBoundaries({ root })).resolves.toBeUndefined();
+  for (const extra of ['export async function create() {}', 'export async function debug() {}', 'export default {};', "export { helper } from './helper';", 'export const helper = () => {};']) {
+    await writeFile(path, valid + '\n' + extra);
+    await expect(checkBoundaries({ root })).rejects.toThrow(/method.*export/i);
+  }
+  await writeFile(path, valid);
+  const rogue = join(root, 'uniCloud-alipay/cloudfunctions/planning-debug-co'); await mkdir(rogue, { recursive: true });
+  await writeFile(join(rogue, 'index.obj.ts'), 'export async function debug() {}');
+  await expect(checkBoundaries({ root })).rejects.toThrow(/public cloud object/i);
+});
+test('planning_runtime_cannot_enter_the_client_through_import_require_or_reexport', async () => {
+  const root = await fixture();
+  for (const source of ["import { createPlanningService } from 'home-planning';", "const planning = require('home-planning');", "const planning = import('home-planning');", "export * from 'home-planning';"]) {
+    await writeFile(join(root, 'src/escape.ts'), source);
+    await expect(checkBoundaries({ root })).rejects.toThrow(/client runtime cloud import/i);
   }
 });
 test('extra_plugin_cloud_object_is_rejected', async () => {

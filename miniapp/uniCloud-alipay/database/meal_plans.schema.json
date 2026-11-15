@@ -1,0 +1,18 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "familyId", "createdBy", "recipeId", "titleSnapshot", "version", "createdAt", "updatedAt", "date", "meal", "targetServings"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "familyId": { "bsonType": "string", "minLength": 1, "maxLength": 128 },
+    "createdBy": { "bsonType": ["string", "null"] },
+    "recipeId": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "titleSnapshot": { "bsonType": "string", "minLength": 1, "maxLength": 120 },
+    "version": { "bsonType": "int", "minimum": 1 },
+    "createdAt": { "bsonType": "long", "minimum": 0 },
+    "updatedAt": { "bsonType": "long", "minimum": 0 },
+    "date": { "bsonType": "string", "minLength": 10, "maxLength": 10, "pattern": "^(?!0000)[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$" },
+    "meal": { "bsonType": "string", "enum": ["breakfast", "lunch", "dinner", "other"] },
+    "targetServings": { "bsonType": ["double", "int", "null"], "minimum": 0, "maximum": 10000 }
+  }
+}

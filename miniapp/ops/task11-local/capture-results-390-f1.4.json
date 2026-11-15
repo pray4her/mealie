@@ -1,0 +1,192 @@
+{
+  "width": "390",
+  "font": 1.4,
+  "project": "E:/pray4her/mealie/.qoder/worktrees/issue-11-planning/miniapp/dist/ui-review-v3/mp-weixin",
+  "autoPort": "9422",
+  "platform": "WeChat devtools simulator / ui-review fixture",
+  "startedAt": "2026-11-15T10:27:38.954Z",
+  "cases": [
+    {
+      "name": "index-populated",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 1,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 2,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 3,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 4,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "rootFontSize": "22.4px"
+    },
+    {
+      "name": "index-long",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "rootFontSize": "22.4px"
+    },
+    {
+      "name": "index-pagination",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "rootFontSize": "22.4px"
+    },
+    {
+      "name": "edit-search",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "pre",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "pre",
+          "i": 1,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "rootFontSize": "22.4px"
+    },
+    {
+      "name": "edit-form",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 2,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 3,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "rootFontSize": "22.4px"
+    },
+    {
+      "name": "edit-field-error",
+      "pass": true,
+      "checks": [
+        {
+          "phase": "post",
+          "i": 0,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 1,
+          "ok": true
+        },
+        {
+          "phase": "post",
+          "i": 2,
+          "ok": true
+        }
+      ],
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "rootFontSize": "22.4px"
+    }
+  ],
+  "screenshots": [
+    "wechat-index-populated-390-f1.4.png",
+    "wechat-index-long-390-f1.4.png",
+    "wechat-index-pagination-390-f1.4.png",
+    "wechat-edit-search-390-f1.4.png",
+    "wechat-edit-form-390-f1.4.png",
+    "wechat-edit-field-error-390-f1.4.png"
+  ],
+  "evidenceBoundary": [
+    "ui-review mock client: no cloud, no real identity, no real WeChat API proof.",
+    "Font scale is a boot-time mock shim in the review artifact (uni caches base info at boot; devtools reports an inverted scale). Not a physical system setting.",
+    "Simulator screenshots, not a physical device.",
+    "Logical width comes from the IDE device selector; every case records the measured viewport."
+  ],
+  "baseInfo": {
+    "reported": {
+      "systemFontSizeSetting": 22.4,
+      "wxFontSizeSetting": 22.4,
+      "wxFontSizeScaleFactor": 1.4
+    },
+    "shimScale": 1.4,
+    "ideTextSize": 16
+  },
+  "finishedAt": "2026-11-15T10:28:04.516Z",
+  "fontCheck": {
+    "roots": [
+      "22.4px"
+    ],
+    "ok": true
+  },
+  "pass": true
+}

@@ -1,0 +1,83 @@
+{
+  "requestId": "f32063fe-21b9-49fb-ac40-ee6493a17c5a",
+  "readAt": "2026-11-15T13:40:10.820Z",
+  "familyId": "9ab1b26b1d49ba76d4502a5771250313",
+  "plans": [
+    {
+      "_id": "cd4d2388241c814ba842e44bf31461d6",
+      "date": "2026-11-15",
+      "meal": "dinner",
+      "targetServings": 3,
+      "version": 3,
+      "titleSnapshot": "土豆炖牛腩",
+      "recipeId": "8d580aeb9a9d1d0e73f7b6aa1b020049",
+      "createdAt": 1794748839328,
+      "updatedAt": 1794749536480
+    },
+    {
+      "_id": "1784c5bdddf3cfd98717d299cb15e038",
+      "date": "2026-11-15",
+      "meal": "dinner",
+      "targetServings": 2.5,
+      "version": 1,
+      "titleSnapshot": "土豆炖牛腩",
+      "recipeId": "8d580aeb9a9d1d0e73f7b6aa1b020049",
+      "createdAt": 1794748846519,
+      "updatedAt": 1794748846519
+    },
+    {
+      "_id": "3062178132d202dd73feb81aeed923b0",
+      "date": "2026-11-15",
+      "meal": "dinner",
+      "targetServings": null,
+      "version": 1,
+      "titleSnapshot": "土豆炖牛腩",
+      "recipeId": "8d580aeb9a9d1d0e73f7b6aa1b020049",
+      "createdAt": 1794749506883,
+      "updatedAt": 1794749506883
+    },
+    {
+      "_id": "32575c2dd66ca0a7c037291307d72efb",
+      "date": "2026-11-15",
+      "meal": "dinner",
+      "targetServings": 2.5,
+      "version": 1,
+      "titleSnapshot": "土豆炖牛腩",
+      "recipeId": "8d580aeb9a9d1d0e73f7b6aa1b020049",
+      "createdAt": 1794749514657,
+      "updatedAt": 1794749514657
+    }
+  ],
+  "receipts": [
+    {
+      "operation": "plan-add-v1",
+      "payloadHash": "6cb25c53ebe341adedfe9b39bbb40af6a8b5b7dc99de9706f9a92fd65231c46f",
+      "requestId": "ca06467c0ce75885c709695d9fca65cc",
+      "createdAt": 1794748839372
+    },
+    {
+      "operation": "plan-add-v1",
+      "payloadHash": "c65dff6b8935283e50b3422b9f3fe65f29f8bc456b98a1407ee85aec40123705",
+      "requestId": "7cf2371fd26b41bc841de0716198ee69",
+      "createdAt": 1794748846557
+    },
+    {
+      "operation": "plan-add-v1",
+      "payloadHash": "348852efefd3ca16f518323511d3c069f333dec909fb05b2ccc410b5d60a11fa",
+      "requestId": "418c2b0970a47fed4c97bbc81e9917c4",
+      "createdAt": 1794748854930
+    },
+    {
+      "operation": "plan-add-v1",
+      "payloadHash": "73f6ee7ab3d2f3bcf4afee306e480e44184f0bb390905bd4de58fd1e5a8a7a43",
+      "requestId": "a0f88c818ce316e60b84ba21bcd9e4eb",
+      "createdAt": 1794749506932
+    },
+    {
+      "operation": "plan-add-v1",
+      "payloadHash": "6efca1dd3c2512bf6528a85e6634db7f64cf5ea08021164450cf91f5ca80b711",
+      "requestId": "9f34558217ec438f7c91a2c6a9013d88",
+      "createdAt": 1794749514697
+    }
+  ]
+}

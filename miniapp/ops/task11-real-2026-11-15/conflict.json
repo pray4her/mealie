@@ -1,0 +1,13 @@
+{
+  "startedAt": "2026-11-15T14:04:41.648Z",
+  "competingCommit": "ok",
+  "conflict": {
+    "message": true,
+    "draftKept": "5"
+  },
+  "afterReloadServings": "4",
+  "saveAfterReload": "ok",
+  "finishedAt": "2026-11-15T14:05:06.529Z",
+  "pass": true,
+  "note": "same-account stale-version race via two stacked edit instances; reload confirmation answered via intercepted showModal"
+}
