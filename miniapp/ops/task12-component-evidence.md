@@ -1,6 +1,6 @@
 # Issue #12 组件与实现依据
 
-- 基准：miniapp-dev / 3d983cc38325d455c5f9d682346ec0324679382e；本票实现尚未提交，不编造实现提交。
+- 基准：miniapp-dev / 3d983cc38325d455c5f9d682346ec0324679382e；实现提交 [b5dc16b42](https://github.com/pray4her/mealie/commit/b5dc16b42dd372961049686fc6a23bcc5a40b04f)，已推送至 upstream/miniapp-dev。
 - 设计：P-13；D-02/03/04/06/08/10/11/12；S-PREVIEW、S-ANYLIST、S-WOT-AI、S-UNI、S-WECHAT。沿用批准预览的紧凑采购行、数量右对齐、已购分组；不带入原型分类、样例数据或仅按名称去重。
 - 本机安装：Vue 3.4.21、uni-app 3.0.0-5030420261029002、@uni-helper/uni-app-types 1.4.2、@wot-ui/ui 2.4.0、Wot CLI 1.2.1。没有升级依赖；review/npm ci 仅安装既有锁文件中的 miniprogram-automator 0.13.0。
 - 按 vue-best-practices、uni-app、uni-helper、wot-ui-v2、Refero 的既有参考锁及表单/排版 craft 实施。没有可用 Refero MCP，不声称新增 Refero 数据库研究。
