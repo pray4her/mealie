@@ -1,6 +1,7 @@
 // Limit registration to the official component types used by this client.
 declare module 'vue' {
   export interface GlobalComponents {
+    WdCheckbox: typeof import('@wot-ui/ui/components/wd-checkbox/wd-checkbox.vue')['default'];
     WdForm: typeof import('@wot-ui/ui/components/wd-form/wd-form.vue')['default'];
     WdFormItem: typeof import('@wot-ui/ui/components/wd-form-item/wd-form-item.vue')['default'];
     WdButton: typeof import('@wot-ui/ui/components/wd-button/wd-button.vue')['default'];

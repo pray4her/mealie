@@ -19,7 +19,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
   const discovered = [...client, ...cloud].filter(path => /[\\/]uni-id-co[\\/]index\.obj\.[jt]s$/.test(path));
   if (discovered.length !== 1 || !discovered[0].includes('uniCloud-alipay')) throw new Error('Expected unique uni-id-co; duplicate or missing object');
   const objectEntries = [...client, ...cloud].filter(path => /[\\/]index\.obj\.[jt]s$/.test(path));
-  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts', 'family-co/index.obj.ts', 'recipes-co/index.obj.ts', 'planning-co/index.obj.ts', 'media-co/index.obj.ts', 'imports-co/index.obj.ts', 'import-worker/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
+  const allowed = ['uni-id-co/index.obj.js', 'account-co/index.obj.ts', 'family-co/index.obj.ts', 'recipes-co/index.obj.ts', 'planning-co/index.obj.ts', 'shopping-co/index.obj.ts', 'media-co/index.obj.ts', 'imports-co/index.obj.ts', 'import-worker/index.obj.ts'].map(path => resolve(root, 'uniCloud-alipay/cloudfunctions', path));
   if (objectEntries.length !== allowed.length || objectEntries.some(path => !allowed.includes(path))) throw new Error('Unexpected discoverable public cloud object');
   const httpEntries = cloud.filter(path => /[\\/]cloudfunctions[\\/][^\\/]+[\\/]index\.[jt]s$/.test(path));
   if (httpEntries.length !== 1 || httpEntries[0] !== resolve(root, 'uniCloud-alipay/cloudfunctions/media-review-callback/index.ts')) throw new Error('Unexpected public HTTP cloud function');
@@ -42,7 +42,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
       const ast = ts.createSourceFile(path, code, ts.ScriptTarget.Latest, true);
       const check = (specifier, typeOnly) => {
         if (typeof specifier !== 'string') throw new Error('Client dynamic runtime import denied: ' + path);
-        if (/(?:home-kernel|home-family|home-recipes|home-planning|home-media|home-imports|uni-sec-check|uni-open-bridge|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
+        if (/(?:home-kernel|home-family|home-recipes|home-planning|home-shopping|home-media|home-imports|uni-sec-check|uni-open-bridge|uniCloud-|cloudfunctions|vendor\/|tests\/|node:|uni-id-common|uni-config-center)/i.test(specifier) || (specifier.includes('home-contracts') && !typeOnly)) throw new Error('Client runtime cloud import denied: ' + path);
       };
       const visit = node => {
         if (ts.isImportDeclaration(node)) {
@@ -84,9 +84,9 @@ export async function checkBoundaries({ root, artifacts = false }) {
       }
       ts.forEachChild(node, visit);
     }; visit(ast);
-    if (/[\\/](?:account-co|family-co|recipes-co|planning-co|media-co|imports-co|import-worker)[\\/]index\.obj\.ts$/.test(path)) {
+    if (/[\\/](?:account-co|family-co|recipes-co|planning-co|shopping-co|media-co|imports-co|import-worker)[\\/]index\.obj\.ts$/.test(path)) {
       const exports = ast.statements.filter(node => ts.isExportDeclaration(node) || ts.isExportAssignment(node) || (ts.canHaveModifiers(node) && ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)));
-      const expected = path.includes('planning-co') ? ['add', 'list', 'get', 'update', 'remove'] : path.includes('import-worker') ? ['_timing'] : path.includes('imports-co') ? ['submit', 'get', 'cancel'] : path.includes('media-co') ? ['requestUpload', 'upload', 'complete', 'status', 'read'] : path.includes('recipes-co') ? ['create', 'get', 'list', 'update', 'favorite', 'bindImages'] : path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
+      const expected = path.includes('shopping-co') ? ['createList', 'renameList', 'removeList', 'addItem', 'updateItem', 'removeItem', 'setChecked', 'listLists', 'listItems', 'getList', 'getItem'] : path.includes('planning-co') ? ['add', 'list', 'get', 'update', 'remove'] : path.includes('import-worker') ? ['_timing'] : path.includes('imports-co') ? ['submit', 'get', 'cancel'] : path.includes('media-co') ? ['requestUpload', 'upload', 'complete', 'status', 'read'] : path.includes('recipes-co') ? ['create', 'get', 'list', 'update', 'favorite', 'bindImages'] : path.includes('family-co') ? ['create', 'current', 'invite', 'revokeInvite', 'join', 'members', 'invitations', 'leave', 'removeMember', 'transferOwner'] : ['session'];
       if (exports.length !== expected.length || exports.some(node => !ts.isFunctionDeclaration(node) || !expected.includes(node.name?.text) || ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword))
         || new Set(exports.map(node => node.name?.text)).size !== expected.length) throw new Error('Unexpected public method export: ' + path);
     }
@@ -97,8 +97,8 @@ export async function checkBoundaries({ root, artifacts = false }) {
     let manifest;
     try { manifest = JSON.parse(await readFile(join(root, 'dist/build/mp-weixin/app.json'), 'utf8')); }
     catch { throw new Error('Artifact route manifest missing/invalid'); }
-    const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit'];
-    const tabs = [{ pagePath: 'pages/recipes/index', text: '菜谱' }, { pagePath: 'pages/planning/index', text: '计划' }, { pagePath: 'pages/family/home', text: '家庭' }];
+    const pages = ['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit', 'pages/shopping/index', 'pages/shopping/list-edit', 'pages/shopping/item-edit'];
+    const tabs = [{ pagePath: 'pages/recipes/index', text: '菜谱' }, { pagePath: 'pages/planning/index', text: '计划' }, { pagePath: 'pages/shopping/index', text: '清单' }, { pagePath: 'pages/family/home', text: '家庭' }];
     if (!Array.isArray(manifest.pages) || manifest.pages.length !== pages.length || manifest.pages.some((page, index) => page !== pages[index])
       || manifest.subPackages || manifest.subpackages || manifest.tabBar?.custom
       || !Array.isArray(manifest.tabBar?.list) || manifest.tabBar.list.length !== tabs.length
@@ -111,7 +111,7 @@ export async function checkBoundaries({ root, artifacts = false }) {
         const css = (await readFile(path, 'utf8')).replace(/\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g, '');
         if ([...css.matchAll(/([^{}]+)\{/g)].some(([, selector]) => /(?:^|[\s>+~,(|])\*/.test(selector))) throw new Error('WXSS universal selector unsupported: ' + path);
       }
-      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|home-planning|home-media|home-imports|uni-sec-check|uni-open-bridge|cloudfunctions\/common|JINA_API_KEY|OPENROUTER_API_KEY|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
+      if (/\.(?:js|json|map|wxml)$/.test(path) && /(?:vendor\/|tests\/support|home-kernel|home-family|home-recipes|home-planning|home-shopping|home-media|home-imports|uni-sec-check|uni-open-bridge|cloudfunctions\/common|JINA_API_KEY|OPENROUTER_API_KEY|FAMILY_INVITATION_KEYS|FAMILY_INVITATION_KEY_VERSION|tokenSecret["']?\s*[:=]|appsecret["']?\s*[:=])/i.test(await readFile(path, 'utf8'))) throw new Error('Artifact source/secret boundary violation');
     }
   }
 }

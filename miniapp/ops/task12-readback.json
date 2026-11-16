@@ -1,0 +1,43 @@
+{
+  "ticket": 12,
+  "provider": "alipay",
+  "spaceId": "env-00jy7289et7b",
+  "schemas": {
+    "shopping_lists.schema.json": true,
+    "shopping_items.schema.json": true,
+    "mutation_receipts.schema.json": true
+  },
+  "protectedModules": {
+    "uni-id-common": {
+      "same": true,
+      "fileCount": 2
+    },
+    "uni-config-center": {
+      "same": true,
+      "fileCount": 5
+    },
+    "uni-open-bridge-common": {
+      "same": true,
+      "fileCount": 9
+    }
+  },
+  "indexReadback": "CLI has no index download channel; upload receipts retained",
+  "cloudEntrySourceIdentical": true,
+  "cloudEntryMethods": [
+    "addItem",
+    "createList",
+    "getItem",
+    "getList",
+    "listItems",
+    "listLists",
+    "removeItem",
+    "removeList",
+    "renameList",
+    "setChecked",
+    "updateItem"
+  ],
+  "sourceShoppingModuleHash": "82759d14565dae8b5c194a695a167ee3d086860b4c89b4c1483d65e9f7e7fb48",
+  "downloadedShoppingModuleHash": "78c3a692591cde4a302482fbdaa7a9002c75c195201b074f83d4002a9c38a00c",
+  "buildHash": "ea7478110fcafddaf29dcf1381d7e893fe9612fbb4eb75d6659edab461a09565",
+  "hashAlgorithm": "sorted relative path + NUL + original bytes + NUL, SHA-256"
+}

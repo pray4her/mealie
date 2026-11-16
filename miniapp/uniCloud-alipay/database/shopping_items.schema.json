@@ -1,0 +1,20 @@
+{
+  "bsonType": "object",
+  "required": ["_id", "familyId", "listId", "raw", "name", "quantity", "unit", "note", "checked", "createdBy", "version", "createdAt", "updatedAt"],
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "familyId": { "bsonType": "string", "minLength": 1, "maxLength": 128 },
+    "listId": { "bsonType": "string", "pattern": "^[a-f0-9]{32}$" },
+    "raw": { "bsonType": "string", "minLength": 1, "maxLength": 500 },
+    "name": { "bsonType": ["string", "null"], "maxLength": 100 },
+    "quantity": { "bsonType": ["double", "int", "null"], "minimum": 0, "maximum": 1000000 },
+    "unit": { "bsonType": ["string", "null"], "maxLength": 40 },
+    "note": { "bsonType": ["string", "null"], "maxLength": 500 },
+    "checked": { "bsonType": "bool" },
+    "createdBy": { "bsonType": ["string", "null"] },
+    "version": { "bsonType": "int", "minimum": 1 },
+    "createdAt": { "bsonType": "long", "minimum": 0 },
+    "updatedAt": { "bsonType": "long", "minimum": 0 }
+  }
+}

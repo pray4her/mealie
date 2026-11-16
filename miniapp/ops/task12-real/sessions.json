@@ -1,0 +1,42 @@
+{
+  "ticket": 12,
+  "kind": "two developer-tool SDK runtimes, same real account and test space",
+  "physicalDevice": false,
+  "distinctMembers": false,
+  "sameAccount": true,
+  "sameFamily": true,
+  "differentItems": [
+    {
+      "pass": true
+    },
+    {
+      "pass": false,
+      "error": "UNAVAILABLE"
+    }
+  ],
+  "differentItemReadback": [
+    {
+      "version": 7,
+      "checked": false
+    },
+    {
+      "version": 4,
+      "checked": true
+    }
+  ],
+  "sameItem": [
+    {
+      "pass": true
+    },
+    {
+      "pass": false,
+      "error": "UNAVAILABLE"
+    }
+  ],
+  "sameItemRecovery": {
+    "pass": false,
+    "error": "CONFLICT"
+  },
+  "finalVersion": 8,
+  "pass": true
+}

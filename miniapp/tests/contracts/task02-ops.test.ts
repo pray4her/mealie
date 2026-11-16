@@ -99,8 +99,8 @@ test('task02 dry preview does not change files, associate, upload or initialize'
   const historical = await readFile('ops/acceptance.json', 'utf8');
   const preview = await createDeployPreview({ root, ticket: 'task02' });
   expect(preview).toMatchObject({ ticket: 'task02', previewOnly: true, uploadAuthorized: false, blocked: true });
-  expect(preview.resources).toHaveLength(53);
-  for (const name of ['planning-co', 'home-planning', 'meal_plans.schema.json', 'meal_plans.index.json']) {
+  expect(preview.resources).toHaveLength(59);
+  for (const name of ['planning-co', 'home-planning', 'meal_plans.schema.json', 'meal_plans.index.json', 'shopping-co', 'home-shopping', 'shopping_lists.schema.json', 'shopping_lists.index.json', 'shopping_items.schema.json', 'shopping_items.index.json']) {
     expect(preview.resources).toContainEqual(expect.objectContaining({ name, action: 'blocked-no-upload' }));
   }
   expect(preview.resources.every(item => item.action === 'blocked-no-upload')).toBe(true);

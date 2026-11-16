@@ -1,3 +1,6 @@
+import { createShoppingService } from '../../uniCloud-alipay/cloudfunctions/common/home-shopping';
+import type { ShoppingApi, ShoppingIntent } from 'home-contracts';
+import type { ListRecord, ItemRecord } from '../../uniCloud-alipay/cloudfunctions/common/home-shopping';
 import { createMediaService } from '../../uniCloud-alipay/cloudfunctions/common/home-media';
 import type { MediaReviewPort, StoragePort } from '../../uniCloud-alipay/cloudfunctions/common/home-media';
 import { digest } from '../../uniCloud-alipay/cloudfunctions/common/home-media/files';
@@ -99,6 +102,24 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     return { async add(input) { return (await service()).add(input); }, async list(input) { return (await service()).list(input); },
       async get(id) { return (await service()).get(id); }, async update(input) { return (await service()).update(input); }, async remove(input) { await (await service()).remove(input); } };
   };
+  const shopping = (uid: Id): ShoppingApi => {
+    const service = async () => createShoppingService({ database: memory.database, now: () => now,
+      newId: () => (++nextId).toString(16).padStart(32, '0'), content: options.content ?? { async checkText() { return 'allowed'; } },
+      reads: { async list(familyId, listId, limit, after) {
+        const rows: (ListRecord | ItemRecord)[] = listId ? await memory.rows<ItemRecord>('shopping_items') : await memory.rows<ListRecord>('shopping_lists');
+        return rows.filter(row => row.familyId === familyId && ('listId' in row ? row.listId === listId : row.status === 'active')
+          && (!after || row.createdAt > after.createdAt || row.createdAt === after.createdAt && row._id > after.id))
+          .sort((a, b) => a.createdAt - b.createdAt || a._id.localeCompare(b._id)).slice(0, limit + 1);
+      } }, async revalidateIdentity() { await guard(tokenFor(uid), clientInfo, { refresh: false }); },
+    }, await requireFamily(memory.database, await guard(tokenFor(uid), clientInfo)));
+    const write = async <K extends ShoppingIntent['kind']>(kind: K, input: Parameters<ShoppingApi[K]>[0]) => {
+      const api = await service(); return (api[kind] as (value: typeof input) => Promise<{ id: string }>)(input);
+    };
+    return { createList: input => write('createList', input), renameList: input => write('renameList', input), removeList: input => write('removeList', input),
+      addItem: input => write('addItem', input), updateItem: input => write('updateItem', input), removeItem: input => write('removeItem', input), setChecked: input => write('setChecked', input),
+      async listLists(input) { return (await service()).listLists(input); }, async getList(input) { return (await service()).getList(input); },
+      async listItems(input) { return (await service()).listItems(input); }, async getItem(input) { return (await service()).getItem(input); } };
+  };
   const media = (uid: Id): import('home-contracts').MediaApi => {
     const service = async () => createMediaService({ database: memory.database, storage, review: options.review ?? { mode: 'disabled', async submit() { throw new Error('disabled'); } },
       now: () => now, newId: () => (++nextId).toString(16).padStart(32, '0'), sessionHash: digest(tokenFor(uid)),
@@ -139,7 +160,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     revokeToken(uid: Id) { const row = records.get(uid); if (row) row.tokens = []; },
     closeAccount(uid: Id) { records.delete(uid); },
     client(uid: Id): AppClient {
-      return { planning: planning(uid), imports: imports(uid), media: media(uid), recipes: recipes(uid), family: family(uid), account: {
+      return { shopping: shopping(uid), planning: planning(uid), imports: imports(uid), media: media(uid), recipes: recipes(uid), family: family(uid), account: {
         async signInWeixin() { return guard(tokenFor(uid), clientInfo); },
         async session() { return guard(uid ? tokenFor(uid) : undefined, clientInfo); },
         async signOut() { await guard(tokenFor(uid), clientInfo, { refresh: false }); const row = records.get(uid); if (row) row.tokens = []; },
@@ -147,7 +168,7 @@ export function createHarness(options: { now?: number; content?: ContentPort; st
     },
     advance(ms: number) { now += ms; },
     async rows<T>(collection: string): Promise<T[]> {
-      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'meal_plans' || collection === 'recipe_favorites' || collection === 'media_files' || collection === 'media_audit_traces' || collection === 'import_jobs' || collection === 'quota_buckets' || collection === 'ai_usage') return memory.rows<T>(collection);
+      if (collection === 'families' || collection === 'family_members' || collection === 'family_invitations' || collection === 'mutation_receipts' || collection === 'request_limits' || collection === 'recipes' || collection === 'meal_plans' || collection === 'shopping_lists' || collection === 'shopping_items' || collection === 'recipe_favorites' || collection === 'media_files' || collection === 'media_audit_traces' || collection === 'import_jobs' || collection === 'quota_buckets' || collection === 'ai_usage') return memory.rows<T>(collection);
       if (collection !== 'uni-id-users') throw new Error('Unsupported fixture collection');
       return [...records].map(([uid, row]) => ({ uid, ...row })) as T[];
     },

@@ -1,4 +1,10 @@
 export const copy = {
+  shoppingErrors: {
+    INVALID_INPUT: '填写内容未通过校验，请检查字段或修改后重试。', CONFLICT: '家人已修改此内容，请重新加载后核对；当前输入仍保留。',
+    NOT_FOUND: '清单或条目不存在，或当前不可访问。', UNAVAILABLE: '操作结果暂未确认，请恢复原请求；读取失败可重试读取。',
+    AUTH_REQUIRED: '登录已失效，请重新登录。', FAMILY_REQUIRED: '当前家庭关系不可用，请重新确认。', FORBIDDEN: '当前家庭权限不可用，请重新确认。',
+    QUOTA_EXCEEDED: '操作过于频繁，请稍后恢复原请求。', INVITATION_INVALID: '家庭信息已变化，请重新确认。', ALREADY_IN_FAMILY: '请重新确认当前家庭。',
+  },
   recipes: '家庭菜谱', createRecipe: '新建菜谱', editRecipe: '编辑菜谱', saveRecipe: '保存菜谱', noRecipes: '还没有菜谱，先记下一道家常菜吧。',
   allRecipes: '全部菜谱', myFavorites: '我的收藏', favoriteRecipe: '收藏', unfavoriteRecipe: '取消收藏',
   searchRecipes: '搜索', recipeQuery: '搜索标题', recipeTag: '精确标签（可选）', noMatchingRecipes: '没有符合条件的菜谱。',

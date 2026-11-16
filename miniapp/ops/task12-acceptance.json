@@ -1,0 +1,106 @@
+{
+  "ticket": 12,
+  "date": "2026-11-16",
+  "branch": "miniapp-dev",
+  "baseCommit": "3d983cc38325d455c5f9d682346ec0324679382e",
+  "implementationCommit": null,
+  "status": "implemented; local and real-cloud checks passed; device checks user-reported; remaining evidence listed",
+  "local": {
+    "node": "22.23.3",
+    "requiredPnpm": "10.20.0",
+    "runner": "Taskfile-equivalent installed binaries; PATH pnpm wrapper used incompatible Node24/pnpm11",
+    "testSuites": 75,
+    "tests": 1585,
+    "typecheckConfigs": [
+      "tsconfig.json",
+      "tsconfig.cloud.json",
+      "tsconfig.tests.json"
+    ],
+    "eslint": "passed, including explicit --no-ignore checks for the three new review scripts",
+    "assembly": "identity and content verified",
+    "boundariesAndSecrets": "source and built artifacts passed",
+    "independentReview": "two lifecycle/late-result findings fixed with regression tests; follow-up review clear",
+    "checkboxEvidence": "page tests verify accessible name, checked and disabled states, separate edit action and duplicate-click guard; not physical screen-reader evidence"
+  },
+  "package": {
+    "hbuilderx": "5.34.2026102909",
+    "command": "publish mp-weixin --upload false",
+    "result": "compiled and exported after one service-error retry",
+    "path": "dist/build/mp-weixin",
+    "wechatUploaded": false,
+    "previewGenerated": true,
+    "previewBytes": 756068,
+    "sha256": "ea7478110fcafddaf29dcf1381d7e893fe9612fbb4eb75d6659edab461a09565",
+    "hashAlgorithm": "sorted relative path + NUL + original bytes + NUL, SHA-256; includes IDE private settings"
+  },
+  "simulator": {
+    "devtools": "2.02.2611092",
+    "kind": "isolated review fixture, no cloud calls",
+    "screenshots": 64,
+    "passedMatrix": [
+      {
+        "width": 375,
+        "fontScale": 1,
+        "cases": 16
+      },
+      {
+        "width": 390,
+        "fontScale": 1,
+        "cases": 16
+      },
+      {
+        "width": 430,
+        "fontScale": 1,
+        "cases": 16
+      },
+      {
+        "width": 390,
+        "fontScale": 1.4,
+        "cases": 16
+      }
+    ],
+    "fontBoundary": "large-font shim changes only the isolated review artifact; title measured at 33.6px",
+    "width320": "not accepted: requested 320 but measured 375; current public CLI has no 320 preset and custom preference attempts were overwritten",
+    "evidence": "task12-local/README.md"
+  },
+  "cloud": {
+    "provider": "alipay",
+    "spaceId": "env-00jy7289et7b",
+    "uploadedResources": 9,
+    "protectedFilesUnchanged": 16,
+    "indexBoundary": "successful upload receipts only; CLI cannot independently download indexes",
+    "realFlow": "task12-real/flow-results.json",
+    "realFlowPassed": true,
+    "sameAccountTwoSdkRuntimes": "task12-real/sessions.json",
+    "sameAccountTwoSdkRuntimesPassed": true,
+    "contention": "unknown first outcomes preserved original requests; different items recovered without loss; same-item loser resolved to CONFLICT on original replay",
+    "verifiedProviderConflictCodes": [],
+    "legalDomainBoundary": "developer-tool private settings disable URL checks; production legal-domain acceptance is not inferred",
+    "retainedData": "one marked verified acceptance list; temporary lists soft-deleted and temporary item deleted; physical cleanup belongs to #18"
+  },
+  "physicalDevice": {
+    "status": "passed, user-reported",
+    "report": "新建、编辑、勾选、删除确认、关闭重进均正常；键盘和底部安全区没有遮挡操作",
+    "model": null,
+    "wechatVersion": null,
+    "independentDeviceCapture": false
+  },
+  "notObserved": [
+    "320px standard and large-font rendering",
+    "physical screen reader and native unsaved-input leave dialog",
+    "two distinct real members",
+    "real cross-family and removed-member flows",
+    "real moderation rejection and forced commit-ack loss"
+  ],
+  "excludedScope": [
+    "recipe-to-shopping",
+    "automatic merging",
+    "realtime push",
+    "offline writes",
+    "physical cleanup"
+  ],
+  "committed": false,
+  "pushed": false,
+  "issueClosed": false,
+  "productionPublished": false
+}

@@ -6,3 +6,5 @@ export const onUnload = (fn: () => unknown) => registerHook('unload', fn);
 export const onLaunch = (fn: () => unknown) => registerHook('launch', fn);
 export const onLoad = (fn: (query: Record<string, string | undefined>) => unknown) => registerHook('load', fn);
 export const onShareAppMessage = (fn: () => unknown) => registerHook('share', fn);
+
+export const onPullDownRefresh = (fn: () => unknown) => registerHook('pullDownRefresh', fn);

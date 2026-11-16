@@ -23,6 +23,7 @@ export default defineConfig({
     'home-family': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-family/index.ts', import.meta.url)),
     'home-media': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-media/index.ts', import.meta.url)),
     'home-recipes': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-recipes/index.ts', import.meta.url)),
+    'home-shopping': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-shopping/index.ts', import.meta.url)),
     'home-planning': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-planning/index.ts', import.meta.url)),
     'home-imports': fileURLToPath(new URL('./uniCloud-alipay/cloudfunctions/common/home-imports/index.ts', import.meta.url)),
   } },

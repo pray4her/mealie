@@ -1,0 +1,3 @@
+[
+  { "IndexName": "family_list_created_id", "MgoKeySchema": { "MgoIndexKeys": [{ "Name": "familyId", "Direction": "1" }, { "Name": "listId", "Direction": "1" }, { "Name": "createdAt", "Direction": "1" }, { "Name": "_id", "Direction": "1" }], "MgoIsUnique": false } }
+]

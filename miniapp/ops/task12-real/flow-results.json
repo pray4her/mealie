@@ -1,0 +1,82 @@
+{
+  "ticket": 12,
+  "kind": "real WeChat account + real alipay test space in developer-tool simulator",
+  "physicalDevice": false,
+  "steps": [
+    {
+      "action": "login",
+      "pass": true,
+      "authenticated": true,
+      "hasFamily": true
+    },
+    {
+      "action": "create",
+      "pass": true,
+      "listId": "2f163d4087ee13fcfb18c2aa07bb2a7c",
+      "rawItemId": "9f9d60636de8f70d9e122d3eb6aed93d",
+      "knownItemId": "cff23e5ba5252e1779bbaa68e493e611",
+      "knownQuantity": 6,
+      "rawQuantity": null
+    },
+    {
+      "action": "concurrent",
+      "pass": true,
+      "firstAttempt": [
+        "success",
+        "success"
+      ],
+      "recoveredWithOriginalRequest": false,
+      "versions": [
+        2,
+        2
+      ],
+      "checked": [
+        true,
+        true
+      ],
+      "boundary": "same real account, simultaneous SDK calls; not two distinct members"
+    },
+    {
+      "action": "replay-conflict",
+      "pass": true,
+      "staleEditConflict": true,
+      "replayDidNotFlip": true,
+      "rawPreserved": true,
+      "version": 3
+    },
+    {
+      "action": "rename-delete",
+      "pass": true,
+      "renamedVersion": 2,
+      "deletedListInaccessible": true,
+      "repeatedDeleteAcknowledged": true
+    },
+    {
+      "action": "readback",
+      "pass": true,
+      "listId": "2f163d4087ee13fcfb18c2aa07bb2a7c",
+      "rawVersion": 3,
+      "rawChecked": false,
+      "knownChecked": true,
+      "rawQuantity": null,
+      "knownQuantity": 6
+    },
+    {
+      "action": "item-lifecycle",
+      "pass": true,
+      "editedQuantity": 0.5,
+      "editedVersion": 2,
+      "deletedItemInaccessible": true,
+      "repeatedDeleteAcknowledged": true
+    },
+    {
+      "action": "parent-delete",
+      "pass": true,
+      "listItemsError": "NOT_FOUND",
+      "getItemError": "NOT_FOUND",
+      "physicalCleanup": "deferred to #18"
+    }
+  ],
+  "pass": true,
+  "note": "Only own marked lists were created; the empty temporary list was deleted; the verified list remains for physical-device acceptance."
+}

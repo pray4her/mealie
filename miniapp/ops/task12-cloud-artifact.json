@@ -1,0 +1,19 @@
+{
+  "kind": "downloaded cloud JS with fixture SDK, not real-cloud acceptance",
+  "passed": true,
+  "methods": [
+    "addItem",
+    "createList",
+    "getItem",
+    "getList",
+    "listItems",
+    "listLists",
+    "removeItem",
+    "removeList",
+    "renameList",
+    "setChecked",
+    "updateItem"
+  ],
+  "checked": true,
+  "version": 2
+}

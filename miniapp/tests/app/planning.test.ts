@@ -47,11 +47,11 @@ async function pick(page: ReturnType<typeof mountPage>, value: string) { await p
 const value = (page: ReturnType<typeof mountPage>) => (page.wrapper.get('input[data-servings]').element as HTMLInputElement).value;
 
 test('three native tabs preserve all eleven routes and append only the two planning pages', () => {
-  expect(routes.pages.map(page => page.path)).toEqual(['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit']);
-  expect(routes.tabBar.list.map(tab => [tab.pagePath, tab.text])).toEqual([['pages/recipes/index', '菜谱'], ['pages/planning/index', '计划'], ['pages/family/home', '家庭']]);
+  expect(routes.pages.map(page => page.path)).toEqual(['pages/account/login', 'pages/family/onboarding', 'pages/family/home', 'pages/family/invite', 'pages/family/join', 'pages/family/members', 'pages/recipes/index', 'pages/recipes/detail', 'pages/recipes/edit', 'pages/imports/submit', 'pages/imports/status', 'pages/planning/index', 'pages/planning/edit', 'pages/shopping/index', 'pages/shopping/list-edit', 'pages/shopping/item-edit']);
+  expect(routes.tabBar.list.map(tab => [tab.pagePath, tab.text])).toEqual([['pages/recipes/index', '菜谱'], ['pages/planning/index', '计划'], ['pages/shopping/index', '清单'], ['pages/family/home', '家庭']]);
   const switchTab = vi.spyOn(uni, 'switchTab'); const relaunch = vi.spyOn(uni, 'reLaunch');
   for (const tab of routes.tabBar.list) enterPage('/' + tab.pagePath);
-  expect(switchTab.mock.calls.map(([arg]) => arg.url)).toEqual(['/pages/recipes/index', '/pages/planning/index', '/pages/family/home']);
+  expect(switchTab.mock.calls.map(([arg]) => arg.url)).toEqual(['/pages/recipes/index', '/pages/planning/index', '/pages/shopping/index', '/pages/family/home']);
   enterPage('/pages/planning/edit'); expect(relaunch).toHaveBeenLastCalledWith({ url: '/pages/planning/edit' });
 });
 test('index uses Monday-first selected week, today and direct dates without querying a fake whole week', async () => {

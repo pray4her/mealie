@@ -24,7 +24,7 @@ function matches(row: Row, filter: Row): boolean {
     });
   });
 }
-export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' | 'imports-co' | 'planning-co' = 'family-co', commitAcknowledgement: 'object' | 'void' = 'object', options: CloudFixtureOptions = {}) {
+export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' | 'imports-co' | 'planning-co' | 'shopping-co' = 'family-co', commitAcknowledgement: 'object' | 'void' = 'object', options: CloudFixtureOptions = {}) {
   const files = new Map<string, Buffer>();
   const rows = new Map<string, Record<string, unknown>>();
   const checks: { token: string; autoRefresh: boolean }[] = [];
@@ -109,6 +109,17 @@ export function cloudFixture(entryName: 'family-co' | 'recipes-co' | 'media-co' 
     remove: (this: object, ...args: unknown[]) => Promise<unknown>;
     submit: (this: object, ...args: unknown[]) => Promise<unknown>;
     cancel: (this: object, ...args: unknown[]) => Promise<unknown>;
+    createList: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    renameList: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    removeList: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    listLists: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    getList: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    addItem: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    updateItem: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    removeItem: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    setChecked: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    listItems: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
+    getItem: (this: object, input: unknown, ...extra: unknown[]) => Promise<unknown>;
     requestUpload: (this: object, ...args: unknown[]) => Promise<unknown>;
     upload: (this: object, ...args: unknown[]) => Promise<unknown>;
     complete: (this: object, ...args: unknown[]) => Promise<unknown>;

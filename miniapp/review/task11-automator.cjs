@@ -19,7 +19,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
-const CLI = 'E:/Tencent/微信web开发者工具/cli.bat';
+const CLI = process.env.WECHAT_DEVTOOLS_CLI || 'E:/Tencent/微信web开发者工具/cli.bat';
 const DEVTOOLS_DIR = path.dirname(CLI);
 const ELECTRON = path.join(DEVTOOLS_DIR, '微信开发者工具.exe');
 const CLI_JS = path.join(DEVTOOLS_DIR, 'resources/app.asar.unpacked/js/common/cli/index.js');

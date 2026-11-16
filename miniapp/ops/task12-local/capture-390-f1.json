@@ -1,0 +1,172 @@
+{
+  "ticket": 12,
+  "width": 390,
+  "font": 1,
+  "kind": "WeChat developer-tool simulator with isolated UI fixture",
+  "fontSource": "review-only boot shim, not a physical system setting",
+  "cases": [
+    {
+      "name": "index-empty",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "index-list-only",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "index-populated",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "index-checked",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "index-long",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "index-pagination",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "list-picker",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "list-new",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "list-edit",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "item-new",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "item-validation",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "item-edit",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "item-conflict",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "item-pending",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "item-recovered",
+      "viewport": {
+        "width": 390,
+        "height": 754
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    },
+    {
+      "name": "index-read-failure",
+      "viewport": {
+        "width": 390,
+        "height": 671
+      },
+      "titleFontSize": "24px",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    "wechat-index-empty-390-f1.png",
+    "wechat-index-list-only-390-f1.png",
+    "wechat-index-populated-390-f1.png",
+    "wechat-index-checked-390-f1.png",
+    "wechat-index-long-390-f1.png",
+    "wechat-index-pagination-390-f1.png",
+    "wechat-list-picker-390-f1.png",
+    "wechat-list-new-390-f1.png",
+    "wechat-list-edit-390-f1.png",
+    "wechat-item-new-390-f1.png",
+    "wechat-item-validation-390-f1.png",
+    "wechat-item-edit-390-f1.png",
+    "wechat-item-conflict-390-f1.png",
+    "wechat-item-pending-390-f1.png",
+    "wechat-item-recovered-390-f1.png",
+    "wechat-index-read-failure-390-f1.png"
+  ],
+  "pass": true
+}

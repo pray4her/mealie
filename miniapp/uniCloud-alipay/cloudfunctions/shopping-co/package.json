@@ -1,0 +1,5 @@
+{
+  "name": "shopping-co", "version": "0.0.0", "private": true,
+  "dependencies": { "home-contracts": "file:../common/home-contracts", "home-kernel": "file:../common/home-kernel", "home-family": "file:../common/home-family", "home-shopping": "file:../common/home-shopping" },
+  "cloudfunction-config": { "keepRunningAfterReturn": false, "timeout": 15 }
+}

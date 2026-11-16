@@ -1,0 +1,224 @@
+[
+  {
+    "requestId": "task12-inventory-function",
+    "message": "获取到 12 项云函数",
+    "resources": [
+      {
+        "name": "account-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "import-worker",
+        "uniModuleId": ""
+      },
+      {
+        "name": "imports-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media-review-callback",
+        "uniModuleId": ""
+      },
+      {
+        "name": "planning-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipes-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "shopping-co",
+        "uniModuleId": ""
+      },
+      {
+        "name": "task07-storage-e50713853130",
+        "uniModuleId": ""
+      },
+      {
+        "name": "task10-egress-probe",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-co",
+        "uniModuleId": ""
+      }
+    ]
+  },
+  {
+    "requestId": "task12-inventory-common-module",
+    "message": "获取到 14 项公共模块",
+    "resources": [
+      {
+        "name": "home-contracts",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-family",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-imports",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-kernel",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-media",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-planning",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-recipes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "home-shopping",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-captcha",
+        "uniModuleId": "uni-captcha"
+      },
+      {
+        "name": "uni-cloud-s2s",
+        "uniModuleId": "uni-cloud-s2s"
+      },
+      {
+        "name": "uni-config-center",
+        "uniModuleId": "uni-config-center"
+      },
+      {
+        "name": "uni-id-common",
+        "uniModuleId": "uni-id-common"
+      },
+      {
+        "name": "uni-open-bridge-common",
+        "uniModuleId": "uni-open-bridge-common"
+      },
+      {
+        "name": "uni-sec-check",
+        "uniModuleId": "uni-sec-check"
+      }
+    ]
+  },
+  {
+    "requestId": "task12-inventory-schema",
+    "message": "获取到 25 项数据库资源",
+    "resources": [
+      {
+        "name": "shopping_items",
+        "uniModuleId": ""
+      },
+      {
+        "name": "shopping_lists",
+        "uniModuleId": ""
+      },
+      {
+        "name": "meal_plans",
+        "uniModuleId": ""
+      },
+      {
+        "name": "ai_usage",
+        "uniModuleId": ""
+      },
+      {
+        "name": "quota_buckets",
+        "uniModuleId": ""
+      },
+      {
+        "name": "import_jobs",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media_audit_traces",
+        "uniModuleId": ""
+      },
+      {
+        "name": "media_files",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipe_favorites",
+        "uniModuleId": ""
+      },
+      {
+        "name": "recipes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family_invitations",
+        "uniModuleId": ""
+      },
+      {
+        "name": "request_limits",
+        "uniModuleId": ""
+      },
+      {
+        "name": "mutation_receipts",
+        "uniModuleId": ""
+      },
+      {
+        "name": "family_members",
+        "uniModuleId": ""
+      },
+      {
+        "name": "families",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-users",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-roles",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-permissions",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-log",
+        "uniModuleId": ""
+      },
+      {
+        "name": "uni-id-device",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-verify-codes",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-tempdata",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-open-data",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-frv-logs",
+        "uniModuleId": ""
+      },
+      {
+        "name": "opendb-device",
+        "uniModuleId": ""
+      }
+    ]
+  }
+]

@@ -10,6 +10,7 @@ import { createMembershipIntents } from '../features/family/membership-intents';
 import { createMembershipController } from '../features/family/use-membership';
 import { createRecipesController } from '../features/recipes/use-recipes';
 import { createPlanningController } from '../features/planning/use-planning';
+import { createShoppingController } from '../features/shopping/use-shopping';
 import { createMediaController } from '../features/media/use-media';
 import { createImportsController } from '../features/imports/use-imports';
 import type { SessionStorage } from './session-boundary';
@@ -28,8 +29,9 @@ function createAppControllers(client: AppClient, options: ControllerOptions) {
   const media = createMediaController({ api: client.media, recipes: client.recipes, auth, family, storage, newRequestId: random });
   const imports = createImportsController({ api: client.imports, auth, family, storage, newRequestId: random });
   const planning = createPlanningController({ api: client.planning, recipes: client.recipes, media: client.media, auth, family, storage, newRequestId: random });
-  const membership = createMembershipController({ api: client.family, auth, family, intents: membershipIntents, newRequestId: random, invalidate() { family.clear(); invitations.conceal(); recipes.clear(); media.clear(); imports.clear(); planning.clear(); } });
-  return { client, auth, family, invitations, membership, recipes, media, imports, planning };
+  const shopping = createShoppingController({ api: client.shopping, auth, family, storage, newRequestId: random });
+  const membership = createMembershipController({ api: client.family, auth, family, intents: membershipIntents, newRequestId: random, invalidate() { family.clear(); invitations.conceal(); recipes.clear(); media.clear(); imports.clear(); planning.clear(); shopping.clear(); } });
+  return { client, auth, family, invitations, membership, recipes, media, imports, planning, shopping };
 }
 export const appClientKey: InjectionKey<ReturnType<typeof createAppControllers>> = Symbol('home-app-client');
 export function provideAppClient(app: App, client: AppClient, options: ControllerOptions = {}) { const value = createAppControllers(client, options); app.provide(appClientKey, value); return value; }

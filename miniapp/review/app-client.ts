@@ -1,4 +1,5 @@
-import type { AppClient, FamilyView, JobView, MediaView, Recipe, PlanEntry } from 'home-contracts';
+import type { AppClient, FamilyView, JobView, MediaView, Recipe, PlanEntry, ShoppingList, ShoppingItem, ShoppingIntent } from 'home-contracts';
+import { parseIntent as parseShoppingIntent } from '../src/features/shopping/validation';
 import { beijingToday, parseLocalDate } from '../src/features/planning/dates';
 import { parsePlanIntent, parsePlanList } from '../src/features/planning/validation';
 import { validId } from '../src/features/recipes/validation';
@@ -8,7 +9,8 @@ import { AppError } from '../src/shared/errors';
 export const reviewMarker = 'HOME_UI_REVIEW_V11_ONLY';
 const key = 'home.ui-review.v11';
 type PlanningScenario = { seed?: 'empty' | 'populated' | 'long' | 'pagination'; date?: string; read?: 'failure'; write?: 'failure' | 'lost-ack' | 'conflict'; source?: 'unavailable' };
-type Scenario = { planning?: PlanningScenario; auth?: 'anonymous' | 'failure'; family?: 'missing' | 'failure' | 'member' | 'forbidden'; recipes?: 'empty' | 'failure' | 'conflict' | 'long'; media?: 'failure'; job?: JobView['state']; delay?: number };
+type ShoppingScenario = { seed?: 'empty' | 'list-only' | 'populated' | 'long' | 'pagination' | 'checked'; read?: 'failure'; write?: 'failure' | 'lost-ack' | 'conflict' };
+type Scenario = { shopping?: ShoppingScenario; planning?: PlanningScenario; auth?: 'anonymous' | 'failure'; family?: 'missing' | 'failure' | 'member' | 'forbidden'; recipes?: 'empty' | 'failure' | 'conflict' | 'long'; media?: 'failure'; job?: JobView['state']; delay?: number };
 const scenario = (): Scenario => uni.getStorageSync(key) || {};
 const family: FamilyView = { uid: 'ui-review-owner', familyId: 'ui-review-family', generation: 'ui-review-generation', role: 'owner', name: '林家的厨房' };
 const now = Date.UTC(2026, 10, 10, 19);
@@ -95,8 +97,61 @@ export function createProductionClient(): AppClient {
     return clone(snapshot);
   }
   const image = (mediaId: string): MediaView => ({ mediaId, state: 'ready', uploadExpiresAt: now + 86400000, review: 'disabled', retryable: false });
+  const shoppingLists = new Map<string, ShoppingList>(); const shoppingItems = new Map<string, ShoppingItem>();
+  const shoppingReceipts = new Map<string, { payload: string; id: string }>(); const shoppingConflicts = new Set<string>();
+  let shoppingSeed = ''; let shoppingSequence = 0;
+  async function shoppingAccess(read = true) {
+    await authorize(); if (!currentFamily || scenario().family === 'missing') throw new AppError('FAMILY_REQUIRED');
+    const seed = scenario().shopping?.seed ?? 'empty';
+    if (seed !== shoppingSeed) {
+      shoppingSeed = seed; shoppingLists.clear(); shoppingItems.clear(); shoppingReceipts.clear(); shoppingConflicts.clear(); shoppingSequence = 0;
+      if (seed !== 'empty') {
+        for (let i = 0; i < 2; i++) { const id = (i + 1).toString(16).padStart(32, 'c'); shoppingLists.set(id, { id, familyId: family.familyId, name: i ? '周末采购' : '这周的采购单', createdBy: family.uid, version: 1, createdAt: now + i, updatedAt: now + i }); }
+        for (let i = 0; seed !== 'list-only' && i < (seed === 'pagination' ? 23 : 4); i++) {
+          const id = (++shoppingSequence).toString(16).padStart(32, 'd'); const raw = ['鲜虾', '鸡蛋', '面条', '葱适量'][i % 4] + (seed === 'long' ? '，周末全家一起做饭，请挑选新鲜的食材并按当天需要的数量购买，原文和备注需要完整保留' : '');
+          shoppingItems.set(id, { id, familyId: family.familyId, listId: '1'.padStart(32, 'c'), raw, name: null, quantity: i % 2 ? null : i + 1, unit: i % 2 ? null : '份', note: seed === 'long' ? '数量不确定时，保留原文并和家人核对。' : null,
+            checked: seed === 'checked' || i === 1, createdBy: family.uid, version: 1, createdAt: now + i, updatedAt: now + i });
+        }
+      }
+    }
+    if (read && scenario().shopping?.read === 'failure') throw new AppError('UNAVAILABLE');
+  }
+  function shoppingList(id: string) { const row = shoppingLists.get(validId(id)); if (!row) throw new AppError('NOT_FOUND'); return row; }
+  function shoppingItem(listId: string, id: string) { shoppingList(listId); const row = shoppingItems.get(validId(id)); if (!row || row.listId !== listId) throw new AppError('NOT_FOUND'); return row; }
+  async function shoppingWrite(kind: ShoppingIntent['kind'], input: unknown) {
+    const command = parseShoppingIntent({ kind, input }); await shoppingAccess(false);
+    if (command.input.familyId !== family.familyId || command.input.generation !== family.generation) throw new AppError('CONFLICT');
+    const key = kind + ':' + command.input.requestId; const payload = JSON.stringify(command); const previous = shoppingReceipts.get(key);
+    if (previous) { if (previous.payload !== payload) throw new AppError('CONFLICT'); return { id: previous.id }; }
+    if (scenario().shopping?.write === 'failure') throw new AppError('UNAVAILABLE');
+    const value = command.input; const target = 'listId' in value ? 'id' in value ? shoppingItem(value.listId, value.id) : shoppingList(value.listId) : 'id' in value ? shoppingList(value.id) : null;
+    if ('version' in value && target) {
+      if (scenario().shopping?.write === 'conflict' && !shoppingConflicts.has(target.id)) { target.version++; shoppingConflicts.add(target.id); }
+      if (target.version !== value.version) throw new AppError('CONFLICT');
+    }
+    const id = 'id' in value ? value.id : (++shoppingSequence).toString(16).padStart(32, kind === 'createList' ? 'c' : 'd');
+    const base = { id, familyId: family.familyId, createdBy: family.uid, version: 1, createdAt: now + shoppingSequence, updatedAt: now + shoppingSequence };
+    switch (command.kind) {
+      case 'createList': shoppingLists.set(id, { ...base, name: command.input.name }); break;
+      case 'renameList': shoppingLists.set(id, { ...shoppingList(id), name: command.input.name, version: command.input.version + 1 }); break;
+      case 'removeList': shoppingLists.delete(id); break;
+      case 'addItem': shoppingItems.set(id, { ...base, ...command.input.item, listId: command.input.listId, checked: false }); break;
+      case 'removeItem': shoppingItems.delete(id); break;
+      case 'updateItem': shoppingItems.set(id, { ...shoppingItem(command.input.listId, id), ...command.input.item, version: command.input.version + 1 }); break;
+      case 'setChecked': shoppingItems.set(id, { ...shoppingItem(command.input.listId, id), checked: command.input.checked, version: command.input.version + 1 }); break;
+    }
+    shoppingReceipts.set(key, { payload, id }); if (scenario().shopping?.write === 'lost-ack') throw new AppError('UNAVAILABLE'); return { id };
+  }
+  function shoppingPage<T>(rows: T[], input: { cursor?: string; limit?: number }) { const at = Number(input.cursor ?? 0); const limit = input.limit ?? 20; return { items: clone(rows.slice(at, at + limit)), nextCursor: rows.length > at + limit ? String(at + limit) : null }; }
   const job = () => { const state = scenario().job || currentJob.state; return { ...currentJob, state, attempts: state === 'queued' ? 0 : 1, recipeId: state === 'succeeded' ? rows[0].id : null, error: state === 'failed' ? 'PROVIDER_UNAVAILABLE' as const : null }; };
   return {
+    shopping: {
+      async listLists(input) { await shoppingAccess(); return shoppingPage([...shoppingLists.values()], input); }, async getList(id) { await shoppingAccess(); return clone(shoppingList(id)); },
+      async listItems(input) { await shoppingAccess(); shoppingList(input.listId); return shoppingPage([...shoppingItems.values()].filter(row => row.listId === input.listId), input); },
+      async getItem(input) { await shoppingAccess(); return clone(shoppingItem(input.listId, input.id)); },
+      createList: input => shoppingWrite('createList', input), renameList: input => shoppingWrite('renameList', input), removeList: input => shoppingWrite('removeList', input),
+      addItem: input => shoppingWrite('addItem', input), updateItem: input => shoppingWrite('updateItem', input), removeItem: input => shoppingWrite('removeItem', input), setChecked: input => shoppingWrite('setChecked', input),
+    },
     account: {
       async session() { await pause(); if (!signedIn || scenario().auth === 'anonymous') throw new AppError('AUTH_REQUIRED'); if (scenario().auth === 'failure') throw new AppError('UNAVAILABLE'); return { uid: family.uid }; },
       async signInWeixin() { signedIn = true; if (scenario().auth === 'failure') throw new AppError('UNAVAILABLE'); return { uid: family.uid }; },

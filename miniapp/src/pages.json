@@ -80,6 +80,25 @@
       "style": {
         "navigationBarTitleText": "安排一餐"
       }
+    },
+    {
+      "path": "pages/shopping/index",
+      "style": {
+        "enablePullDownRefresh": true,
+        "navigationBarTitleText": "购物清单"
+      }
+    },
+    {
+      "path": "pages/shopping/list-edit",
+      "style": {
+        "navigationBarTitleText": "管理清单"
+      }
+    },
+    {
+      "path": "pages/shopping/item-edit",
+      "style": {
+        "navigationBarTitleText": "采购条目"
+      }
     }
   ],
   "globalStyle": {
@@ -111,6 +130,12 @@
         "pagePath": "pages/planning/index",
         "iconPath": "static/tab-planning.png",
         "selectedIconPath": "static/tab-planning-selected.png"
+      },
+      {
+        "text": "清单",
+        "pagePath": "pages/shopping/index",
+        "iconPath": "static/tab-shopping.png",
+        "selectedIconPath": "static/tab-shopping-selected.png"
       },
       {
         "text": "家庭",

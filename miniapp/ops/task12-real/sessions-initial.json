@@ -1,0 +1,38 @@
+{
+  "ticket": 12,
+  "kind": "two developer-tool SDK runtimes, same real account and test space",
+  "physicalDevice": false,
+  "distinctMembers": false,
+  "sameAccount": true,
+  "sameFamily": true,
+  "differentItems": [
+    {
+      "pass": true
+    },
+    {
+      "pass": false,
+      "error": "UNAVAILABLE"
+    }
+  ],
+  "differentItemReadback": [
+    {
+      "version": 5,
+      "checked": false
+    },
+    {
+      "version": 3,
+      "checked": false
+    }
+  ],
+  "sameItem": [
+    {
+      "pass": true
+    },
+    {
+      "pass": false,
+      "error": "UNAVAILABLE"
+    }
+  ],
+  "pass": false,
+  "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'UNAVAILABLE'\n- 'CONFLICT'\n"
+}

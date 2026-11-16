@@ -1,0 +1,11 @@
+{
+  "ticket": 12,
+  "width": 320,
+  "font": 1,
+  "kind": "WeChat developer-tool simulator with isolated UI fixture",
+  "fontSource": "review-only boot shim, not a physical system setting",
+  "cases": [],
+  "screenshots": [],
+  "pass": false,
+  "error": "actual viewport 375 differs from requested 320"
+}
